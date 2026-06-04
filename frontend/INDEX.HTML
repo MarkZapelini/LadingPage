@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{var t=localStorage.getItem('zcore-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z-Core — Eletrônicos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span>Z</span>-Core</div>
+  <ul class="nav-links">
+    <li><a href="#">Início</a></li>
+    <li><a href="#produtos">Produtos</a></li>
+    <li><a href="#ofertas">Ofertas</a></li>
+    <li><a href="#">Contato</a></li>
+    <li><a href="admin.html" style="color:#A020F0">Admin</a></li>
+  </ul>
+  <div class="nav-actions" id="navActions">
+    <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+      <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
+      <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
+    </button>
+    <div class="search-box">
+      <input type="text" placeholder="Buscar produtos..." id="searchInput" onkeyup="buscarProdutos()">
+      <span>🔍</span>
+    </div>
+    <div id="authButtons">
+      <a href="login.html" class="btn-login">Entrar</a>
+      <a href="cadastro.html" class="btn-register">Cadastre-se</a>
+    </div>
+    <div id="userLogged" style="display: none;">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span class="user-name" id="userName">Usuário</span>
+      </div>
+      <a href="pedidos.html" class="btn-login">Meus Pedidos</a>
+      <a href="perfil.html" class="btn-login">Meu Perfil</a>
+      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    </div>
+    <button class="btn-wishlist" onclick="abrirWishlist()">
+      <i class="fas fa-heart"></i>
+      <span class="wishlist-count" id="wishlistCount">0</span>
+    </button>
+    <button class="btn-cart" onclick="abrirCarrinho()">
+      <i class="fas fa-shopping-cart"></i> Carrinho
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <span class="hero-tag">Nova coleção 2025</span>
+    <h1>Tecnologia que <em>transforma</em> seu dia.</h1>
+    <p>Os melhores eletrônicos com entrega rápida, garantia e os melhores preços do Brasil.</p>
+    <div class="hero-actions">
+      <a href="#produtos" class="btn-primary" onclick="scrollToSection(event, 'produtos')">Ver produtos</a>
+      <a href="#ofertas" class="btn-secondary" onclick="scrollToSection(event, 'ofertas')">Ofertas do dia</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-icon"><i class="fas fa-laptop"></i></div>
+    <div class="hero-badge">
+      <strong>+4.800</strong>
+      clientes satisfeitos
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIAS -->
+<section class="section">
+  <div class="section-header">
+    <h2>Categorias</h2>
+    <a href="#" class="ver-todos" onclick="verTodasCategorias(event)">Ver todas →</a>
+  </div>
+  <div class="categorias">
+    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'smartphones')">
+      <div class="icon"><i class="fas fa-mobile-alt"></i></div>
+      <div class="nome">Smartphones</div>
+      <div class="qtd">48 produtos</div>
+    </a>
+    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'notebooks')">
+      <div class="icon"><i class="fas fa-laptop"></i></div>
+      <div class="nome">Notebooks</div>
+      <div class="qtd">32 produtos</div>
+    </a>
+    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'audio')">
+      <div class="icon"><i class="fas fa-headphones"></i></div>
+      <div class="nome">Áudio</div>
+      <div class="qtd">56 produtos</div>
+    </a>
+    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'tvs')">
+      <div class="icon"><i class="fas fa-tv"></i></div>
+      <div class="nome">TVs</div>
+      <div class="qtd">24 produtos</div>
+    </a>
+    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'wearables')">
+      <div class="icon"><i class="fas fa-watch"></i></div>
+      <div class="nome">Wearables</div>
+      <div class="qtd">19 produtos</div>
+    </a>
+    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'games')">
+      <div class="icon"><i class="fas fa-gamepad"></i></div>
+      <div class="nome">Games</div>
+      <div class="qtd">37 produtos</div>
+    </a>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PRODUTOS -->
+<section class="section" id="produtos">
+  <div class="section-header">
+    <h2>Mais vendidos</h2>
+    <a href="#" class="ver-todos">Ver todos →</a>
+  </div>
+  
+  <div class="filtros-container">
+    <select id="filtroCategoria" onchange="aplicarFiltros()">
+      <option value="">Todas as categorias</option>
+      <option value="smartphones">Smartphones</option>
+      <option value="notebooks">Notebooks</option>
+      <option value="audio">Áudio</option>
+      <option value="tvs">TVs</option>
+      <option value="wearables">Wearables</option>
+      <option value="games">Games</option>
+    </select>
+    
+    <select id="ordenarPor" onchange="aplicarFiltros()">
+      <option value="padrao">Ordenar por: Padrão</option>
+      <option value="preco-asc">Preço: Menor para Maior</option>
+      <option value="preco-desc">Preço: Maior para Menor</option>
+      <option value="nome-asc">Nome: A-Z</option>
+      <option value="nome-desc">Nome: Z-A</option>
+    </select>
+  </div>
+  
+  <div class="produtos-grid" id="produtosGrid">
+  </div>
+</section>
+
+<!-- BANNER PROMO -->
+<div class="banner" id="ofertas">
+  <div class="banner-text">
+    <h2>Frete grátis em todo o Brasil</h2>
+    <p>Compras acima de R$ 299 têm frete grátis. Entrega em até 3 dias úteis.</p>
+  </div>
+  <a href="#produtos" class="btn-banner" onclick="scrollToSection(event, 'produtos')">Aproveitar →</a>
+</div>
+
+<!-- DEPOIMENTOS -->
+<section class="section">
+  <div class="section-header">
+    <h2>O que dizem nossos clientes</h2>
+  </div>
+  <div class="depoimentos-grid">
+    <div class="depoimento">
+      <div class="estrelas">★★★★★</div>
+      <p>"Recebi meu notebook em 2 dias. Produto original, embalagem impecável. Com certeza vou comprar de novo!"</p>
+      <div class="depoimento-autor">
+        <div class="avatar">👩</div>
+        <div class="autor-info">
+          <div class="nome">Mariana Costa</div>
+          <div class="cidade">São Paulo, SP</div>
+        </div>
+      </div>
+    </div>
+    <div class="depoimento">
+      <div class="estrelas">★★★★★</div>
+      <p>"Melhor loja de eletrônicos que já comprei. Atendimento rápido e produto chegou antes do prazo!"</p>
+      <div class="depoimento-autor">
+        <div class="avatar">👨</div>
+        <div class="autor-info">
+          <div class="nome">Rafael Almeida</div>
+          <div class="cidade">Curitiba, PR</div>
+        </div>
+      </div>
+    </div>
+    <div class="depoimento">
+      <div class="estrelas">★★★★★</div>
+      <p>"Preço justo, produto original e suporte excelente. Recomendo demais para quem quer qualidade!"</p>
+      <div class="depoimento-autor">
+        <div class="avatar">👩</div>
+        <div class="autor-info">
+          <div class="nome">Camila Souza</div>
+          <div class="cidade">Belo Horizonte, MG</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BADGES DE CONFIANÇA -->
+<section class="trust-badges">
+  <div class="trust-badge">
+    <span class="badge-icon"><i class="fas fa-lock"></i></span>
+    <div class="badge-text">
+      <strong>Compra Segura</strong>
+      <span>Dados 100% protegidos</span>
+    </div>
+  </div>
+  <div class="trust-badge">
+    <span class="badge-icon"><i class="fas fa-truck"></i></span>
+    <div class="badge-text">
+      <strong>Frete Grátis</strong>
+      <span>Acima de R$ 299</span>
+    </div>
+  </div>
+  <div class="trust-badge">
+    <span class="badge-icon"><i class="fas fa-shield-alt"></i></span>
+    <div class="badge-text">
+      <strong>Garantia</strong>
+      <span>12 meses de garantia</span>
+    </div>
+  </div>
+  <div class="trust-badge">
+    <span class="badge-icon"><i class="fas fa-undo"></i></span>
+    <div class="badge-text">
+      <strong>Troca Fácil</strong>
+      <span>30 dias para trocar</span>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section">
+  <div class="newsletter-container">
+    <div class="newsletter-text">
+      <h3>Receba nossas ofertas exclusivas</h3>
+      <p>Cadastre-se e ganhe 10% de desconto na primeira compra!</p>
+    </div>
+    <form class="newsletter-form" onsubmit="inscreverNewsletter(event)">
+      <input type="email" id="newsletterEmail" placeholder="Seu e-mail" required>
+      <button type="submit" class="btn-newsletter">Inscrever-se</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer-full">
+  <div class="footer-content">
+    <div class="footer-section">
+      <div class="footer-logo"><span>Z</span>-Core</div>
+      <p class="footer-desc">A sua loja de eletrônicos com os melhores preços, garantia e entrega rápida em todo o Brasil.</p>
+      <div class="social-links">
+        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Institucional</h4>
+      <a href="#">Sobre Nós</a>
+      <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+      <a href="#">Trabalhe Conosco</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Ajuda</h4>
+      <a href="#">FAQ</a>
+      <a href="#">Trocas e Devoluções</a>
+      <a href="#">Entregas</a>
+      <a href="#">Garantia</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Contato</h4>
+      <p class="contact-item">📧 contato@zcore.com.br</p>
+      <p class="contact-item">📞 (11) 99999-9999</p>
+      <p class="contact-item">📍 São Paulo, SP</p>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>© 2025 Z-Core Eletrônicos. Todos os direitos reservados.</p>
+    <div class="payment-methods">
+      <span><i class="fab fa-cc-visa"></i></span>
+      <span><i class="fab fa-cc-mastercard"></i></span>
+      <span><i class="fas fa-money-bill-wave"></i></span>
+      <span><i class="fab fa-pix"></i></span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL CARRINHO -->
+<div class="cart-modal-overlay" id="cartModal">
+  <div class="cart-modal">
+    <div class="cart-header">
+      <h3>Seu Carrinho</h3>
+      <button class="cart-close" onclick="fecharCarrinho()">×</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty" id="cartEmpty">
+        <i class="fas fa-shopping-cart"></i> Seu carrinho está vazio
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display: none;">
+      <div class="cart-total">
+        <span>Total:</span>
+        <strong id="cartTotal">R$ 0,00</strong>
+      </div>
+      <button class="btn-checkout" onclick="finalizarCompra()">Finalizar Compra</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL WISHLIST -->
+<div class="wishlist-modal-overlay" id="wishlistModal">
+  <div class="wishlist-modal">
+    <div class="wishlist-header">
+      <h3>Lista de Desejos</h3>
+      <button class="wishlist-close" onclick="fecharWishlist()">×</button>
+    </div>
+    <div class="wishlist-items" id="wishlistItems">
+      <div class="wishlist-empty" id="wishlistEmpty">
+        <i class="fas fa-heart"></i> Sua lista de desejos está vazia
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/tema.js"></script>
+<script src="js/interacoes.js"></script>
+</body>
+</html>

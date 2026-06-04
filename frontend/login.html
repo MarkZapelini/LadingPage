@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){try{var t=localStorage.getItem('zcore-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Z-Core Eletrônicos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span>Z</span>-Core</div>
+  <ul class="nav-links">
+    <li><a href="INDEX.HTML">Início</a></li>
+    <li><a href="INDEX.HTML#produtos">Produtos</a></li>
+    <li><a href="INDEX.HTML#ofertas">Ofertas</a></li>
+    <li><a href="#">Contato</a></li>
+  </ul>
+  <div class="nav-actions" id="navActions">
+    <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+      <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
+      <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
+    </button>
+    <div id="authButtons">
+      <a href="login.html" class="btn-login">Entrar</a>
+      <a href="cadastro.html" class="btn-register">Cadastre-se</a>
+    </div>
+    <div id="userLogged" style="display: none;">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span class="user-name" id="userName">Usuário</span>
+      </div>
+      <a href="perfil.html" class="btn-login">Meu Perfil</a>
+      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+</nav>
+
+<!-- LOGIN -->
+<section class="auth-section">
+  <div class="auth-container">
+    <a href="INDEX.HTML" class="back-link">← Voltar à loja</a>
+    
+    <h1 class="auth-title">Entrar na sua Conta</h1>
+    
+    <div class="auth-card">
+      <form id="loginForm" onsubmit="fazerLogin(event)">
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="loginSenha" placeholder="Sua senha" required>
+        </div>
+        <button type="submit" class="btn-auth">Entrar</button>
+      </form>
+      
+      <button type="button" class="btn-google" onclick="loginGoogle()">
+        <span>🔵</span> Entrar com Google
+      </button>
+      
+      <div class="auth-divider">
+        <span>ou</span>
+      </div>
+      
+      <p class="auth-link" style="margin-bottom:8px">
+        Esqueceu a senha? 
+        <a href="#" onclick="abrirModalRecuperar()">Recuperar</a>
+      </p>
+      <p class="auth-link">
+        Não tem uma conta? 
+        <a href="cadastro.html">Cadastre-se</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer-full">
+  <div class="footer-content">
+    <div class="footer-section">
+      <div class="footer-logo"><span>Z</span>-Core</div>
+      <p class="footer-desc">A sua loja de eletrônicos com os melhores preços, garantia e entrega rápida em todo o Brasil.</p>
+      <div class="social-links">
+        <a href="#" class="social-icon">📘</a>
+        <a href="#" class="social-icon">📷</a>
+        <a href="#" class="social-icon">🐦</a>
+        <a href="#" class="social-icon">📺</a>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Institucional</h4>
+      <a href="#">Sobre Nós</a>
+      <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+      <a href="#">Trabalhe Conosco</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Ajuda</h4>
+      <a href="#">FAQ</a>
+      <a href="#">Trocas e Devoluções</a>
+      <a href="#">Entregas</a>
+      <a href="#">Garantia</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Contato</h4>
+      <p class="contact-item">📧 contato@zcore.com.br</p>
+      <p class="contact-item">📞 (11) 99999-9999</p>
+      <p class="contact-item">📍 São Paulo, SP</p>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>© 2025 Z-Core Eletrônicos. Todos os direitos reservados.</p>
+    <div class="payment-methods">
+      <span>💳</span>
+      <span>💳</span>
+      <span>💰</span>
+      <span>📱</span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL DE RECUPERAÇÃO DE SENHA -->
+<div class="modal-overlay" id="modalRecuperarSenha" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;justify-content:center;align-items:center">
+  <div class="modal" style="background:#fff;border-radius:16px;width:100%;max-width:420px;padding:32px;box-shadow:0 25px 80px rgba(0,0,0,0.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <div>
+        <h2 style="font-size:22px;font-weight:700;color:#0A0A0A;margin:0">Recuperar Senha</h2>
+        <p style="font-size:13px;color:#64748b;margin-top:4px">Digite seu e-mail para receber o link de recuperação</p>
+      </div>
+      <button onclick="fecharModalRecuperar()" style="background:transparent;border:none;font-size:24px;cursor:pointer;color:#64748b">×</button>
+    </div>
+    
+    <div id="step1">
+      <div class="form-group" style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:600;color:#334155;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">E-mail Cadastrado</label>
+        <input type="email" id="recuperarEmail" placeholder="seu@email.com" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;outline:none;transition:all .2s;font-family:'DM Sans',sans-serif" onfocus="this.style.borderColor='#A020F0';this.style.boxShadow='0 0 0 3px rgba(160,32,240,0.1)'">
+      </div>
+      
+      <button onclick="enviarLinkRecuperacao()" style="width:100%;padding:13px;background:linear-gradient(135deg,#A020F0,#7a17b5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 10px 25px rgba(160,32,240,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+        <i class="fas fa-paper-plane" style="margin-right:8px"></i>Enviar Link de Recuperação
+      </button>
+    </div>
+    
+    <div id="step2" style="display:none;text-align:center">
+      <div style="font-size:48px;margin-bottom:16px">✅</div>
+      <h3 style="font-size:18px;font-weight:700;color:#0A0A0A;margin-bottom:8px">Link Enviado!</h3>
+      <p style="font-size:14px;color:#64748b;margin-bottom:20px">Verifique seu e-mail para redefinir sua senha!</p>
+      <button onclick="fecharModalRecuperar()" style="width:100%;padding:13px;background:transparent;color:#A020F0;border:2px solid #A020F0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.background='#A020F0';this.style.color='#fff'">
+        Voltar ao Login
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  function mostrarToast(mensagem, tipo = 'sucesso') {
+    const toast = document.getElementById('toast');
+    toast.textContent = mensagem;
+    toast.className = 'toast ' + tipo;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // === CONFIGURAÇÃO DO FIREBASE ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyA7gHgpS2dBrIa2dJamylsg9DUdgOHt3Sk",
+    authDomain: "pg-de-vendas.firebaseapp.com",
+    databaseURL: "https://pg-de-vendas-default-rtdb.firebaseio.com",
+    projectId: "pg-de-vendas",
+    storageBucket: "pg-de-vendas.firebasestorage.app",
+    messagingSenderId: "803403474499",
+    appId: "1:803403474499:web:e729b5b49b75dfa4cd16f6",
+    measurementId: "G-5LPWHGFWK5"
+  };
+
+  // Inicializa o Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  
+  // === CONFIGURAÇÃO DO EMAILJS ===
+  const EMAILJS_PUBLIC_KEY = '3cCe-LruV3ESz2E_K';
+  const EMAILJS_SERVICE_ID = 'service_5r5zkyc';
+  const EMAILJS_TEMPLATE_ID = '3cCe-LruV3ESz2E_K';
+  
+  // Inicializa o EmailJS
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+  
+  // === FUNÇÕES DO FIRESTORE ===
+  // Salvar usuário no Firestore
+  async function salvarUsuarioFirestore(usuario) {
+    try {
+      await db.collection('usuarios').doc(usuario.id.toString()).set(usuario);
+      console.log('✅ Usuário salvo no Firestore!');
+    } catch (error) {
+      console.error('❌ Erro ao salvar usuário:', error);
+    }
+  }
+  
+  // Obter usuário do Firestore
+  async function getUsuarioFirestore(email) {
+    try {
+      const snapshot = await db.collection('usuarios').where('email', '==', email).get();
+      if (!snapshot.empty) {
+        return snapshot.docs[0].data();
+      }
+      return null;
+    } catch (error) {
+      console.error('❌ Erro ao buscar usuário:', error);
+      return null;
+    }
+  }
+
+  // Login com Google
+  function loginGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user;
+        
+        // Salva o usuário no localStorage
+        const usuarioGoogle = {
+          id: user.uid,
+          nome: user.displayName,
+          email: user.email,
+          foto: user.photoURL,
+          pedidos: []
+        };
+        
+        // Verifica se o usuário já existe no nosso sistema
+        let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+        let usuarioExistente = usuarios.find(u => u.email === usuarioGoogle.email);
+        
+        if (!usuarioExistente) {
+          usuarios.push(usuarioGoogle);
+          localStorage.setItem('usuarios', JSON.stringify(usuarios));
+          // Salva o novo usuário no Firestore
+          salvarUsuarioFirestore(usuarioGoogle);
+        }
+        
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioExistente || usuarioGoogle));
+        mostrarToast('✅ Login com Google realizado com sucesso!');
+        setTimeout(() => {
+          window.location.href = 'INDEX.HTML';
+        }, 1500);
+      })
+      .catch((error) => {
+        console.error('Erro no login:', error);
+        mostrarToast('❌ Erro ao fazer login com Google!', 'erro');
+      });
+  }
+
+  function verificarLogin() {
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    const authButtons = document.getElementById('authButtons');
+    const userLogged = document.getElementById('userLogged');
+    
+    if (usuarioLogado) {
+      authButtons.style.display = 'none';
+      userLogged.style.display = 'flex';
+      document.getElementById('userName').textContent = usuarioLogado.nome.split(' ')[0];
+      document.getElementById('userAvatar').textContent = usuarioLogado.nome[0].toUpperCase();
+    } else {
+      authButtons.style.display = 'flex';
+      userLogged.style.display = 'none';
+    }
+  }
+
+  function fazerLogout() {
+    localStorage.removeItem('usuarioLogado');
+    verificarLogin();
+    mostrarToast('✅ Você saiu da sua conta!');
+  }
+
+  function abrirModalRecuperar() {
+    document.getElementById('modalRecuperarSenha').style.display = 'flex';
+    document.getElementById('step1').style.display = 'block';
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('recuperarEmail').value = '';
+  }
+
+  function fecharModalRecuperar() {
+    document.getElementById('modalRecuperarSenha').style.display = 'none';
+  }
+
+  function gerarToken() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+
+  function enviarLinkRecuperacao() {
+    const email = document.getElementById('recuperarEmail').value.trim();
+    if (!email) {
+      mostrarToast('❌ Digite um e-mail!', 'erro');
+      return;
+    }
+
+    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    const usuario = usuarios.find(u => u.email === email);
+
+    if (!usuario) {
+      mostrarToast('❌ E-mail não cadastrado!', 'erro');
+      return;
+    }
+
+    const token = gerarToken();
+    const resetTokens = JSON.parse(localStorage.getItem('resetTokens') || '[]');
+    
+    resetTokens.push({
+      token: token,
+      email: email,
+      dataCriacao: new Date().toISOString()
+    });
+    
+    localStorage.setItem('resetTokens', JSON.stringify(resetTokens));
+
+    const linkRecuperacao = window.location.origin + window.location.pathname.replace('login.html', '') + 'reset-password.html?token=' + token + '&email=' + encodeURIComponent(email);
+
+    if (typeof emailjs !== 'undefined') {
+      const templateParams = {
+        to_email: email,
+        to_name: usuario.nome || 'Cliente',
+        reset_link: linkRecuperacao
+      };
+
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+        .then(function(response) {
+          console.log('E-mail enviado com sucesso!', response.status, response.text);
+          document.getElementById('step1').style.display = 'none';
+          document.getElementById('step2').style.display = 'block';
+        }, function(error) {
+          console.log('Erro ao enviar e-mail:', error);
+          mostrarToast('❌ Erro ao enviar e-mail!', 'erro');
+        });
+    } else {
+      console.log('Link de recuperação:', linkRecuperacao);
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+    }
+  }
+
+  // Fechar modal ao clicar no overlay
+  document.getElementById('modalRecuperarSenha').addEventListener('click', function(e) {
+    if (e.target === this) {
+      fecharModalRecuperar();
+    }
+  });
+
+  async function fazerLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const senha = document.getElementById('loginSenha').value;
+
+    if (typeof ZCoreAPI !== 'undefined') {
+      await ZCoreAPI.init();
+      if (ZCoreAPI._online) {
+        try {
+          const data = await ZCoreAPI.login({ email, senha });
+          ZCoreAPI.saveSession(data);
+          mostrarToast('✅ Login realizado com sucesso!');
+          setTimeout(() => { window.location.href = 'INDEX.HTML'; }, 1500);
+          return;
+        } catch (err) {
+          mostrarToast('❌ ' + err.message, 'erro');
+          return;
+        }
+      }
+    }
+
+    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+    if (usuario) {
+      localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+      mostrarToast('✅ Login realizado com sucesso!');
+      setTimeout(() => { window.location.href = 'INDEX.HTML'; }, 1500);
+    } else {
+      mostrarToast('❌ E-mail ou senha incorretos!', 'erro');
+    }
+  }
+
+  window.onload = verificarLogin;
+</script>
+<script src="js/api.js"></script>
+<script src="js/tema.js"></script>
+
+</body>
+</html>

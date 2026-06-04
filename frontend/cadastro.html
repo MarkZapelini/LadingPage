@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){try{var t=localStorage.getItem('zcore-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro — Z-Core Eletrônicos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span>Z</span>-Core</div>
+  <ul class="nav-links">
+    <li><a href="INDEX.HTML">Início</a></li>
+    <li><a href="INDEX.HTML#produtos">Produtos</a></li>
+    <li><a href="INDEX.HTML#ofertas">Ofertas</a></li>
+    <li><a href="#">Contato</a></li>
+  </ul>
+  <div class="nav-actions" id="navActions">
+    <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+      <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
+      <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
+    </button>
+    <div id="authButtons">
+      <a href="login.html" class="btn-login">Entrar</a>
+      <a href="cadastro.html" class="btn-register">Cadastre-se</a>
+    </div>
+    <div id="userLogged" style="display: none;">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span class="user-name" id="userName">Usuário</span>
+      </div>
+      <a href="perfil.html" class="btn-login">Meu Perfil</a>
+      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+</nav>
+
+<!-- CADASTRO -->
+<section class="auth-section">
+  <div class="auth-container">
+    <a href="INDEX.HTML" class="back-link">← Voltar à loja</a>
+    
+    <h1 class="auth-title">Criar sua Conta</h1>
+    
+    <div class="auth-card">
+      <form id="cadastroForm" onsubmit="fazerCadastro(event)">
+        <div class="form-group">
+          <label>Nome completo</label>
+          <input type="text" id="cadastroNome" placeholder="Seu nome completo" required>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="cadastroEmail" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>CPF</label>
+          <input type="text" id="cadastroCPF" placeholder="000.000.000-00" required>
+        </div>
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="text" id="cadastroTelefone" placeholder="(00) 00000-0000" required>
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="cadastroSenha" placeholder="Crie uma senha segura" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Confirmar senha</label>
+          <input type="password" id="cadastroConfirmarSenha" placeholder="Confirme sua senha" required>
+        </div>
+        <button type="submit" class="btn-auth">Criar Conta</button>
+      </form>
+      
+      <button type="button" class="btn-google" onclick="loginGoogle()">
+        <span>🔵</span> Entrar com Google
+      </button>
+      
+      <div class="auth-divider">
+        <span>ou</span>
+      </div>
+      
+      <p class="auth-link">
+        Já tem uma conta? 
+        <a href="login.html">Entre aqui</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer-full">
+  <div class="footer-content">
+    <div class="footer-section">
+      <div class="footer-logo"><span>Z</span>-Core</div>
+      <p class="footer-desc">A sua loja de eletrônicos com os melhores preços, garantia e entrega rápida em todo o Brasil.</p>
+      <div class="social-links">
+        <a href="#" class="social-icon">📘</a>
+        <a href="#" class="social-icon">📷</a>
+        <a href="#" class="social-icon">🐦</a>
+        <a href="#" class="social-icon">📺</a>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Institucional</h4>
+      <a href="#">Sobre Nós</a>
+      <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+      <a href="#">Trabalhe Conosco</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Ajuda</h4>
+      <a href="#">FAQ</a>
+      <a href="#">Trocas e Devoluções</a>
+      <a href="#">Entregas</a>
+      <a href="#">Garantia</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Contato</h4>
+      <p class="contact-item">📧 contato@zcore.com.br</p>
+      <p class="contact-item">📞 (11) 99999-9999</p>
+      <p class="contact-item">📍 São Paulo, SP</p>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>© 2025 Z-Core Eletrônicos. Todos os direitos reservados.</p>
+    <div class="payment-methods">
+      <span>💳</span>
+      <span>💳</span>
+      <span>💰</span>
+      <span>📱</span>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  function mostrarToast(mensagem, tipo = 'sucesso') {
+    const toast = document.getElementById('toast');
+    toast.textContent = mensagem;
+    toast.className = 'toast ' + tipo;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // === CONFIGURAÇÃO DO FIREBASE ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyA7gHgpS2dBrIa2dJamylsg9DUdgOHt3Sk",
+    authDomain: "pg-de-vendas.firebaseapp.com",
+    databaseURL: "https://pg-de-vendas-default-rtdb.firebaseio.com",
+    projectId: "pg-de-vendas",
+    storageBucket: "pg-de-vendas.firebasestorage.app",
+    messagingSenderId: "803403474499",
+    appId: "1:803403474499:web:e729b5b49b75dfa4cd16f6",
+    measurementId: "G-5LPWHGFWK5"
+  };
+
+  // Inicializa o Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  
+  // === FUNÇÕES DO FIRESTORE ===
+  // Salvar usuário no Firestore
+  async function salvarUsuarioFirestore(usuario) {
+    try {
+      await db.collection('usuarios').doc(usuario.id.toString()).set(usuario);
+      console.log('✅ Usuário salvo no Firestore!');
+    } catch (error) {
+      console.error('❌ Erro ao salvar usuário:', error);
+    }
+  }
+  
+  // Obter usuário do Firestore
+  async function getUsuarioFirestore(email) {
+    try {
+      const snapshot = await db.collection('usuarios').where('email', '==', email).get();
+      if (!snapshot.empty) {
+        return snapshot.docs[0].data();
+      }
+      return null;
+    } catch (error) {
+      console.error('❌ Erro ao buscar usuário:', error);
+      return null;
+    }
+  }
+
+  // Login com Google
+  function loginGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user;
+        
+        // Salva o usuário no localStorage
+        const usuarioGoogle = {
+          id: user.uid,
+          nome: user.displayName,
+          email: user.email,
+          foto: user.photoURL,
+          pedidos: []
+        };
+        
+        // Verifica se o usuário já existe no nosso sistema
+        let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+        let usuarioExistente = usuarios.find(u => u.email === usuarioGoogle.email);
+        
+        if (!usuarioExistente) {
+          usuarios.push(usuarioGoogle);
+          localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        }
+        
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioExistente || usuarioGoogle));
+        alert('✅ Login com Google realizado com sucesso!');
+        window.location.href = 'INDEX.HTML';
+      })
+      .catch((error) => {
+        console.error('Erro no login:', error);
+        alert('❌ Erro ao fazer login com Google!');
+      });
+  }
+
+  function verificarLogin() {
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    const authButtons = document.getElementById('authButtons');
+    const userLogged = document.getElementById('userLogged');
+    
+    if (usuarioLogado) {
+      authButtons.style.display = 'none';
+      userLogged.style.display = 'flex';
+      document.getElementById('userName').textContent = usuarioLogado.nome.split(' ')[0];
+      document.getElementById('userAvatar').textContent = usuarioLogado.nome[0].toUpperCase();
+    } else {
+      authButtons.style.display = 'flex';
+      userLogged.style.display = 'none';
+    }
+  }
+
+  function fazerLogout() {
+    localStorage.removeItem('usuarioLogado');
+    verificarLogin();
+    alert('✅ Você saiu da sua conta!');
+  }
+
+  async function fazerCadastro(e) {
+    e.preventDefault();
+    const nome = document.getElementById('cadastroNome').value;
+    const email = document.getElementById('cadastroEmail').value;
+    const cpf = document.getElementById('cadastroCPF').value;
+    const telefone = document.getElementById('cadastroTelefone').value;
+    const senha = document.getElementById('cadastroSenha').value;
+    const confirmarSenha = document.getElementById('cadastroConfirmarSenha').value;
+
+    if (senha !== confirmarSenha) {
+      mostrarToast('❌ As senhas não coincidem!', 'erro');
+      return;
+    }
+
+    if (typeof ZCoreAPI !== 'undefined') {
+      await ZCoreAPI.init();
+      if (ZCoreAPI._online) {
+        try {
+          const data = await ZCoreAPI.register({ nome, email, cpf, telefone, senha });
+          ZCoreAPI.saveSession(data);
+          mostrarToast('✅ Conta criada com sucesso!');
+          setTimeout(() => { window.location.href = 'INDEX.HTML'; }, 1500);
+          return;
+        } catch (err) {
+          mostrarToast('❌ ' + err.message, 'erro');
+          return;
+        }
+      }
+    }
+
+    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    if (usuarios.find(u => u.email === email)) {
+      mostrarToast('❌ Este e-mail já está cadastrado!', 'erro');
+      return;
+    }
+    const novoUsuario = { id: Date.now(), nome, email, cpf, telefone, senha, pedidos: [] };
+    usuarios.push(novoUsuario);
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    localStorage.setItem('usuarioLogado', JSON.stringify(novoUsuario));
+    salvarUsuarioFirestore(novoUsuario);
+    mostrarToast('✅ Conta criada com sucesso!');
+    setTimeout(() => { window.location.href = 'INDEX.HTML'; }, 1500);
+  }
+
+  window.onload = verificarLogin;
+</script>
+<script src="js/api.js"></script>
+<script src="js/tema.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{var t=localStorage.getItem('zcore-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Perfil — Z-Core Eletrônicos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span>Z</span>-Core</div>
+  <ul class="nav-links">
+    <li><a href="INDEX.HTML">Início</a></li>
+    <li><a href="INDEX.HTML#produtos">Produtos</a></li>
+    <li><a href="INDEX.HTML#ofertas">Ofertas</a></li>
+    <li><a href="#">Contato</a></li>
+  </ul>
+  <div class="nav-actions" id="navActions">
+    <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+      <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
+      <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
+    </button>
+    <div id="authButtons">
+      <a href="login.html" class="btn-login">Entrar</a>
+      <a href="cadastro.html" class="btn-register">Cadastre-se</a>
+    </div>
+    <div id="userLogged" style="display: none;">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span class="user-name" id="userName">Usuário</span>
+      </div>
+      <a href="pedidos.html" class="btn-login">Meus Pedidos</a>
+      <a href="perfil.html" class="btn-login">Meu Perfil</a>
+      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    </div>
+    <button class="btn-cart" onclick="window.location.href='checkout.html'">
+      🛒 Carrinho
+    </button>
+  </div>
+</nav>
+
+<!-- PERFIL -->
+<section class="perfil-section">
+  <div class="perfil-container">
+    <a href="INDEX.HTML" class="back-link">← Voltar à loja</a>
+    
+    <h1 class="perfil-title">Meu Perfil</h1>
+    
+    <div class="perfil-card">
+      <div class="perfil-header">
+        <div class="perfil-avatar" id="perfilAvatar">U</div>
+        <div class="perfil-info-header">
+          <h2 id="perfilNomeHeader">Usuário</h2>
+          <p id="perfilEmailHeader">email@exemplo.com</p>
+        </div>
+      </div>
+      
+      <div class="perfil-divider"></div>
+      
+      <h3>Dados Pessoais</h3>
+      <form id="perfilForm" onsubmit="salvarPerfil(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome completo</label>
+            <input type="text" id="perfilNome" placeholder="Seu nome completo" required>
+          </div>
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="perfilEmail" placeholder="seu@email.com" required disabled>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>CPF</label>
+            <input type="text" id="perfilCPF" placeholder="000.000.000-00">
+          </div>
+          <div class="form-group">
+            <label>Telefone</label>
+            <input type="text" id="perfilTelefone" placeholder="(00) 00000-0000">
+          </div>
+        </div>
+        
+        <h3>Endereço</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>CEP</label>
+            <input type="text" id="perfilCEP" placeholder="00000-000">
+          </div>
+          <div class="form-group">
+            <label>Rua</label>
+            <input type="text" id="perfilRua" placeholder="Nome da rua">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Número</label>
+            <input type="text" id="perfilNumero" placeholder="Número">
+          </div>
+          <div class="form-group">
+            <label>Complemento</label>
+            <input type="text" id="perfilComplemento" placeholder="Apto, bloco, etc.">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Bairro</label>
+            <input type="text" id="perfilBairro" placeholder="Bairro">
+          </div>
+          <div class="form-group">
+            <label>Cidade</label>
+            <input type="text" id="perfilCidade" placeholder="Cidade">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="perfilEstado">
+              <option value="">Selecione</option>
+              <option value="AC">Acre</option>
+              <option value="AL">Alagoas</option>
+              <option value="AP">Amapá</option>
+              <option value="AM">Amazonas</option>
+              <option value="BA">Bahia</option>
+              <option value="CE">Ceará</option>
+              <option value="DF">Distrito Federal</option>
+              <option value="ES">Espírito Santo</option>
+              <option value="GO">Goiás</option>
+              <option value="MA">Maranhão</option>
+              <option value="MT">Mato Grosso</option>
+              <option value="MS">Mato Grosso do Sul</option>
+              <option value="MG">Minas Gerais</option>
+              <option value="PA">Pará</option>
+              <option value="PB">Paraíba</option>
+              <option value="PR">Paraná</option>
+              <option value="PE">Pernambuco</option>
+              <option value="PI">Piauí</option>
+              <option value="RJ">Rio de Janeiro</option>
+              <option value="RN">Rio Grande do Norte</option>
+              <option value="RS">Rio Grande do Sul</option>
+              <option value="RO">Rondônia</option>
+              <option value="RR">Roraima</option>
+              <option value="SC">Santa Catarina</option>
+              <option value="SP">São Paulo</option>
+              <option value="SE">Sergipe</option>
+              <option value="TO">Tocantins</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-auth">Salvar Alterações</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer class="footer-full">
+  <div class="footer-content">
+    <div class="footer-section">
+      <div class="footer-logo"><span>Z</span>-Core</div>
+      <p class="footer-desc">A sua loja de eletrônicos com os melhores preços, garantia e entrega rápida em todo o Brasil.</p>
+      <div class="social-links">
+        <a href="#" class="social-icon">📘</a>
+        <a href="#" class="social-icon">📷</a>
+        <a href="#" class="social-icon">🐦</a>
+        <a href="#" class="social-icon">📺</a>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Institucional</h4>
+      <a href="#">Sobre Nós</a>
+      <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+      <a href="#">Trabalhe Conosco</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Ajuda</h4>
+      <a href="#">FAQ</a>
+      <a href="#">Trocas e Devoluções</a>
+      <a href="#">Entregas</a>
+      <a href="#">Garantia</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Contato</h4>
+      <p class="contact-item">📧 contato@zcore.com.br</p>
+      <p class="contact-item">📞 (11) 99999-9999</p>
+      <p class="contact-item">📍 São Paulo, SP</p>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>© 2025 Z-Core Eletrônicos. Todos os direitos reservados.</p>
+    <div class="payment-methods">
+      <span>💳</span>
+      <span>💳</span>
+      <span>💰</span>
+      <span>📱</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // === CONFIGURAÇÃO DO FIREBASE ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyA7gHgpS2dBrIa2dJamylsg9DUdgOHt3Sk",
+    authDomain: "pg-de-vendas.firebaseapp.com",
+    databaseURL: "https://pg-de-vendas-default-rtdb.firebaseio.com",
+    projectId: "pg-de-vendas",
+    storageBucket: "pg-de-vendas.firebasestorage.app",
+    messagingSenderId: "803403474499",
+    appId: "1:803403474499:web:e729b5b49b75dfa4cd16f6",
+    measurementId: "G-5LPWHGFWK5"
+  };
+
+  // Inicializa o Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  
+  // === FUNÇÕES DO FIRESTORE ===
+  async function salvarUsuarioFirestore(usuario) {
+    try {
+      await db.collection('usuarios').doc(usuario.id.toString()).set(usuario);
+      console.log('✅ Usuário salvo no Firestore!');
+    } catch (error) {
+      console.error('❌ Erro ao salvar usuário:', error);
+    }
+  }
+  
+  function mostrarToast(mensagem, tipo = 'sucesso') {
+    const toast = document.getElementById('toast');
+    toast.textContent = mensagem;
+    toast.className = 'toast ' + tipo;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  function verificarLogin() {
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    const authButtons = document.getElementById('authButtons');
+    const userLogged = document.getElementById('userLogged');
+    
+    if (usuarioLogado) {
+      authButtons.style.display = 'none';
+      userLogged.style.display = 'flex';
+      document.getElementById('userName').textContent = usuarioLogado.nome.split(' ')[0];
+      document.getElementById('userAvatar').textContent = usuarioLogado.nome[0].toUpperCase();
+      carregarDadosPerfil(usuarioLogado);
+    } else {
+      mostrarToast('❌ Você precisa estar logado!', 'erro');
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 1500);
+    }
+  }
+
+  function fazerLogout() {
+    localStorage.removeItem('usuarioLogado');
+    verificarLogin();
+    mostrarToast('✅ Você saiu da sua conta!');
+  }
+
+  function carregarDadosPerfil(usuario) {
+    // Preenche o header do perfil
+    document.getElementById('perfilAvatar').textContent = usuario.nome[0].toUpperCase();
+    document.getElementById('perfilNomeHeader').textContent = usuario.nome;
+    document.getElementById('perfilEmailHeader').textContent = usuario.email;
+    
+    // Preenche os campos do formulário
+    document.getElementById('perfilNome').value = usuario.nome || '';
+    document.getElementById('perfilEmail').value = usuario.email || '';
+    document.getElementById('perfilCPF').value = usuario.cpf || '';
+    document.getElementById('perfilTelefone').value = usuario.telefone || '';
+    document.getElementById('perfilCEP').value = usuario.cep || '';
+    document.getElementById('perfilRua').value = usuario.rua || '';
+    document.getElementById('perfilNumero').value = usuario.numero || '';
+    document.getElementById('perfilComplemento').value = usuario.complemento || '';
+    document.getElementById('perfilBairro').value = usuario.bairro || '';
+    document.getElementById('perfilCidade').value = usuario.cidade || '';
+    document.getElementById('perfilEstado').value = usuario.estado || '';
+  }
+
+  async function salvarPerfil(e) {
+    e.preventDefault();
+    
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    
+    // Atualiza os dados do usuário
+    const usuarioAtualizado = {
+      ...usuarioLogado,
+      nome: document.getElementById('perfilNome').value,
+      cpf: document.getElementById('perfilCPF').value,
+      telefone: document.getElementById('perfilTelefone').value,
+      cep: document.getElementById('perfilCEP').value,
+      rua: document.getElementById('perfilRua').value,
+      numero: document.getElementById('perfilNumero').value,
+      complemento: document.getElementById('perfilComplemento').value,
+      bairro: document.getElementById('perfilBairro').value,
+      cidade: document.getElementById('perfilCidade').value,
+      estado: document.getElementById('perfilEstado').value
+    };
+    
+    // Atualiza no localStorage
+    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtualizado));
+    
+    // Atualiza na lista de usuários
+    let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    const usuarioIndex = usuarios.findIndex(u => u.id === usuarioLogado.id);
+    if (usuarioIndex !== -1) {
+      usuarios[usuarioIndex] = usuarioAtualizado;
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    }
+    
+    // Atualiza no Firestore
+    await salvarUsuarioFirestore(usuarioAtualizado);
+    
+    // Atualiza o header
+    document.getElementById('perfilNomeHeader').textContent = usuarioAtualizado.nome;
+    document.getElementById('perfilAvatar').textContent = usuarioAtualizado.nome[0].toUpperCase();
+    document.getElementById('userName').textContent = usuarioAtualizado.nome.split(' ')[0];
+    document.getElementById('userAvatar').textContent = usuarioAtualizado.nome[0].toUpperCase();
+    
+    mostrarToast('✅ Dados salvos com sucesso!');
+  }
+
+  window.onload = verificarLogin;
+</script>
+<script src="js/tema.js"></script>
+
+</body>
+</html>
