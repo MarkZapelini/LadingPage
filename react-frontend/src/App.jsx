@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import Pagamentos from './Pagamentos'
+import HeroSection from './HeroSection'
 
 const produtos = {
   "Z-Core Básico": { emoji: "🎮", preco: 49 },
@@ -16,6 +18,8 @@ function App() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('zcore-theme') || 'dark'
   })
+
+  const [view, setView] = useState('loja') // 'loja' | 'pagamentos'
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -62,8 +66,9 @@ function App() {
   }
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark')
-    localStorage.setItem('zcore-theme', theme === 'dark' ? 'light' : 'dark')
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(nextTheme)
+    localStorage.setItem('zcore-theme', nextTheme)
   }
 
   const totalItems = cart.reduce((sum, item) => sum + item.qtd, 0)
@@ -72,8 +77,11 @@ function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <div className="logo">Z-Core</div>
+        <div className="logo" onClick={() => setView('loja')} style={{ cursor: 'pointer' }}>Z-Core</div>
         <div className="nav-actions">
+          <button onClick={() => setView(view === 'loja' ? 'pagamentos' : 'loja')} className="btn-nav">
+            {view === 'loja' ? '💳 Pagamentos' : '🏠 Loja'}
+          </button>
           <button onClick={toggleTheme} className="btn-theme">
             <i className={`fa ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
           </button>
@@ -84,26 +92,31 @@ function App() {
         </div>
       </nav>
 
-      <header className="hero">
-        <h1>LOJA Z-CORE</h1>
-        <p>Melhores produtos com a melhor qualidade!</p>
-      </header>
+      {view === 'loja' ? (
+        <>
+          <HeroSection />
 
-      <section className="produtos">
-        <h2>Nossos Produtos</h2>
-        <div className="produtos-grid">
-          {Object.entries(produtos).map(([nome, prod]) => (
-            <div key={nome} className="produto-card">
-              <div className="produto-emoji">{prod.emoji}</div>
-              <h3>{nome}</h3>
-              <p className="preco">R$ {prod.preco}</p>
-              <button onClick={() => addToCart(nome)} className="btn-add">
-                Adicionar ao Carrinho
-              </button>
+          <section className="produtos">
+            <h2>Nossos Produtos</h2>
+            <div className="produtos-grid">
+              {Object.entries(produtos).map(([nome, prod]) => (
+                <div key={nome} className="produto-card">
+                  <div className="produto-emoji">{prod.emoji}</div>
+                  <h3>{nome}</h3>
+                  <p className="preco">R$ {prod.preco}</p>
+                  <button onClick={() => addToCart(nome)} className="btn-add">
+                    Adicionar ao Carrinho
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+          </section>
+        </>
+      ) : (
+        <div style={{ marginTop: '2rem' }}>
+          <Pagamentos />
         </div>
-      </section>
+      )}
 
       {cartOpen && (
         <div className="cart-modal-overlay" onClick={() => setCartOpen(false)}>

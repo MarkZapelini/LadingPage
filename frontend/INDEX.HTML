@@ -17,104 +17,196 @@
 <body>
 
 <!-- NAV -->
-<nav>
-  <div class="logo"><span>Z</span>-Core</div>
-  <ul class="nav-links">
-    <li><a href="#">Início</a></li>
-    <li><a href="#produtos">Produtos</a></li>
-    <li><a href="#ofertas">Ofertas</a></li>
-    <li><a href="#">Contato</a></li>
-    <li><a href="admin/admin-full.html" style="color:#A020F0">Admin</a></li>
-  </ul>
-  <div class="nav-actions" id="navActions">
-    <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
-      <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
-      <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
-    </button>
-    <div class="search-box">
-      <input type="text" placeholder="Buscar produtos..." id="searchInput" onkeyup="buscarProdutos()">
-      <span>🔍</span>
+<nav class="premium-header">
+  <div class="header-container">
+    <div class="logo">
+      <span class="logo-symbol">Z</span>
+      <span class="logo-text">Core</span>
     </div>
-    <div id="authButtons">
-      <a href="pages/login.html" class="btn-login">Entrar</a>
-      <a href="pages/cadastro.html" class="btn-register">Cadastre-se</a>
-    </div>
-    <div id="userLogged" style="display: none;">
-      <div class="user-info">
-        <div class="user-avatar" id="userAvatar">U</div>
-        <span class="user-name" id="userName">Usuário</span>
+    
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Início</a></li>
+      <li><a href="#produtos">Produtos</a></li>
+      <li><a href="#ofertas">Ofertas</a></li>
+      <li><a href="#">Contato</a></li>
+      <li class="admin-item"><a href="admin/admin-full.html" class="btn-admin-nav"><i class="fas fa-cog"></i> Admin</a></li>
+    </ul>
+
+    <div class="nav-actions" id="navActions">
+      <div class="search-container">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" placeholder="Buscar produtos, categorias ou marcas..." id="searchInput" onkeyup="buscarProdutos()">
+        </div>
       </div>
-      <a href="pages/pedidos.html" class="btn-login">Meus Pedidos</a>
-      <a href="pages/perfil.html" class="btn-login">Meu Perfil</a>
-      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+
+      <div class="user-actions">
+        <button type="button" class="theme-toggle-premium" aria-label="Ativar modo escuro" title="Modo escuro">
+          <i class="fas fa-sun theme-icon-light"></i>
+          <i class="fas fa-moon theme-icon-dark"></i>
+        </button>
+
+        <div id="authButtons" class="auth-group">
+          <a href="pages/login.html" class="link-login">Entrar</a>
+          <a href="pages/cadastro.html" class="btn-register-premium">Cadastre-se</a>
+        </div>
+
+        <div id="userLogged" style="display: none;" class="user-group">
+          <div class="user-info-premium">
+            <div class="user-avatar-premium" id="userAvatar">U</div>
+            <span class="user-name-premium" id="userName">Usuário</span>
+          </div>
+          <button class="btn-logout-premium" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-action-premium" onclick="abrirWishlist()" title="Favoritos">
+            <i class="fas fa-heart"></i>
+            <span class="badge-premium" id="wishlistCount">0</span>
+          </button>
+          
+          <button class="btn-cart-premium" onclick="abrirCarrinho()">
+            <div class="cart-icon-wrapper">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="badge-premium badge-cart" id="cartCount">0</span>
+            </div>
+            <span class="cart-label">Carrinho</span>
+          </button>
+        </div>
+      </div>
     </div>
-    <button class="btn-wishlist" onclick="abrirWishlist()">
-      <i class="fas fa-heart"></i>
-      <span class="wishlist-count" id="wishlistCount">0</span>
-    </button>
-    <button class="btn-cart" onclick="abrirCarrinho()">
-      <i class="fas fa-shopping-cart"></i> Carrinho
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
   </div>
 </nav>
 
 <!-- HERO -->
-<div class="hero">
-  <div class="hero-text">
-    <span class="hero-tag">Nova coleção 2025</span>
-    <h1>Tecnologia que <em>transforma</em> seu dia.</h1>
-    <p>Os melhores eletrônicos com entrega rápida, garantia e os melhores preços do Brasil.</p>
-    <div class="hero-actions">
-      <a href="#produtos" class="btn-primary" onclick="scrollToSection(event, 'produtos')">Ver produtos</a>
-      <a href="#ofertas" class="btn-secondary" onclick="scrollToSection(event, 'ofertas')">Ofertas do dia</a>
+<section class="hero-premium">
+  <div class="hero-background">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+  
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <div class="badge-dot">✦</div>
+        <span>Nova coleção 2025</span>
+      </div>
+
+      <h1 class="hero-title">
+        Tecnologia que<br>
+        <span class="hero-title-line2">
+          <span class="word-rotate" id="wordRotate">transforma</span>
+          seu dia.
+        </span>
+      </h1>
+
+      <p class="hero-sub">
+        Os melhores eletrônicos com entrega rápida, garantia estendida e os preços mais competitivos do Brasil.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#produtos" class="btn-primary-premium" onclick="scrollToSection(event, 'produtos')">
+          Ver produtos
+          <span class="btn-arrow">→</span>
+        </a>
+        <a href="#ofertas" class="btn-secondary-premium" onclick="scrollToSection(event, 'ofertas')">
+          ◆ Ofertas do dia
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">+4.800</div>
+          <div class="stat-label">Clientes satisfeitos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">216</div>
+          <div class="stat-label">Produtos disponíveis</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">4.9★</div>
+          <div class="stat-label">Avaliação média</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="float-card float-card-1">
+        <div class="float-label">Entrega estimada</div>
+        <div class="float-val">Amanhã, 9h–12h</div>
+        <span class="float-pill">Frete grátis ✓</span>
+      </div>
+      <div class="float-card float-card-2">
+        <div class="float-label">Desconto ativo</div>
+        <div class="float-val">−18% notebooks</div>
+        <span class="float-pill">Válido hoje</span>
+      </div>
+
+      <div class="card-3d" id="card3D">
+        <div class="card-orb-top"></div>
+        <div class="card-label">Destaque da semana</div>
+
+        <div class="product-display">
+          <div class="product-icon-wrap">
+            <div class="product-glow"></div>
+            <i class="fas fa-laptop product-icon-large"></i>
+          </div>
+        </div>
+
+        <div class="card-bottom">
+          <div class="card-stat-badge">
+            <div class="badge-icon">⭐</div>
+            <div>
+              <div class="badge-num">+4.800</div>
+              <div class="badge-sub">clientes satisfeitos</div>
+            </div>
+          </div>
+          <div class="card-tag">
+            <span class="tag-pill">Em estoque</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="hero-visual">
-    <div class="hero-icon"><i class="fas fa-laptop"></i></div>
-    <div class="hero-badge">
-      <strong>+4.800</strong>
-      clientes satisfeitos
-    </div>
-  </div>
-</div>
+</section>
 
 <!-- CATEGORIAS -->
-<section class="section">
+<section class="section categories-premium">
   <div class="section-header">
-    <h2>Categorias</h2>
-    <a href="#" class="ver-todos" onclick="verTodasCategorias(event)">Ver todas →</a>
+    <h2 class="cat-title-premium">Categorias</h2>
+    <a href="#" class="ver-todos-premium" onclick="verTodasCategorias(event)">Ver todas →</a>
   </div>
-  <div class="categorias">
-    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'smartphones')">
-      <div class="icon"><i class="fas fa-mobile-alt"></i></div>
-      <div class="nome">Smartphones</div>
-      <div class="qtd">48 produtos</div>
+  
+  <div class="cat-grid-premium">
+    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'smartphones')">
+      <span class="cat-icon-premium">📱</span>
+      <div class="cat-name-premium">Smartphones</div>
+      <div class="cat-count-premium">48 produtos</div>
     </a>
-    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'notebooks')">
-      <div class="icon"><i class="fas fa-laptop"></i></div>
-      <div class="nome">Notebooks</div>
-      <div class="qtd">32 produtos</div>
+    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'notebooks')">
+      <span class="cat-icon-premium">💻</span>
+      <div class="cat-name-premium">Notebooks</div>
+      <div class="cat-count-premium">32 produtos</div>
     </a>
-    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'audio')">
-      <div class="icon"><i class="fas fa-headphones"></i></div>
-      <div class="nome">Áudio</div>
-      <div class="qtd">56 produtos</div>
+    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'audio')">
+      <span class="cat-icon-premium">🎧</span>
+      <div class="cat-name-premium">Áudio</div>
+      <div class="cat-count-premium">56 produtos</div>
     </a>
-    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'tvs')">
-      <div class="icon"><i class="fas fa-tv"></i></div>
-      <div class="nome">TVs</div>
-      <div class="qtd">24 produtos</div>
+    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'tvs')">
+      <span class="cat-icon-premium">📺</span>
+      <div class="cat-name-premium">TVs</div>
+      <div class="cat-count-premium">24 produtos</div>
     </a>
-    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'wearables')">
-      <div class="icon"><i class="fas fa-watch"></i></div>
-      <div class="nome">Wearables</div>
-      <div class="qtd">19 produtos</div>
+    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'wearables')">
+      <span class="cat-icon-premium">⌚</span>
+      <div class="cat-name-premium">Wearables</div>
+      <div class="cat-count-premium">19 produtos</div>
     </a>
-    <a class="categoria-card" href="#" onclick="selecionarCategoria(event, 'games')">
-      <div class="icon"><i class="fas fa-gamepad"></i></div>
-      <div class="nome">Games</div>
-      <div class="qtd">37 produtos</div>
+    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'games')">
+      <span class="cat-icon-premium">🎮</span>
+      <div class="cat-name-premium">Games</div>
+      <div class="cat-count-premium">37 produtos</div>
     </a>
   </div>
 </section>

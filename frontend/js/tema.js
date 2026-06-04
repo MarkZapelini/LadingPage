@@ -14,7 +14,7 @@
   }
 
   function updateToggleButtons(isDark) {
-    document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+    document.querySelectorAll('.theme-toggle, .theme-toggle-premium').forEach(function (btn) {
       btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
       btn.setAttribute(
         'aria-label',
@@ -30,7 +30,7 @@
   }
 
   function bindToggleButtons() {
-    document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+    document.querySelectorAll('.theme-toggle, .theme-toggle-premium').forEach(function (btn) {
       if (btn.dataset.themeBound) return;
       btn.dataset.themeBound = '1';
       btn.addEventListener('click', toggleTheme);

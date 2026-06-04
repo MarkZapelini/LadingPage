@@ -48,11 +48,16 @@ function carregarDados() {
     const savedUsers = localStorage.getItem('usuarios');
     const savedProfile = localStorage.getItem('adminProfile');
     const savedTheme = localStorage.getItem('zcore-theme');
+    const savedPayments = localStorage.getItem('zcore-payments');
 
     produtos = savedProds ? JSON.parse(savedProds) : [...produtosPadrao];
     pedidos = savedOrders ? JSON.parse(savedOrders) : [];
     usuarios = savedUsers ? JSON.parse(savedUsers) : [];
     perfil = savedProfile ? JSON.parse(savedProfile) : perfil;
+    
+    if (savedPayments) {
+        configurarInterfacePagamentos(JSON.parse(savedPayments));
+    }
 
     if (savedTheme) {
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -63,6 +68,59 @@ function carregarDados() {
 function salvarDados() {
     localStorage.setItem('adminProducts', JSON.stringify(produtos));
     localStorage.setItem('adminOrders', JSON.stringify(pedidos));
+    salvarConfigPagamentos();
+}
+
+function salvarConfigPagamentos() {
+    const config = {
+        pix: {
+            ativo: document.getElementById('toggle-pix').classList.contains('on'),
+            chave: document.querySelector('#cfg-pix input').value,
+            banco: document.querySelector('#cfg-pix select').value
+        },
+        credito: {
+            ativo: document.getElementById('toggle-credito').classList.contains('on'),
+            parcelamento: document.querySelector('#cfg-credito select:nth-of-type(1)').value,
+            juros: document.querySelector('#cfg-credito select:nth-of-type(2)').value
+        }
+    };
+    localStorage.setItem('zcore-payments', JSON.stringify(config));
+}
+
+function configurarInterfacePagamentos(config) {
+    if (!config) return;
+    
+    // Pix
+    const pixToggle = document.getElementById('toggle-pix');
+    const pixBadge = document.getElementById('badge-pix');
+    if (config.pix.ativo) {
+        pixToggle.classList.add('on');
+        pixBadge.classList.add('active');
+        pixBadge.textContent = 'Ativo';
+    } else {
+        pixToggle.classList.remove('on');
+        pixBadge.classList.remove('active');
+        pixBadge.textContent = 'Inativo';
+    }
+    document.querySelector('#cfg-pix input').value = config.pix.chave || '';
+    document.querySelector('#cfg-pix select').value = config.pix.banco || 'Mercado Pago';
+
+    // Crédito
+    const credToggle = document.getElementById('toggle-credito');
+    const credBadge = document.getElementById('badge-credito');
+    if (config.credito.ativo) {
+        credToggle.classList.add('on');
+        credBadge.classList.add('active');
+        credBadge.textContent = 'Ativo';
+    } else {
+        credToggle.classList.remove('on');
+        credBadge.classList.remove('active');
+        credBadge.textContent = 'Inativo';
+    }
+    document.querySelector('#cfg-credito select:nth-of-type(1)').value = config.credito.parcelamento || '12x';
+    document.querySelector('#cfg-credito select:nth-of-type(2)').value = config.credito.juros || 'Sem juros';
+    
+    atualizarContagemAtivos();
 }
 
 // Inicializar Eventos
@@ -774,6 +832,48 @@ function salvarPerfil(e) {
     atualizarPerfilUI();
     fecharModalPerfil();
     mostrarToast('Perfil atualizado com sucesso!');
+}
+
+// ========================================
+// PAGAMENTOS
+// ========================================
+function showPaymentTab(tab) {
+    document.querySelectorAll('.pay-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(tab)) btn.classList.add('active');
+    });
+    document.querySelectorAll('.pay-view').forEach(view => {
+        view.classList.remove('active');
+    });
+    const target = document.getElementById(`pay-view-${tab}`);
+    if (target) target.classList.add('active');
+}
+
+function togglePaymentMethod(method) {
+    const toggle = document.getElementById(`toggle-${method}`);
+    const badge = document.getElementById(`badge-${method}`);
+    
+    if (toggle.classList.contains('on')) {
+        toggle.classList.remove('on');
+        badge.classList.remove('active');
+        badge.textContent = 'Inativo';
+    } else {
+        toggle.classList.add('on');
+        badge.classList.add('active');
+        badge.textContent = 'Ativo';
+    }
+    atualizarContagemAtivos();
+    salvarConfigPagamentos();
+}
+
+function togglePaymentCfg(id) {
+    const panel = document.getElementById(id);
+    panel.classList.toggle('open');
+}
+
+function atualizarContagemAtivos() {
+    const ativos = document.querySelectorAll('.pay-badge.active').length;
+    document.getElementById('count-ativos').textContent = ativos;
 }
 
 // ========================================

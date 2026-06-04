@@ -544,10 +544,134 @@
                     </div>
                 </div>
                 <div class="page" id="page-pagamentos">
-                    <div class="placeholder-page">
-                        <i class="ti ti-credit-card"></i>
-                        <h3>Configurar Métodos de Pagamento</h3>
-                        <p>Em desenvolvimento</p>
+                    <div class="page-header">
+                        <h2 class="page-title">Métodos de Pagamento</h2>
+                    </div>
+                    <div class="payment-container">
+                        <!-- Cabeçalho de Abas Local -->
+                        <div class="payment-tabs-header">
+                            <div class="payment-tabs">
+                                <button class="pay-tab-btn active" onclick="showPaymentTab('metodos')">Métodos</button>
+                                <button class="pay-tab-btn" onclick="showPaymentTab('gateway')">Gateway</button>
+                                <button class="pay-tab-btn" onclick="showPaymentTab('taxas')">Taxas</button>
+                            </div>
+                        </div>
+
+                        <!-- Métricas de Pagamento -->
+                        <div class="payment-metrics">
+                            <div class="pay-metric-card">
+                                <span class="pay-metric-label">Métodos ativos</span>
+                                <span class="pay-metric-value" id="count-ativos">3</span>
+                            </div>
+                            <div class="pay-metric-card">
+                                <span class="pay-metric-label">Gateway</span>
+                                <span class="pay-metric-value small">Mercado Pago</span>
+                            </div>
+                            <div class="pay-metric-card">
+                                <span class="pay-metric-label">Parcelamento</span>
+                                <span class="pay-metric-value" id="parcela-display">12x</span>
+                            </div>
+                            <div class="pay-metric-card">
+                                <span class="pay-metric-label">Status</span>
+                                <span class="pay-metric-value small success">✔ Conectado</span>
+                            </div>
+                        </div>
+
+                        <!-- Conteúdo das Abas -->
+                        <div class="pay-view active" id="pay-view-metodos">
+                            <div class="method-list">
+                                <!-- Pix -->
+                                <div class="method-card" id="card-pix" data-method="pix">
+                                    <div class="method-header">
+                                        <div class="method-icon pix">💠</div>
+                                        <div class="method-info">
+                                            <p class="method-name">Pix</p>
+                                            <p class="method-desc">Aprovação instantânea — taxa 0%</p>
+                                        </div>
+                                        <span class="pay-badge active" id="badge-pix">Ativo</span>
+                                        <button class="pay-toggle on" id="toggle-pix" onclick="togglePaymentMethod('pix')"></button>
+                                        <button class="btn btn-ghost btn-sm" onclick="togglePaymentCfg('cfg-pix')">⚙ Config.</button>
+                                    </div>
+                                    <div class="cfg-panel" id="cfg-pix">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label>Chave Pix</label>
+                                                <input type="text" class="pay-input" placeholder="CPF, CNPJ, e-mail ou aleatória" oninput="salvarConfigPagamentos()">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Banco</label>
+                                                <select class="pay-input" onchange="salvarConfigPagamentos()">
+                                                    <option>Mercado Pago</option>
+                                                    <option>PagSeguro</option>
+                                                    <option>Inter</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cartão -->
+                                <div class="method-card" id="card-credito" data-method="credito">
+                                    <div class="method-header">
+                                        <div class="method-icon card">💳</div>
+                                        <div class="method-info">
+                                            <p class="method-name">Cartão de Crédito</p>
+                                            <p class="method-desc">Visa, Mastercard, Elo — parcelável</p>
+                                        </div>
+                                        <span class="pay-badge active" id="badge-credito">Ativo</span>
+                                        <button class="pay-toggle on" id="toggle-credito" onclick="togglePaymentMethod('credito')"></button>
+                                        <button class="btn btn-ghost btn-sm" onclick="togglePaymentCfg('cfg-credito')">⚙ Config.</button>
+                                    </div>
+                                    <div class="cfg-panel" id="cfg-credito">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label>Parcelamento Máx.</label>
+                                                <select class="pay-input" onchange="salvarConfigPagamentos()">
+                                                    <option>12x</option>
+                                                    <option>6x</option>
+                                                    <option>1x</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Juros</label>
+                                                <select class="pay-input" onchange="salvarConfigPagamentos()">
+                                                    <option>Sem juros</option>
+                                                    <option>Com juros</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pay-view" id="pay-view-gateway">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label>Provedor</label>
+                                            <select class="pay-input">
+                                                <option>Mercado Pago</option>
+                                                <option>Stripe</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Public Key</label>
+                                            <input type="text" class="pay-input" placeholder="APP_USR-...">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary mt-3">Salvar Gateway</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pay-view" id="pay-view-taxas">
+                            <div class="placeholder-page">
+                                <i class="ti ti-chart-dots"></i>
+                                <p>Configuração de taxas e antecipação</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="page" id="page-fretes">

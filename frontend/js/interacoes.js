@@ -694,10 +694,48 @@
     
     // Adicionar eventos aos cards de produtos
     document.body.addEventListener('click', function(e) {
-      if (e.target.closest('.produto-card') && !e.target.closest('.btn-add') && !e.target.closest('.btn-wishlist-card')) {
+      if (e.target.closest('.produto-card') && !e.target.closest('.btn-add') && !e.target.closest('.btn-wishlist-card') && !e.target.closest('.gallery-nav') && !e.target.closest('.gallery-dot')) {
         const card = e.target.closest('.produto-card');
         const nome = card.getAttribute('data-nome');
         cliqueProduto(nome);
       }
     });
+
+    // --- LÓGICA PREMIUM HERO ---
+    const words = ["transforma", "redefine", "eleva", "conecta"];
+    let wordIndex = 0;
+    const wordRotateEl = document.getElementById('wordRotate');
+    
+    if (wordRotateEl) {
+      setInterval(() => {
+        wordRotateEl.style.opacity = '0';
+        wordRotateEl.style.transform = 'translateY(10px)';
+        
+        setTimeout(() => {
+          wordIndex = (wordIndex + 1) % words.length;
+          wordRotateEl.textContent = words[wordIndex];
+          wordRotateEl.style.opacity = '1';
+          wordRotateEl.style.transform = 'translateY(0)';
+        }, 300);
+      }, 3000);
+    }
+
+    // 3D Card Effect
+    const card3D = document.getElementById('card3D');
+    if (card3D) {
+      document.addEventListener('mousemove', (e) => {
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+        card3D.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+      });
+      
+      document.addEventListener('mouseenter', () => {
+        card3D.style.transition = 'none';
+      });
+      
+      document.addEventListener('mouseleave', () => {
+        card3D.style.transition = 'all 0.5s ease';
+        card3D.style.transform = `rotateY(0deg) rotateX(0deg)`;
+      });
+    }
   };

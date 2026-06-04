@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pagamentos — Z-Core Admin</title>
+
+  <!--
+  ================================================================
+   pagamentos.html — Página de Configuração de Pagamentos
+   Vanilla HTML + CSS + JS. Zero dependências externas.
+   Adapte as cores em :root para combinar com seu tema escuro.
+  ================================================================
+  -->
+
+  <style>
+    /* ── Reset e variáveis ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page:      #111827;   /* fundo geral (dark) */
+      --bg-card:      #1f2937;   /* card */
+      --bg-surface:   #374151;   /* surface / hover */
+      --border:       #374151;   /* bordas */
+      --text-primary: #f9fafb;   /* texto principal */
+      --text-muted:   #9ca3af;   /* texto secundário */
+      --green-bg:     #052e16;
+      --green-text:   #86efac;
+      --blue-bg:      #1e3a5f;
+      --blue-text:    #93c5fd;
+      --yellow-bg:    #422006;
+      --yellow-text:  #fcd34d;
+      --gray-bg:      #374151;
+      --gray-text:    #9ca3af;
+      --accent:       #7c3aed;   /* roxo do seu tema */
+      --radius-sm:    6px;
+      --radius-md:    8px;
+      --radius-lg:    12px;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      padding: 1.5rem;
+      min-height: 100vh;
+    }
+
+    /* ── Layout principal ───────────────────────────────────── */
+    .page { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* ── Cabeçalho ─────────────────────────────────────────── */
+    .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .header h1 { font-size: 18px; font-weight: 500; }
+    .header p  { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Abas de navegação ──────────────────────────────────── */
+    /*
+      Cada botão de aba chama showTab('nome') no JS.
+      A aba ativa recebe a classe .active automaticamente.
+    */
+    .tabs { display: flex; gap: 6px; }
+    .tab-btn {
+      background: none;
+      border: none;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .tab-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* ── Cards de métricas ──────────────────────────────────── */
+    /*
+      Grid responsivo: 2 colunas em telas pequenas, 4 em grandes.
+      Atualize via JS os #count-ativos e #parcela-display.
+    */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .metric-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+    }
+    .metric-card .label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .metric-card .value { font-size: 22px; font-weight: 500; }
+    .metric-card .value.small { font-size: 15px; }
+    .metric-card .value.success { color: var(--green-text); }
+
+    /* ── Card de método ─────────────────────────────────────── */
+    /*
+      Estrutura: [ícone] [nome + descrição] [badge] [toggle] [botão config]
+      A classe .inactive reduz opacidade quando desativado.
+      O painel .cfg-panel fica oculto e abre via JS com .open.
+    */
+    .method-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .method-card {
+      background: var(--bg-card);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      transition: opacity .2s, border-color .15s;
+    }
+    .method-card:hover { border-color: #6b7280; }
+    .method-card.inactive { opacity: 0.5; }
+
+    .method-header { display: flex; align-items: center; gap: 14px; }
+
+    .method-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+
+    .method-info { flex: 1; }
+    .method-info .name { font-weight: 500; font-size: 15px; }
+    .method-info .desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Badge de status ────────────────────────────────────── */
+    .badge {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .badge.active   { background: var(--green-bg);  color: var(--green-text); }
+    .badge.inactive { background: var(--gray-bg);   color: var(--gray-text);  }
+
+    /* ── Toggle switch ──────────────────────────────────────── */
+    /*
+      Implementado como <button> para acessibilidade.
+      A classe .on ativa a cor verde e desloca o bolinha via JS.
+    */
+    .toggle {
+      width: 40px; height: 22px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      transition: background .2s;
+      background: #4b5563;
+    }
+    .toggle.on  { background: #22c55e; }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      transition: left .2s;
+    }
+    .toggle.on::after { left: 21px; }
+
+    /* ── Botões ─────────────────────────────────────────────── */
+    .btn {
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      border: 0.5px solid #6b7280;
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--bg-surface); }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #6d28d9; }
+
+    /* ── Painel de configuração expansível ──────────────────── */
+    /*
+      Oculto por padrão. JS adiciona .open para exibir.
+      Usa CSS grid de 2 colunas para os campos.
+    */
+    .cfg-panel {
+      display: none;
+      border-top: 0.5px solid var(--border);
+      margin-top: 12px;
+      padding-top: 12px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .cfg-panel.open { display: grid; }
+
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 12px; color: var(--text-muted); }
+    .field input,
+    .field select {
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 0.5px solid #6b7280;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      width: 100%;
+    }
+    .field input:focus,
+    .field select:focus { outline: none; border-color: var(--accent); }
+
+    /* ── Aba Gateway ────────────────────────────────────────── */
+    .gateway-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
+    .gateway-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+    .gateway-footer { display: flex; align-items: center; justify-content: space-between; border-top: 0.5px solid var(--border); padding-top: 1rem; }
+    .gateway-status { font-size: 13px; }
+    .gateway-status.ok  { color: var(--green-text); }
+    .gateway-status.err { color: #f87171; }
+    .gateway-actions { display: flex; gap: 8px; }
+
+    /* ── Aba Taxas ──────────────────────────────────────────── */
+    .taxes-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
+    .taxes-table { width: 100%; border-collapse: collapse; }
+    .taxes-table th { font-size: 12px; font-weight: 500; color: var(--text-muted); text-align: left; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+    .taxes-table td { padding: 10px 0; border-bottom: 0.5px solid #1f2937; vertical-align: middle; }
+    .taxes-table td:first-child { font-size: 14px; }
+    .taxes-table td input { width: 100%; font-size: 13px; padding: 5px 8px; border-radius: var(--radius-sm); border: 0.5px solid #6b7280; background: var(--bg-page); color: var(--text-primary); }
+    .taxes-footer { display: flex; justify-content: flex-end; margin-top: 1rem; }
+
+    /* ── Views (abas) ───────────────────────────────────────── */
+    .view { display: none; }
+    .view.active { display: block; }
+  </style>
+</head>
+
+<body>
+<div class="page">
+
+  <!-- ── Cabeçalho + abas ─────────────────────────────────── -->
+  <div class="header">
+    <div>
+      <h1>Métodos de pagamento</h1>
+      <p>Ative, configure e personalize cada método aceito na loja.</p>
+    </div>
+    <div class="tabs">
+      <!--
+        Cada botão chama showTab('id').
+        O id deve corresponder a um elemento .view#view-{id}.
+      -->
+      <button class="tab-btn active" onclick="showTab('metodos')">Métodos</button>
+      <button class="tab-btn"        onclick="showTab('gateway')">Gateway</button>
+      <button class="tab-btn"        onclick="showTab('taxas')">Taxas</button>
+    </div>
+  </div>
+
+  <!-- ── Métricas ─────────────────────────────────────────── -->
+  <!--
+    #count-ativos: atualizado automaticamente pelo JS ao
+    ativar/desativar métodos. Os demais são estáticos por ora.
+  -->
+  <div class="metrics">
+    <div class="metric-card">
+      <p class="label">Métodos ativos</p>
+      <p class="value" id="count-ativos">3</p>
+    </div>
+    <div class="metric-card">
+      <p class="label">Gateway</p>
+      <p class="value small">Mercado Pago</p>
+    </div>
+    <div class="metric-card">
+      <p class="label">Parcelamento máx.</p>
+      <p class="value" id="parcela-display">12x</p>
+    </div>
+    <div class="metric-card">
+      <p class="label">Status</p>
+      <p class="value small success">✔ Conectado</p>
+    </div>
+  </div>
+
+  <!-- ═══ ABA: MÉTODOS ════════════════════════════════════════ -->
+  <div class="view active" id="view-metodos">
+    <div class="method-list">
+
+      <!-- ── Pix ──────────────────────────────────────────── -->
+      <!--
+        data-method="pix" liga o card ao estado JS.
+        O toggle chama toggleMethod('pix').
+        O botão Config. chama toggleCfg('cfg-pix').
+      -->
+      <div class="method-card" id="card-pix" data-method="pix">
+        <div class="method-header">
+          <div class="method-icon" style="background:var(--green-bg);">💠</div>
+          <div class="method-info">
+            <p class="name">Pix</p>
+            <p class="desc">Aprovação instantânea — taxa 0% — liquidação imediata</p>
+          </div>
+          <span class="badge active" id="badge-pix">Ativo</span>
+          <button class="toggle on" id="toggle-pix" onclick="toggleMethod('pix')" aria-label="Ativar/desativar Pix"></button>
+          <button class="btn" onclick="toggleCfg('cfg-pix')">⚙ Config.</button>
+        </div>
+        <!-- Painel de config: campos específicos do Pix -->
+        <div class="cfg-panel" id="cfg-pix">
+          <div class="field">
+            <label>Chave Pix</label>
+            <input type="text" placeholder="CPF, CNPJ, e-mail ou aleatória" />
+          </div>
+          <div class="field">
+            <label>Banco recebedor</label>
+            <select>
+              <option>Mercado Pago</option>
+              <option>PagSeguro</option>
+              <option>Inter</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Expiração do QR Code</label>
+            <select>
+              <option>30 minutos</option>
+              <option>1 hora</option>
+              <option>24 horas</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Desconto para Pix (%)</label>
+            <input type="number" placeholder="0" min="0" max="100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Cartão de crédito ─────────────────────────────── -->
+      <div class="method-card" id="card-credito" data-method="credito">
+        <div class="method-header">
+          <div class="method-icon" style="background:var(--blue-bg);">💳</div>
+          <div class="method-info">
+            <p class="name">Cartão de crédito</p>
+            <p class="desc">Visa, Mastercard, Elo, Hipercard — parcelável</p>
+          </div>
+          <span class="badge active" id="badge-credito">Ativo</span>
+          <button class="toggle on" id="toggle-credito" onclick="toggleMethod('credito')" aria-label="Ativar/desativar cartão de crédito"></button>
+          <button class="btn" onclick="toggleCfg('cfg-credito')">⚙ Config.</button>
+        </div>
+        <div class="cfg-panel" id="cfg-credito">
+          <div class="field">
+            <label>Parcelamento máximo</label>
+            <!--
+              Ao mudar o select, updateParcela() atualiza
+              o card de métrica #parcela-display.
+            -->
+            <select id="sel-parcelas" onchange="updateParcela()">
+              <option>1x</option><option>2x</option><option>3x</option>
+              <option>6x</option><option selected>12x</option><option>18x</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Parcela mínima (R$)</label>
+            <input type="number" placeholder="10.00" />
+          </div>
+          <div class="field">
+            <label>Juros a partir de</label>
+            <select>
+              <option>Sem juros em todas as parcelas</option>
+              <option>A partir de 4x</option>
+              <option>A partir de 7x</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Captura</label>
+            <select>
+              <option>Automática</option>
+              <option>Manual</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Boleto ────────────────────────────────────────── -->
+      <div class="method-card" id="card-boleto" data-method="boleto">
+        <div class="method-header">
+          <div class="method-icon" style="background:var(--yellow-bg);">🧾</div>
+          <div class="method-info">
+            <p class="name">Boleto bancário</p>
+            <p class="desc">Liquidação em 1–3 dias úteis após pagamento</p>
+          </div>
+          <span class="badge active" id="badge-boleto">Ativo</span>
+          <button class="toggle on" id="toggle-boleto" onclick="toggleMethod('boleto')" aria-label="Ativar/desativar boleto"></button>
+          <button class="btn" onclick="toggleCfg('cfg-boleto')">⚙ Config.</button>
+        </div>
+        <div class="cfg-panel" id="cfg-boleto">
+          <div class="field">
+            <label>Vencimento (dias)</label>
+            <input type="number" placeholder="3" min="1" />
+          </div>
+          <div class="field">
+            <label>Instrução no boleto</label>
+            <input type="text" placeholder="Não receber após o vencimento" />
+          </div>
+          <div class="field">
+            <label>Multa por atraso (%)</label>
+            <input type="number" placeholder="2" />
+          </div>
+          <div class="field">
+            <label>Juros por dia (%)</label>
+            <input type="number" placeholder="0.033" step="0.001" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Carteira digital (inativa por padrão) ─────────── -->
+      <div class="method-card inactive" id="card-wallet" data-method="wallet">
+        <div class="method-header">
+          <div class="method-icon" style="background:var(--gray-bg);">👛</div>
+          <div class="method-info">
+            <p class="name">Carteira digital</p>
+            <p class="desc">Apple Pay, Google Pay — requer HTTPS e certificado válido</p>
+          </div>
+          <span class="badge inactive" id="badge-wallet">Inativo</span>
+          <button class="toggle" id="toggle-wallet" onclick="toggleMethod('wallet')" aria-label="Ativar/desativar carteira digital"></button>
+          <button class="btn" onclick="toggleCfg('cfg-wallet')">⚙ Config.</button>
+        </div>
+        <div class="cfg-panel" id="cfg-wallet">
+          <div class="field">
+            <label>Merchant ID (Apple Pay)</label>
+            <input type="text" placeholder="merchant.com.suaLoja" />
+          </div>
+          <div class="field">
+            <label>Google Pay Environment</label>
+            <select>
+              <option>Sandbox</option>
+              <option>Production</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /view-metodos -->
+
+  <!-- ═══ ABA: GATEWAY ════════════════════════════════════════ -->
+  <!--
+    Aqui ficam as credenciais do provedor de pagamento.
+    ATENÇÃO: nunca exponha chaves de API diretamente no front-end
+    em produção. Envie-as ao back-end via POST seguro (HTTPS).
+  -->
+  <div class="view" id="view-gateway">
+    <div class="gateway-card">
+      <p style="font-size:15px;font-weight:500;margin-bottom:1rem;">Gateway de pagamento ativo</p>
+      <div class="gateway-fields">
+        <div class="field">
+          <label>Provedor</label>
+          <select>
+            <option>Mercado Pago</option>
+            <option>PagSeguro</option>
+            <option>Stripe</option>
+            <option>Asaas</option>
+            <option>Pagar.me</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Ambiente</label>
+          <select>
+            <option>Produção</option>
+            <option>Sandbox (testes)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Public Key</label>
+          <input type="text" placeholder="APP_USR-xxxxxxxx-xxxx-xxxx" />
+        </div>
+        <div class="field">
+          <label>Access Token</label>
+          <input type="password" placeholder="••••••••••••••••" />
+        </div>
+      </div>
+      <div class="gateway-footer">
+        <span class="gateway-status ok" id="gateway-status">✔ Integração verificada</span>
+        <div class="gateway-actions">
+          <!--
+            O botão "Testar conexão" chama testarConexao().
+            Substitua a simulação por um fetch real à sua API.
+          -->
+          <button class="btn" onclick="testarConexao()">🔄 Testar conexão</button>
+          <button class="btn btn-primary">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /view-gateway -->
+
+  <!-- ═══ ABA: TAXAS ══════════════════════════════════════════ -->
+  <!--
+    Taxa fixa: valor em R$ cobrado por transação (ex: R$ 3,49 no boleto).
+    Taxa %: percentual sobre o valor da venda (ex: 2,99% no cartão).
+    Os valores são enviados ao back-end pelo seu botão "Salvar taxas".
+  -->
+  <div class="view" id="view-taxas">
+    <div class="taxes-card">
+      <p style="font-size:15px;font-weight:500;margin-bottom:1rem;">Configuração de taxas</p>
+      <table class="taxes-table">
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Taxa fixa (R$)</th>
+            <th>Taxa (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>💠 Pix</td>
+            <td><input type="text" value="R$ 0,00" /></td>
+            <td><input type="text" value="0%" /></td>
+          </tr>
+          <tr>
+            <td>💳 Cartão de crédito</td>
+            <td><input type="text" value="R$ 0,39" /></td>
+            <td><input type="text" value="2,99%" /></td>
+          </tr>
+          <tr>
+            <td>🧾 Boleto</td>
+            <td><input type="text" value="R$ 3,49" /></td>
+            <td><input type="text" value="0%" /></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="taxes-footer">
+        <button class="btn btn-primary">Salvar taxas</button>
+      </div>
+    </div>
+  </div><!-- /view-taxas -->
+
+</div><!-- /page -->
+
+<script>
+  // ── Estado dos métodos ──────────────────────────────────────
+  // true = ativo, false = inativo. Chaves batem com data-method.
+  const estados = { pix: true, credito: true, boleto: true, wallet: false };
+
+  // ── Atualiza o card de métrica "Métodos ativos" ─────────────
+  function updateCounter() {
+    const total = Object.values(estados).filter(Boolean).length;
+    document.getElementById('count-ativos').textContent = total;
+  }
+
+  // ── Toggle de método ────────────────────────────────────────
+  // Alterna ativo/inativo e atualiza visual do card, badge e toggle.
+  function toggleMethod(id) {
+    estados[id] = !estados[id];
+    const on = estados[id];
+
+    const toggle = document.getElementById('toggle-' + id);
+    const badge  = document.getElementById('badge-' + id);
+    const card   = document.getElementById('card-' + id);
+
+    // Toggle visual
+    toggle.classList.toggle('on', on);
+
+    // Badge
+    badge.textContent = on ? 'Ativo' : 'Inativo';
+    badge.className   = 'badge ' + (on ? 'active' : 'inactive');
+
+    // Opacidade do card
+    card.classList.toggle('inactive', !on);
+
+    updateCounter();
+  }
+
+  // ── Abrir/fechar painel de configuração ─────────────────────
+  // Adiciona/remove a classe .open no painel identificado por id.
+  function toggleCfg(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  // ── Atualiza o card de parcelamento ao mudar o select ───────
+  function updateParcela() {
+    const val = document.getElementById('sel-parcelas').value;
+    document.getElementById('parcela-display').textContent = val;
+  }
+
+  // ── Navegação entre abas ────────────────────────────────────
+  // Mostra a view ativa e marca o botão de aba correspondente.
+  function showTab(tab) {
+    // Esconde todas as views
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    // Mostra a selecionada
+    document.getElementById('view-' + tab).classList.add('active');
+
+    // Atualiza botões de aba
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      const tabs = ['metodos', 'gateway', 'taxas'];
+      btn.classList.toggle('active', tabs[i] === tab);
+    });
+  }
+
+  // ── Simula teste de conexão com o gateway ──────────────────
+  // Substitua o setTimeout por um fetch real à sua API de validação.
+  function testarConexao() {
+    const el = document.getElementById('gateway-status');
+    el.textContent = '⏳ Testando conexão...';
+    el.className = 'gateway-status';
+    setTimeout(() => {
+      // Simula sucesso — troque por verificação real
+      el.textContent = '✔ Integração verificada';
+      el.className = 'gateway-status ok';
+    }, 1500);
+  }
+</script>
+</body>
+</html>
