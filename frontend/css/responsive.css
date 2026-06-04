@@ -1,0 +1,269 @@
+
+/*=======================================
+  CSS RESPONSIVO - MOBILE FIRST
+  =======================================*/
+
+/* TELAS PEQUENAS (até 480px) */
+@media (max-width: 480px) {
+  nav {
+    padding: 0 4vw;
+    height: 64px;
+  }
+  
+  .logo {
+    font-size: 18px;
+  }
+  
+  .logo span {
+    font-size: 16px;
+  }
+  
+  .hero {
+    padding: 40px 4vw 32px;
+  }
+  
+  .hero h1 {
+    font-size: 28px;
+  }
+  
+  .hero-tag {
+    font-size: 10px;
+  }
+  
+  .hero p {
+    font-size: 14px;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 12px 24px;
+    text-align: center;
+  }
+  
+  .section {
+    padding: 40px 4vw;
+  }
+  
+  .section-header h2 {
+    font-size: 22px;
+  }
+  
+  .categorias {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .categoria-card {
+    padding: 20px 12px;
+  }
+  
+  .produtos-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  
+  .depoimentos-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .banner {
+    padding: 32px 4vw;
+    margin: 0 4vw;
+  }
+  
+  .banner-text h2 {
+    font-size: 22px;
+  }
+  
+  .auth-card {
+    padding: 24px;
+  }
+  
+  .auth-title {
+    font-size: 24px;
+  }
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .payment-methods {
+    justify-content: center;
+  }
+}
+
+/* TELAS MÉDIAS (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  nav {
+    padding: 0 5vw;
+    height: 70px;
+  }
+  
+  .nav-links {
+    display: none;
+  }
+  
+  .search-box {
+    width: 160px;
+  }
+  
+  .search-box input {
+    width: 100px;
+  }
+  
+  .hero {
+    padding: 50px 5vw 40px;
+  }
+  
+  .hero h1 {
+    font-size: 36px;
+  }
+  
+  .produtos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  
+  .banner {
+    padding: 40px 5vw;
+  }
+  
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+  
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .checkout-summary {
+    position: static;
+  }
+}
+
+/* TELAS GRANDES (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .nav-links {
+    gap: 24px;
+  }
+  
+  .hero h1 {
+    font-size: 44px;
+  }
+  
+  .produtos-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .depoimentos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* TELAS EXTRA LARGAS (acima de 1200px) */
+@media (min-width: 1200px) {
+  .hero {
+    padding: 80px 0 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .trust-badges {
+    max-width: 1200px;
+  }
+  
+  .newsletter-container {
+    max-width: 1200px;
+  }
+}
+
+/* MENU HAMBÚRGUER PARA MOBILE */
+.menu-toggle-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.menu-toggle-btn i {
+  font-size: 20px;
+  color: var(--text);
+}
+
+@media (max-width: 900px) {
+  .menu-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .nav-links {
+    display: none;
+  }
+}
+
+/* PÁGINA DE PERFIL RESPONSIVA */
+@media (max-width: 600px) {
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .perfil-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+  }
+  
+  .perfil-title {
+    font-size: 28px;
+  }
+  
+  .perfil-card {
+    padding: 24px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* LISTA DE PEDIDOS */
+.pedidos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pedido-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+@media (max-width: 600px) {
+  .pedido-card {
+    padding: 16px;
+  }
+}

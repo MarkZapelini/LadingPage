@@ -1,0 +1,25 @@
+========================================
+      Z-CORE - GUIA DO SERVIDOR
+========================================
+
+✅ O QUE FUNCIONA:
+start-server-porta8080.ps1
+
+🚀 COMO USAR (NO PC):
+1. Abra o PowerShell (não precisa ser admin)
+2. Vá para a pasta do projeto:
+   cd "c:\Users\skytr\OneDrive\Área de Trabalho\LadingPage"
+3. Execute o comando:
+   powershell -ExecutionPolicy Bypass -File start-server-porta8080.ps1
+4. Acesse no navegador: http://localhost:8080/INDEX.HTML
+
+📱 COMO USAR (PELO CELULAR):
+1. Abra PowerShell COMO ADMINISTRADOR
+2. Execute: powershell -ExecutionPolicy Bypass -File start-server.ps1
+3. Use o IP que aparecer na tela, ex: http://192.168.16.112:8000/INDEX.HTML
+4. Certifique-se que PC e celular estão na mesma rede Wi-Fi!
+
+⏹️ PARAR O SERVIDOR:
+Pressione Ctrl + C na janela do PowerShell onde o servidor está rodando!
+
+========================================

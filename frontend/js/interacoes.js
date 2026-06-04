@@ -117,6 +117,11 @@
   
   // Obter produtos do localStorage (adminProducts) ou usar padrões
   let adminProducts = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+  // Convert admin structure to site structure
+  adminProducts = adminProducts.map(p => ({
+    ...p,
+    cat: p.cat || (p.categoria ? p.categoria.split(' ')[1].toLowerCase() : 'outros')
+  }));
   if (adminProducts.length === 0) {
     adminProducts = [...produtosPadrao];
     localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
@@ -256,17 +261,23 @@
 
   function addCarrinho(nomeProduto) {
     const produto = produtos[nomeProduto];
+    const adminProduto = adminProducts.find(p => p.nome === nomeProduto);
     const itemExistente = cart.find(item => item.nome === nomeProduto);
     
     if (itemExistente) {
       itemExistente.quantidade++;
     } else {
-      cart.push({
+      const newItem = {
         nome: nomeProduto,
         preco: produto.preco,
         emoji: produto.emoji,
         quantidade: 1
-      });
+      };
+      if (adminProduto) {
+        newItem.id = adminProduto.id;
+        newItem.foto = adminProduto.foto;
+      }
+      cart.push(newItem);
     }
     
     atualizarCarrinho();
@@ -317,7 +328,6 @@
       cartEmpty.style.display = 'block';
       cartFooter.style.display = 'none';
       cartItemsDiv.innerHTML = '';
-      cartItemsDiv.appendChild(cartEmpty);
     } else {
       cartEmpty.style.display = 'none';
       cartFooter.style.display = 'block';
@@ -329,9 +339,13 @@
         const subtotal = item.preco * item.quantidade;
         total += subtotal;
         
+        const itemVisual = item.foto 
+          ? `<div class="cart-item-img"><img src="${item.foto}" alt="${item.nome}"></div>`
+          : `<div class="cart-item-emoji">${item.emoji}</div>`;
+        
         html += `
           <div class="cart-item">
-            <div class="cart-item-emoji">${item.emoji}</div>
+            ${itemVisual}
             <div class="cart-item-info">
               <div class="cart-item-nome">${item.nome}</div>
               <div class="cart-item-preco">R$ ${item.preco.toLocaleString('pt-BR')}</div>
@@ -341,7 +355,9 @@
               <span>${item.quantidade}</span>
               <button onclick="alterarQuantidade(${index}, 1)"><i class="fas fa-plus"></i></button>
             </div>
-            <button class="cart-item-remove" onclick="removerItem(${index})"><i class="fas fa-times"></i></button>
+            <button class="cart-item-remove" onclick="removerItem(${index})" title="Remover item">
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </div>
         `;
       });
@@ -362,7 +378,7 @@
   function finalizarCompra() {
     if (cart.length === 0) return;
     fecharCarrinho();
-    window.location.href = 'checkout.html';
+    window.location.href = 'pages/checkout.html';
   }
 
   function showToast(msg) {
@@ -456,10 +472,12 @@
         const produtoAdmin = adminProducts.find(p => p.nome === nome);
         if (produtoAdmin) {
           const preco = produtoAdmin.promo && produtoAdmin.promo < produtoAdmin.preco ? produtoAdmin.promo : produtoAdmin.preco;
-          const emoji = produtoAdmin.emoji || '<i class="fas fa-box"></i>';
+          const itemVisual = produtoAdmin.foto 
+            ? `<div class="wishlist-item-img"><img src="${produtoAdmin.foto}" alt="${nome}"></div>`
+            : `<div class="wishlist-item-emoji">${produtoAdmin.emoji || '<i class="fas fa-box"></i>'}</div>`;
           html += `
             <div class="wishlist-item">
-              <div class="wishlist-item-emoji">${emoji}</div>
+              ${itemVisual}
               <div class="wishlist-item-info">
                 <div class="wishlist-item-nome">${nome}</div>
                 <div class="wishlist-item-preco">R$ ${preco.toLocaleString('pt-BR')}</div>
@@ -590,7 +608,10 @@
   }
 
   function cliqueProduto(nomeProduto) {
-    mostrarToast('🔍 Visualizando: ' + nomeProduto);
+    const produto = adminProducts.find(p => p.nome === nomeProduto);
+    if (produto) {
+      window.location.href = 'pages/produto.html?id=' + produto.id;
+    }
   }
 
   function inscreverNewsletter(e) {

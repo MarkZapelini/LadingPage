@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Z-Core</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="admin-full.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon"><i class="ti ti-cpu"></i></span>
+                    <span class="logo-text">Z-Core</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <!-- Principal -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <a href="#" class="nav-item active" data-page="dashboard">
+                        <i class="ti ti-layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <!-- Catálogo -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Catálogo</div>
+                    <a href="#" class="nav-item" data-page="produtos">
+                        <i class="ti ti-box"></i>
+                        <span>Produtos</span>
+                        <span class="badge-count">6</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="categorias">
+                        <i class="ti ti-layer-group"></i>
+                        <span>Categorias</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="estoque">
+                        <i class="ti ti-warehouse"></i>
+                        <span>Estoque</span>
+                    </a>
+                </div>
+
+                <!-- Vendas -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Vendas</div>
+                    <a href="#" class="nav-item" data-page="pedidos">
+                        <i class="ti ti-shopping-bag"></i>
+                        <span>Pedidos</span>
+                        <span class="badge-count">0</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="cupons">
+                        <i class="ti ti-tag"></i>
+                        <span>Cupons</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="carrinhos">
+                        <i class="ti ti-shopping-cart-x"></i>
+                        <span>Carrinhos Abandonados</span>
+                    </a>
+                </div>
+
+                <!-- Clientes -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Clientes</div>
+                    <a href="#" class="nav-item" data-page="clientes">
+                        <i class="ti ti-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="avaliacoes">
+                        <i class="ti ti-star"></i>
+                        <span>Avaliações</span>
+                    </a>
+                </div>
+
+                <!-- Financeiro -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Financeiro</div>
+                    <a href="#" class="nav-item" data-page="faturamento">
+                        <i class="ti ti-cash"></i>
+                        <span>Faturamento</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="relatorios">
+                        <i class="ti ti-chart-bar"></i>
+                        <span>Relatórios</span>
+                    </a>
+                </div>
+
+                <!-- Configurações -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Configurações</div>
+                    <a href="#" class="nav-item" data-page="pagamentos">
+                        <i class="ti ti-credit-card"></i>
+                        <span>Pagamentos</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="fretes">
+                        <i class="ti ti-truck"></i>
+                        <span>Fretes</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="usuarios">
+                        <i class="ti ti-user-shield"></i>
+                        <span>Usuários</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="config-loja">
+                        <i class="ti ti-settings"></i>
+                        <span>Configurações da Loja</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-profile" id="adminProfile">
+                    <div class="admin-avatar" id="adminAvatar">AD</div>
+                    <div class="admin-info">
+                        <div class="admin-name" id="adminName">Admin</div>
+                        <div class="admin-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="ti ti-menu-2"></i>
+                </button>
+                
+                <div class="header-title" id="pageTitle">Dashboard</div>
+
+                <div class="header-actions">
+                    <button class="btn btn-ghost" id="themeToggle">
+                        <i class="ti ti-sun theme-icon-light"></i>
+                        <i class="ti ti-moon theme-icon-dark"></i>
+                    </button>
+                    <a href="../index.html" class="btn btn-ghost">
+                        <i class="ti ti-home"></i>
+                        Voltar ao Site
+                    </a>
+                    <button class="btn btn-ghost" id="btnLogout">
+                        <i class="ti ti-logout"></i>
+                        Sair
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Page -->
+                <div class="page active" id="page-dashboard">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="ti ti-box"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Produtos</div>
+                                <div class="stat-value" id="statTotalProdutos">6</div>
+                            </div>
+                            <div class="stat-delta delta-up">
+                                <i class="ti ti-arrow-up"></i>
+                                Atualizado
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="ti ti-currency-dollar"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-label">Receita Total</div>
+                                <div class="stat-value" id="statReceita">R$ 0,00</div>
+                            </div>
+                            <div class="stat-delta delta-up">
+                                <i class="ti ti-arrow-up"></i>
+                                Este mês
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="ti ti-shopping-bag"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-label">Pedidos</div>
+                                <div class="stat-value" id="statPedidos">0</div>
+                            </div>
+                            <div class="stat-delta delta-up">
+                                <i class="ti ti-arrow-up"></i>
+                                Todos
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="ti ti-users"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-label">Clientes</div>
+                                <div class="stat-value" id="statClientes">0</div>
+                            </div>
+                            <div class="stat-delta delta-up">
+                                <i class="ti ti-arrow-up"></i>
+                                Ativos
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dash-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Pedidos por Status</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="status-bars" id="statusBars">
+                                    <div class="placeholder">Sem pedidos ainda</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Pedidos Recentes</h3>
+                                <button class="btn btn-ghost btn-sm" onclick="goToPage('pedidos')">
+                                    Ver todos
+                                    <i class="ti ti-arrow-right"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Pedido</th>
+                                            <th>Cliente</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentPedidos">
+                                        <tr>
+                                            <td colspan="4" class="text-center">Nenhum pedido</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Produtos Recentes</h3>
+                            <button class="btn btn-ghost btn-sm" onclick="goToPage('produtos')">
+                                Ver todos
+                                <i class="ti ti-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Categoria</th>
+                                        <th>Preço</th>
+                                        <th>Estoque</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentProdutos">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Produtos Page -->
+                <div class="page" id="page-produtos">
+                    <div class="page-header">
+                        <h2 class="page-title">Produtos</h2>
+                        <div class="page-actions">
+                            <div class="search-box">
+                                <i class="ti ti-search"></i>
+                                <input type="text" id="searchProduto" placeholder="Buscar produto...">
+                            </div>
+                            <button class="btn btn-primary" id="btnAddProduto">
+                                <i class="ti ti-plus"></i>
+                                Novo Produto
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table" id="tabelaProdutos">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Categoria</th>
+                                        <th>Preço</th>
+                                        <th>Estoque</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="produtosTbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Produto Page -->
+                <div class="page" id="page-form-produto">
+                    <div class="page-header">
+                        <h2 class="page-title" id="formProdutoTitle">Adicionar Produto</h2>
+                    </div>
+                    <div class="form-page-grid">
+                        <div class="card form-card">
+                            <div class="card-body">
+                                <form id="formProduto" class="form-grid">
+                                    <div class="form-group full">
+                                        <label>Nome do Produto *</label>
+                                        <input type="text" id="fNome" placeholder="Ex: iPhone 15 Pro">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Categoria *</label>
+                                        <select id="fCategoria">
+                                            <option value="📱 Smartphones">📱 Smartphones</option>
+                                            <option value="💻 Notebooks">💻 Notebooks</option>
+                                            <option value="🎧 Headphones">🎧 Headphones</option>
+                                            <option value="📺 TVs">📺 TVs</option>
+                                            <option value="⌚ Smartwatches">⌚ Smartwatches</option>
+                                            <option value="🎮 Games">🎮 Games</option>
+                                            <option value="🔌 Acessórios">🔌 Acessórios</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Marca</label>
+                                        <input type="text" id="fMarca" placeholder="Apple, Samsung...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Preço *</label>
+                                        <input type="number" id="fPreco" placeholder="0,00" step="0.01" min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Preço Promocional</label>
+                                        <input type="number" id="fPromo" placeholder="0,00" step="0.01" min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Estoque *</label>
+                                        <input type="number" id="fEstoque" placeholder="0" min="0">
+                                    </div>
+                                    <div class="form-group full">
+                                        <label>Descrição</label>
+                                        <textarea id="fDesc" placeholder="Descrição detalhada do produto..." rows="4"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        <select id="fStatus">
+                                            <option value="Ativo">Ativo (Visível na loja)</option>
+                                            <option value="Destaque">Destaque</option>
+                                            <option value="Inativo">Inativo (Oculto)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                    <label>Emoji/Ícone</label>
+                                    <input type="text" id="fEmoji" placeholder="📦" maxlength="2">
+                                </div>
+                                <div class="form-group full">
+                                    <label>Foto do Produto</label>
+                                    <div class="upload-area" id="uploadArea">
+                                        <input type="file" id="fFoto" accept="image/*" style="display: none;">
+                                        <div class="upload-placeholder" id="uploadPlaceholder">
+                                            <i class="ti ti-upload"></i>
+                                            <p>Arraste uma imagem ou clique para selecionar</p>
+                                            <span>PNG, JPG até 5MB</span>
+                                        </div>
+                                        <div class="upload-preview" id="uploadPreview" style="display: none;">
+                                            <img id="uploadedImage" alt="Preview">
+                                            <button type="button" class="remove-image" id="removeFoto">
+                                                <i class="ti ti-x"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions full">
+                                    <button type="button" class="btn btn-ghost" id="btnCancelar">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Salvar Produto</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview Card -->
+                    <div class="card preview-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Preview na Loja</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="product-preview" id="productPreview">
+                                <div class="preview-image-wrapper" id="previewImageWrapper">
+                                    <div class="preview-emoji" id="previewEmoji">📦</div>
+                                    <img class="preview-image" id="previewImage" style="display: none;" alt="Produto">
+                                </div>
+                                <div class="preview-badge" id="previewBadge" style="display: none;">Destaque</div>
+                                <div class="preview-info">
+                                    <div class="preview-categoria" id="previewCategoria">Categoria</div>
+                                    <div class="preview-nome" id="previewNome">Nome do Produto</div>
+                                    <div class="preview-marca" id="previewMarca" style="display: none;">Marca</div>
+                                    <div class="preview-precos">
+                                        <span class="preview-preco" id="previewPreco">R$ 0,00</span>
+                                        <span class="preview-promo" id="previewPromo" style="display: none;">R$ 0,00</span>
+                                    </div>
+                                    <div class="preview-desc" id="previewDesc">Descrição do produto aparecerá aqui</div>
+                                </div>
+                            </div>
+                            <div class="preview-stock">
+                                <i class="ti ti-package"></i>
+                                <span id="previewEstoque">0 unidades em estoque</span>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Pedidos Page -->
+                <div class="page" id="page-pedidos">
+                    <div class="page-header">
+                        <h2 class="page-title">Pedidos</h2>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="filter-chips" id="filterChips">
+                                <button class="chip active" data-filter="todos">Todos</button>
+                                <button class="chip" data-filter="Pendente">Pendentes</button>
+                                <button class="chip" data-filter="Pago">Pagos</button>
+                                <button class="chip" data-filter="Concluído">Concluídos</button>
+                                <button class="chip" data-filter="Cancelado">Cancelados</button>
+                            </div>
+                            <table class="table" id="tabelaPedidos">
+                                <thead>
+                                    <tr>
+                                        <th>#Pedido</th>
+                                        <th>Data</th>
+                                        <th>Cliente</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pedidosTbody">
+                                    <tr>
+                                        <td colspan="6" class="text-center">Nenhum pedido</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estoque Page -->
+                <div class="page" id="page-estoque">
+                    <div class="page-header">
+                        <h2 class="page-title">Estoque</h2>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table" id="tabelaEstoque">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Categoria</th>
+                                        <th>Estoque Atual</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="estoqueTbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clientes Page -->
+                <div class="page" id="page-clientes">
+                    <div class="page-header">
+                        <h2 class="page-title">Clientes</h2>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table" id="tabelaClientes">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>E-mail</th>
+                                        <th>Telefone</th>
+                                        <th>Pedidos</th>
+                                        <th>Total Gasto</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientesTbody">
+                                    <tr>
+                                        <td colspan="5" class="text-center">Nenhum cliente</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder Pages -->
+                <div class="page" id="page-categorias">
+                    <div class="placeholder-page">
+                        <i class="ti ti-layer-group"></i>
+                        <h3>Gerenciamento de Categorias</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-cupons">
+                    <div class="placeholder-page">
+                        <i class="ti ti-tag"></i>
+                        <h3>Gerenciamento de Cupons</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-carrinhos">
+                    <div class="placeholder-page">
+                        <i class="ti ti-shopping-cart-x"></i>
+                        <h3>Carrinhos Abandonados</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-avaliacoes">
+                    <div class="placeholder-page">
+                        <i class="ti ti-star"></i>
+                        <h3>Avaliações dos Clientes</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-faturamento">
+                    <div class="placeholder-page">
+                        <i class="ti ti-cash"></i>
+                        <h3>Relatórios de Faturamento</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-relatorios">
+                    <div class="placeholder-page">
+                        <i class="ti ti-chart-bar"></i>
+                        <h3>Relatórios e Análises</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-pagamentos">
+                    <div class="placeholder-page">
+                        <i class="ti ti-credit-card"></i>
+                        <h3>Configurar Métodos de Pagamento</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-fretes">
+                    <div class="placeholder-page">
+                        <i class="ti ti-truck"></i>
+                        <h3>Configurar Opções de Frete</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-usuarios">
+                    <div class="placeholder-page">
+                        <i class="ti ti-user-shield"></i>
+                        <h3>Gerenciar Usuários Admin</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+                <div class="page" id="page-config-loja">
+                    <div class="placeholder-page">
+                        <i class="ti ti-settings"></i>
+                        <h3>Configurações da Loja</h3>
+                        <p>Em desenvolvimento</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Profile -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <i class="ti ti-user"></i>
+                <h3 class="modal-title">Editar Perfil</h3>
+                <button class="modal-close" id="closeProfileModal">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="avatar-upload">
+                    <div class="avatar-preview" id="avatarPreview">AD</div>
+                    <div class="avatar-actions">
+                        <button class="btn btn-ghost" id="btnSelecionarFoto">
+                            <i class="ti ti-upload"></i>
+                            Escolher
+                        </button>
+                        <button class="btn btn-ghost" id="btnRemoverFoto">
+                            <i class="ti ti-trash"></i>
+                            Remover
+                        </button>
+                    </div>
+                    <input type="file" id="fotoInput" accept="image/*" style="display: none;">
+                </div>
+                <form id="formPerfil" class="form-grid">
+                    <div class="form-group full">
+                        <label>Nome do Admin</label>
+                        <input type="text" id="pNome" placeholder="Seu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Iniciais (sem foto)</label>
+                        <input type="text" id="pAvatar" placeholder="Ex: AD" maxlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label>Cor do Avatar</label>
+                        <select id="pCor">
+                            <option value="#A020F0">Roxo Neon</option>
+                            <option value="#00BFFF">Azul Elétrico</option>
+                            <option value="#10b981">Verde</option>
+                            <option value="#f59e0b">Âmbar</option>
+                            <option value="#ef4444">Vermelho</option>
+                            <option value="#6366f1">Índigo</option>
+                        </select>
+                    </div>
+                    <div class="form-actions full">
+                        <button type="button" class="btn btn-ghost" id="btnCancelarPerfil">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal modal-small">
+            <div class="modal-header danger">
+                <i class="ti ti-alert-triangle"></i>
+                <h3 class="modal-title">Excluir Produto</h3>
+                <button class="modal-close" id="closeDeleteModal">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir <strong id="deleteProdutoNome"></strong>?</p>
+                <div class="form-actions">
+                    <button class="btn btn-ghost" id="btnCancelarDelete">Cancelar</button>
+                    <button class="btn btn-danger" id="btnConfirmarDelete">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="ti ti-check"></i>
+        <span id="toastText">Sucesso!</span>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/tema.js"></script>
+    <script src="admin-full.js"></script>
+</body>
+</html>

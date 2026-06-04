@@ -146,7 +146,7 @@
 <body>
 
 <div class="login-theme-wrap">
-  <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+  <button type="button" class="theme-toggle" id="loginThemeToggle" aria-label="Ativar modo escuro" title="Modo escuro">
     <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
     <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
   </button>
@@ -172,7 +172,7 @@
     <i class="fas fa-sign-in-alt"></i> Entrar no Painel
   </button>
 
-  <a href="INDEX.HTML" class="back-link">← Voltar à loja</a>
+  <a href="../index.html" class="back-link">← Voltar à loja</a>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -206,7 +206,7 @@
           const data = await ZCoreAPI.loginAdmin({ usuario, senha });
           ZCoreAPI.saveAdminSession(data);
           mostrarToast('✅ Login realizado com sucesso!');
-          setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
+          setTimeout(() => { window.location.href = 'admin-full.html'; }, 1000);
           return;
         } catch (err) {
           mostrarToast('❌ ' + err.message, 'erro');
@@ -216,13 +216,26 @@
     }
 
     if (usuario === CREDENCIAIS_PADRAO.usuario && senha === CREDENCIAIS_PADRAO.senha) {
-      localStorage.setItem('adminLogado', JSON.stringify({
+      const adminLogado = {
         logado: true,
         usuario: usuario,
-        data: new Date().toLocaleDateString('pt-BR')
-      }));
+        data: new Date().toLocaleDateString('pt-BR'),
+        dataLogin: new Date().toISOString()
+      };
+      localStorage.setItem('adminLogado', JSON.stringify(adminLogado));
+      
+      // Garantir que exista um perfil admin
+      if (!localStorage.getItem('adminProfile')) {
+        localStorage.setItem('adminProfile', JSON.stringify({
+          nome: 'Admin',
+          avatar: 'AD',
+          cor: '#A020F0',
+          foto: null
+        }));
+      }
+      
       mostrarToast('✅ Login realizado com sucesso!');
-      setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
+      setTimeout(() => { window.location.href = 'admin-full.html'; }, 1000);
     } else {
       mostrarToast('❌ Usuário ou senha incorretos!', 'erro');
     }
@@ -239,12 +252,20 @@
   window.onload = function() {
     const adminLogado = JSON.parse(localStorage.getItem('adminLogado'));
     if (adminLogado && adminLogado.logado) {
-      window.location.href = 'admin.html';
+      window.location.href = 'admin-full.html';
     }
   };
+
+  // Theme toggle no login
+  document.getElementById('loginThemeToggle').addEventListener('click', function() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('zcore-theme', next);
+  });
 </script>
-<script src="js/api.js"></script>
-<script src="js/tema.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/tema.js"></script>
 
 </body>
 </html>

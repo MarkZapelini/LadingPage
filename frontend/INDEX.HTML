@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -23,7 +24,7 @@
     <li><a href="#produtos">Produtos</a></li>
     <li><a href="#ofertas">Ofertas</a></li>
     <li><a href="#">Contato</a></li>
-    <li><a href="admin.html" style="color:#A020F0">Admin</a></li>
+    <li><a href="admin/admin-full.html" style="color:#A020F0">Admin</a></li>
   </ul>
   <div class="nav-actions" id="navActions">
     <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
@@ -35,16 +36,16 @@
       <span>🔍</span>
     </div>
     <div id="authButtons">
-      <a href="login.html" class="btn-login">Entrar</a>
-      <a href="cadastro.html" class="btn-register">Cadastre-se</a>
+      <a href="pages/login.html" class="btn-login">Entrar</a>
+      <a href="pages/cadastro.html" class="btn-register">Cadastre-se</a>
     </div>
     <div id="userLogged" style="display: none;">
       <div class="user-info">
         <div class="user-avatar" id="userAvatar">U</div>
         <span class="user-name" id="userName">Usuário</span>
       </div>
-      <a href="pedidos.html" class="btn-login">Meus Pedidos</a>
-      <a href="perfil.html" class="btn-login">Meu Perfil</a>
+      <a href="pages/pedidos.html" class="btn-login">Meus Pedidos</a>
+      <a href="pages/perfil.html" class="btn-login">Meu Perfil</a>
       <button class="btn-logout" onclick="fazerLogout()">Sair</button>
     </div>
     <button class="btn-wishlist" onclick="abrirWishlist()">
@@ -264,7 +265,7 @@
 
     <div class="footer-section">
       <h4>Institucional</h4>
-      <a href="#">Sobre Nós</a>
+      <a href="pages/sobre.html">Sobre Nós</a>
       <a href="#">Política de Privacidade</a>
       <a href="#">Termos de Uso</a>
       <a href="#">Trabalhe Conosco</a>
@@ -272,7 +273,7 @@
 
     <div class="footer-section">
       <h4>Ajuda</h4>
-      <a href="#">FAQ</a>
+      <a href="pages/faq.html">FAQ</a>
       <a href="#">Trocas e Devoluções</a>
       <a href="#">Entregas</a>
       <a href="#">Garantia</a>
@@ -304,11 +305,10 @@
       <h3>Seu Carrinho</h3>
       <button class="cart-close" onclick="fecharCarrinho()">×</button>
     </div>
-    <div class="cart-items" id="cartItems">
-      <div class="cart-empty" id="cartEmpty">
-        <i class="fas fa-shopping-cart"></i> Seu carrinho está vazio
-      </div>
+    <div class="cart-empty" id="cartEmpty">
+      <i class="fas fa-shopping-cart"></i> Seu carrinho está vazio
     </div>
+    <div class="cart-items" id="cartItems"></div>
     <div class="cart-footer" id="cartFooter" style="display: none;">
       <div class="cart-total">
         <span>Total:</span>

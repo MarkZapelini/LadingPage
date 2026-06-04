@@ -35,7 +35,7 @@ app.use(express.static(frontendPath));
 
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(frontendPath, 'INDEX.HTML'), err => {
+  res.sendFile(path.join(frontendPath, 'index.html'), err => {
     if (err) next();
   });
 });
@@ -47,6 +47,6 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Z-Core API rodando em http://localhost:${PORT}`);
-  console.log(`Loja: http://localhost:${PORT}/INDEX.HTML`);
-  console.log(`Admin: http://localhost:${PORT}/login-admin.html`);
+  console.log(`Loja: http://localhost:${PORT}/index.html`);
+  console.log(`Admin: http://localhost:${PORT}/admin/login-admin.html`);
 });

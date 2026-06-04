@@ -7,7 +7,7 @@
   <title>Checkout — Z-Core Eletrônicos</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -19,9 +19,9 @@
 <nav>
   <div class="logo"><span>Z</span>-Core</div>
   <ul class="nav-links">
-    <li><a href="INDEX.HTML">Início</a></li>
-    <li><a href="INDEX.HTML#produtos">Produtos</a></li>
-    <li><a href="INDEX.HTML#ofertas">Ofertas</a></li>
+    <li><a href="../index.html">Início</a></li>
+    <li><a href="../index.html#produtos">Produtos</a></li>
+    <li><a href="../index.html#ofertas">Ofertas</a></li>
     <li><a href="#">Contato</a></li>
   </ul>
   <div class="nav-actions" id="navActions">
@@ -47,7 +47,7 @@
 <!-- CHECKOUT -->
 <section class="section" style="padding-top: 40px;">
   <div class="checkout-container">
-    <a href="INDEX.HTML" class="back-link">← Voltar à loja</a>
+    <a href="../index.html" class="back-link">← Voltar à loja</a>
     
     <h1 class="checkout-title">Finalizar Compra</h1>
     
@@ -196,9 +196,24 @@
           <h3>Resumo do Pedido</h3>
           <div id="summaryItems" class="summary-items"></div>
           <hr class="summary-divider">
+          
+          <!-- Campo de Cupom -->
+          <div class="coupon-section">
+            <div class="coupon-input-container">
+              <input type="text" id="couponInput" placeholder="Digite seu cupom de desconto">
+              <button class="btn-apply-coupon" onclick="aplicarCupom()">Aplicar</button>
+            </div>
+            <div id="couponMessage" style="margin-top: 8px; font-size: 13px;"></div>
+          </div>
+          
+          <hr class="summary-divider">
           <div class="summary-row">
             <span>Subtotal</span>
             <span id="summarySubtotal">R$ 0,00</span>
+          </div>
+          <div class="summary-row" id="discountRow" style="display: none;">
+            <span>Desconto</span>
+            <span id="summaryDiscount" style="color: #22c55e;">- R$ 0,00</span>
           </div>
           <div class="summary-row">
             <span>Frete</span>
@@ -272,6 +287,17 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // Cupons disponíveis
+  const cuponsDisponiveis = {
+    'BEMVINDO10': { tipo: 'percentual', valor: 10, descricao: '10% de desconto' },
+    'FRETEGRATIS': { tipo: 'frete', valor: 0, descricao: 'Frete grátis' },
+    'DESCONTO50': { tipo: 'percentual', valor: 50, descricao: '50% de desconto' },
+    'PIX15': { tipo: 'percentual', valor: 15, descricao: '15% de desconto no Pix' }
+  };
+  
+  let cupomAplicado = null;
+  let subtotalOriginal = 0;
+  
   function mostrarToast(mensagem, tipo = 'sucesso') {
     const toast = document.getElementById('toast');
     toast.textContent = mensagem;
@@ -281,6 +307,30 @@
     setTimeout(() => {
       toast.classList.remove('show');
     }, 3000);
+  }
+  
+  function aplicarCupom() {
+    const input = document.getElementById('couponInput');
+    const mensagem = document.getElementById('couponMessage');
+    const cupom = input.value.toUpperCase().trim();
+    
+    if (!cupom) {
+      mensagem.textContent = '❌ Digite um cupom!';
+      mensagem.style.color = '#ef4444';
+      return;
+    }
+    
+    if (cuponsDisponiveis[cupom]) {
+      cupomAplicado = cuponsDisponiveis[cupom];
+      mensagem.textContent = '✅ Cupom aplicado: ' + cupomAplicado.descricao;
+      mensagem.style.color = '#22c55e';
+      atualizarResumo();
+    } else {
+      cupomAplicado = null;
+      mensagem.textContent = '❌ Cupom inválido!';
+      mensagem.style.color = '#ef4444';
+      atualizarResumo();
+    }
   }
 
   // === CONFIGURAÇÃO DO FIREBASE ===
@@ -319,6 +369,8 @@
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const summaryItems = document.getElementById('summaryItems');
     const summarySubtotal = document.getElementById('summarySubtotal');
+    const summaryDiscount = document.getElementById('summaryDiscount');
+    const discountRow = document.getElementById('discountRow');
     const summaryTotal = document.getElementById('summaryTotal');
 
     if (cart.length === 0) {
@@ -327,11 +379,11 @@
     }
 
     let html = '';
-    let total = 0;
+    subtotalOriginal = 0;
 
     cart.forEach(item => {
       const subtotal = item.preco * item.quantidade;
-      total += subtotal;
+      subtotalOriginal += subtotal;
       
       html += `
         <div class="summary-item">
@@ -346,7 +398,27 @@
     });
 
     summaryItems.innerHTML = html;
-    summarySubtotal.textContent = 'R$ ' + total.toLocaleString('pt-BR');
+    atualizarResumo();
+  }
+  
+  function atualizarResumo() {
+    const summarySubtotal = document.getElementById('summarySubtotal');
+    const summaryDiscount = document.getElementById('summaryDiscount');
+    const discountRow = document.getElementById('discountRow');
+    const summaryTotal = document.getElementById('summaryTotal');
+    
+    summarySubtotal.textContent = 'R$ ' + subtotalOriginal.toLocaleString('pt-BR');
+    
+    let desconto = 0;
+    if (cupomAplicado && cupomAplicado.tipo === 'percentual') {
+      desconto = subtotalOriginal * (cupomAplicado.valor / 100);
+      discountRow.style.display = 'flex';
+      summaryDiscount.textContent = '- R$ ' + desconto.toLocaleString('pt-BR');
+    } else {
+      discountRow.style.display = 'none';
+    }
+    
+    const total = subtotalOriginal - desconto;
     summaryTotal.textContent = 'R$ ' + total.toLocaleString('pt-BR');
   }
 
@@ -405,15 +477,16 @@
 
     const total = cart.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
     const adminOrders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
-    const pedidoId = '#' + String(adminOrders.length + 1001);
+    const pedidoId = adminOrders.length > 0 ? Math.max(...adminOrders.map(p => p.id || 0)) + 1 : 1;
     const pedido = {
       id: pedidoId,
-      date: new Date().toLocaleDateString('pt-BR'),
+      data: new Date().toLocaleDateString('pt-BR'),
       itens: cart,
       items: cart.map(item => item.nome).join(', '),
       total: total,
-      status: 'pendente',
-      cliente: usuarioLogado.nome
+      status: 'Pendente',
+      nome: usuarioLogado.nome,
+      email: usuarioLogado.email
     };
     adminOrders.push(pedido);
     localStorage.setItem('adminOrders', JSON.stringify(adminOrders));
@@ -435,7 +508,7 @@
     mostrarToast('✅ Pedido confirmado com sucesso! Número: ' + pedidoId);
     setTimeout(() => {
       localStorage.removeItem('cart');
-      window.location.href = 'INDEX.HTML';
+      window.location.href = '../index.html';
     }, 2000);
   }
 
@@ -444,8 +517,8 @@
     verificarLogin();
   };
 </script>
-<script src="js/api.js"></script>
-<script src="js/tema.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/tema.js"></script>
 
 </body>
 </html>

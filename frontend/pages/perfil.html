@@ -7,7 +7,8 @@
   <title>Meu Perfil — Z-Core Eletrônicos</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -19,9 +20,9 @@
 <nav>
   <div class="logo"><span>Z</span>-Core</div>
   <ul class="nav-links">
-    <li><a href="INDEX.HTML">Início</a></li>
-    <li><a href="INDEX.HTML#produtos">Produtos</a></li>
-    <li><a href="INDEX.HTML#ofertas">Ofertas</a></li>
+    <li><a href="../index.html">Início</a></li>
+    <li><a href="../index.html#produtos">Produtos</a></li>
+    <li><a href="../index.html#ofertas">Ofertas</a></li>
     <li><a href="#">Contato</a></li>
   </ul>
   <div class="nav-actions" id="navActions">
@@ -30,19 +31,19 @@
       <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
     </button>
     <div id="authButtons">
-      <a href="login.html" class="btn-login">Entrar</a>
-      <a href="cadastro.html" class="btn-register">Cadastre-se</a>
+      <a href="../pages/login.html" class="btn-login">Entrar</a>
+      <a href="../pages/cadastro.html" class="btn-register">Cadastre-se</a>
     </div>
     <div id="userLogged" style="display: none;">
       <div class="user-info">
         <div class="user-avatar" id="userAvatar">U</div>
         <span class="user-name" id="userName">Usuário</span>
       </div>
-      <a href="pedidos.html" class="btn-login">Meus Pedidos</a>
-      <a href="perfil.html" class="btn-login">Meu Perfil</a>
+      <a href="../pages/pedidos.html" class="btn-login">Meus Pedidos</a>
+      <a href="../pages/perfil.html" class="btn-login">Meu Perfil</a>
       <button class="btn-logout" onclick="fazerLogout()">Sair</button>
     </div>
-    <button class="btn-cart" onclick="window.location.href='checkout.html'">
+    <button class="btn-cart" onclick="window.location.href='../pages/checkout.html'">
       🛒 Carrinho
     </button>
   </div>
@@ -51,7 +52,7 @@
 <!-- PERFIL -->
 <section class="perfil-section">
   <div class="perfil-container">
-    <a href="INDEX.HTML" class="back-link">← Voltar à loja</a>
+    <a href="../index.html" class="back-link">← Voltar à loja</a>
     
     <h1 class="perfil-title">Meu Perfil</h1>
     
@@ -347,7 +348,8 @@
 
   window.onload = verificarLogin;
 </script>
-<script src="js/tema.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/tema.js"></script>
 
 </body>
 </html>
