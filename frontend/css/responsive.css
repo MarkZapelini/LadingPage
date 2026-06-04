@@ -1,269 +1,69 @@
 
 /*=======================================
-  CSS RESPONSIVO - MOBILE FIRST
+  CSS RESPONSIVO - Z-CORE PREMIUM
   =======================================*/
 
-/* TELAS PEQUENAS (até 480px) */
+/* TELAS GRANDES (1025px - 1400px) */
+@media (max-width: 1400px) {
+  .hero-container, .header-container, .footer-content, .testimonials-premium, .trust-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+/* TELAS MÉDIAS (769px - 1024px) */
+@media (max-width: 1024px) {
+  .hero-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 60px;
+  }
+  .hero-content { align-items: center; }
+  .hero-stats { justify-content: center; }
+  .hero-title { font-size: 56px; }
+
+  .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+  
+  .banner-premium { padding: 60px; }
+  .banner-container { flex-direction: column; text-align: center; gap: 40px; }
+  .banner-text { max-width: 100%; }
+
+  .newsletter-container-premium { 
+    grid-template-columns: 1fr; 
+    text-align: center; 
+    padding: 60px;
+    gap: 40px;
+  }
+}
+
+/* TELAS PEQUENAS (até 768px) */
+@media (max-width: 768px) {
+  .hero-title { font-size: 42px; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .btn-primary-premium, .btn-secondary-premium { width: 100%; text-align: center; }
+
+  .trust-container { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  
+  .banner-premium { margin: 60px 20px; padding: 40px; }
+  .banner-title { font-size: 32px; }
+
+  .footer-content { grid-template-columns: 1fr; gap: 40px; }
+  .footer-bottom { flex-direction: column; text-align: center; gap: 20px; }
+}
+
+/* MOBILE (até 480px) */
 @media (max-width: 480px) {
-  nav {
-    padding: 0 4vw;
-    height: 64px;
-  }
+  .hero-title { font-size: 36px; }
+  .hero-stats { flex-direction: column; gap: 30px; align-items: center; }
   
-  .logo {
-    font-size: 18px;
-  }
+  .trust-container { grid-template-columns: 1fr; }
   
-  .logo span {
-    font-size: 16px;
-  }
+  .newsletter-container-premium { padding: 40px 20px; border-radius: 30px; }
+  .newsletter-title { font-size: 28px; }
   
-  .hero {
-    padding: 40px 4vw 32px;
-  }
-  
-  .hero h1 {
-    font-size: 28px;
-  }
-  
-  .hero-tag {
-    font-size: 10px;
-  }
-  
-  .hero p {
-    font-size: 14px;
-  }
-  
-  .hero-actions {
-    flex-direction: column;
-  }
-  
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-    padding: 12px 24px;
-    text-align: center;
-  }
-  
-  .section {
-    padding: 40px 4vw;
-  }
-  
-  .section-header h2 {
-    font-size: 22px;
-  }
-  
-  .categorias {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-  
-  .categoria-card {
-    padding: 20px 12px;
-  }
-  
-  .produtos-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  
-  .depoimentos-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .banner {
-    padding: 32px 4vw;
-    margin: 0 4vw;
-  }
-  
-  .banner-text h2 {
-    font-size: 22px;
-  }
-  
-  .auth-card {
-    padding: 24px;
-  }
-  
-  .auth-title {
-    font-size: 24px;
-  }
-  
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-  
-  .footer-bottom {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .payment-methods {
-    justify-content: center;
-  }
-}
+  .banner-premium { border-radius: 30px; }
+  .btn-banner-premium { width: 100%; justify-content: center; }
 
-/* TELAS MÉDIAS (481px - 768px) */
-@media (min-width: 481px) and (max-width: 768px) {
-  nav {
-    padding: 0 5vw;
-    height: 70px;
-  }
-  
-  .nav-links {
-    display: none;
-  }
-  
-  .search-box {
-    width: 160px;
-  }
-  
-  .search-box input {
-    width: 100px;
-  }
-  
-  .hero {
-    padding: 50px 5vw 40px;
-  }
-  
-  .hero h1 {
-    font-size: 36px;
-  }
-  
-  .produtos-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-  }
-  
-  .banner {
-    padding: 40px 5vw;
-  }
-  
-  .footer-content {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
-  }
-  
-  .checkout-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .checkout-summary {
-    position: static;
-  }
-}
-
-/* TELAS GRANDES (769px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .nav-links {
-    gap: 24px;
-  }
-  
-  .hero h1 {
-    font-size: 44px;
-  }
-  
-  .produtos-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .depoimentos-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* TELAS EXTRA LARGAS (acima de 1200px) */
-@media (min-width: 1200px) {
-  .hero {
-    padding: 80px 0 60px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .section {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .trust-badges {
-    max-width: 1200px;
-  }
-  
-  .newsletter-container {
-    max-width: 1200px;
-  }
-}
-
-/* MENU HAMBÚRGUER PARA MOBILE */
-.menu-toggle-btn {
-  display: none;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px;
-  cursor: pointer;
-}
-
-.menu-toggle-btn i {
-  font-size: 20px;
-  color: var(--text);
-}
-
-@media (max-width: 900px) {
-  .menu-toggle-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .nav-links {
-    display: none;
-  }
-}
-
-/* PÁGINA DE PERFIL RESPONSIVA */
-@media (max-width: 600px) {
-  .perfil-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .perfil-avatar {
-    width: 64px;
-    height: 64px;
-    font-size: 24px;
-  }
-  
-  .perfil-title {
-    font-size: 28px;
-  }
-  
-  .perfil-card {
-    padding: 24px;
-  }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* LISTA DE PEDIDOS */
-.pedidos-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.pedido-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-}
-
-@media (max-width: 600px) {
-  .pedido-card {
-    padding: 16px;
-  }
+  .section-header-premium h2 { font-size: 28px; }
 }

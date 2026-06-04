@@ -47,7 +47,6 @@ function carregarDados() {
     const savedOrders = localStorage.getItem('adminOrders');
     const savedUsers = localStorage.getItem('usuarios');
     const savedProfile = localStorage.getItem('adminProfile');
-    const savedTheme = localStorage.getItem('zcore-theme');
     const savedPayments = localStorage.getItem('zcore-payments');
 
     produtos = savedProds ? JSON.parse(savedProds) : [...produtosPadrao];
@@ -59,9 +58,7 @@ function carregarDados() {
         configurarInterfacePagamentos(JSON.parse(savedPayments));
     }
 
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-    }
+    document.documentElement.setAttribute('data-theme', 'dark');
 }
 
 // Salvar Dados
@@ -82,6 +79,15 @@ function salvarConfigPagamentos() {
             ativo: document.getElementById('toggle-credito').classList.contains('on'),
             parcelamento: document.querySelector('#cfg-credito select:nth-of-type(1)').value,
             juros: document.querySelector('#cfg-credito select:nth-of-type(2)').value
+        },
+        boleto: {
+            ativo: document.getElementById('toggle-boleto').classList.contains('on'),
+            vencimento: document.querySelector('#cfg-boleto input').value,
+            instrucoes: document.querySelector('#cfg-boleto input:nth-of-type(2)')?.value || ''
+        },
+        html: {
+            ativo: document.getElementById('toggle-html').classList.contains('on'),
+            codigo: document.querySelector('#cfg-html textarea').value
         }
     };
     localStorage.setItem('zcore-payments', JSON.stringify(config));
@@ -93,33 +99,69 @@ function configurarInterfacePagamentos(config) {
     // Pix
     const pixToggle = document.getElementById('toggle-pix');
     const pixBadge = document.getElementById('badge-pix');
-    if (config.pix.ativo) {
-        pixToggle.classList.add('on');
-        pixBadge.classList.add('active');
-        pixBadge.textContent = 'Ativo';
-    } else {
-        pixToggle.classList.remove('on');
-        pixBadge.classList.remove('active');
-        pixBadge.textContent = 'Inativo';
+    if (config.pix) {
+        if (config.pix.ativo) {
+            pixToggle.classList.add('on');
+            pixBadge.classList.add('active');
+            pixBadge.textContent = 'Ativo';
+        } else {
+            pixToggle.classList.remove('on');
+            pixBadge.classList.remove('active');
+            pixBadge.textContent = 'Inativo';
+        }
+        document.querySelector('#cfg-pix input').value = config.pix.chave || '';
+        document.querySelector('#cfg-pix select').value = config.pix.banco || 'Mercado Pago';
     }
-    document.querySelector('#cfg-pix input').value = config.pix.chave || '';
-    document.querySelector('#cfg-pix select').value = config.pix.banco || 'Mercado Pago';
 
     // Crédito
     const credToggle = document.getElementById('toggle-credito');
     const credBadge = document.getElementById('badge-credito');
-    if (config.credito.ativo) {
-        credToggle.classList.add('on');
-        credBadge.classList.add('active');
-        credBadge.textContent = 'Ativo';
-    } else {
-        credToggle.classList.remove('on');
-        credBadge.classList.remove('active');
-        credBadge.textContent = 'Inativo';
+    if (config.credito) {
+        if (config.credito.ativo) {
+            credToggle.classList.add('on');
+            credBadge.classList.add('active');
+            credBadge.textContent = 'Ativo';
+        } else {
+            credToggle.classList.remove('on');
+            credBadge.classList.remove('active');
+            credBadge.textContent = 'Inativo';
+        }
+        document.querySelector('#cfg-credito select:nth-of-type(1)').value = config.credito.parcelamento || '12x';
+        document.querySelector('#cfg-credito select:nth-of-type(2)').value = config.credito.juros || 'Sem juros';
     }
-    document.querySelector('#cfg-credito select:nth-of-type(1)').value = config.credito.parcelamento || '12x';
-    document.querySelector('#cfg-credito select:nth-of-type(2)').value = config.credito.juros || 'Sem juros';
-    
+
+    // Boleto
+    const bolToggle = document.getElementById('toggle-boleto');
+    const bolBadge = document.getElementById('badge-boleto');
+    if (config.boleto) {
+        if (config.boleto.ativo) {
+            bolToggle.classList.add('on');
+            bolBadge.classList.add('active');
+            bolBadge.textContent = 'Ativo';
+        } else {
+            bolToggle.classList.remove('on');
+            bolBadge.classList.remove('active');
+            bolBadge.textContent = 'Inativo';
+        }
+        document.querySelector('#cfg-boleto input').value = config.boleto.vencimento || '3';
+    }
+
+    // HTML
+    const htmlToggle = document.getElementById('toggle-html');
+    const htmlBadge = document.getElementById('badge-html');
+    if (config.html) {
+        if (config.html.ativo) {
+            htmlToggle.classList.add('on');
+            htmlBadge.classList.add('active');
+            htmlBadge.textContent = 'Ativo';
+        } else {
+            htmlToggle.classList.remove('on');
+            htmlBadge.classList.remove('active');
+            htmlBadge.textContent = 'Inativo';
+        }
+        document.querySelector('#cfg-html textarea').value = config.html.codigo || '';
+    }
+
     atualizarContagemAtivos();
 }
 

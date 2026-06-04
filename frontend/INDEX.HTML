@@ -2,12 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<script>(function(){try{var t=localStorage.getItem('zcore-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
+<script>document.documentElement.setAttribute('data-theme', 'dark');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Z-Core — Eletrônicos</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="css/style.css">
+<title>Z-Core | Tecnologia High-End</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -19,33 +21,32 @@
 <!-- NAV -->
 <nav class="premium-header">
   <div class="header-container">
-    <div class="logo">
+    <a href="index.html" class="logo">
       <span class="logo-symbol">Z</span>
       <span class="logo-text">Core</span>
-    </div>
+    </a>
+
+    <button class="menu-toggle-premium" id="mobileMenuBtn" aria-label="Abrir menu">
+      <i class="fas fa-bars"></i>
+    </button>
     
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinks">
       <li><a href="index.html" class="active">Início</a></li>
-      <li><a href="#produtos">Produtos</a></li>
-      <li><a href="#ofertas">Ofertas</a></li>
+      <li><a href="#produtos" onclick="scrollToSection(event, 'produtos')">Produtos</a></li>
+      <li><a href="#ofertas" onclick="scrollToSection(event, 'ofertas')">Ofertas</a></li>
       <li><a href="#">Contato</a></li>
       <li class="admin-item"><a href="admin/admin-full.html" class="btn-admin-nav"><i class="fas fa-cog"></i> Admin</a></li>
     </ul>
 
-    <div class="nav-actions" id="navActions">
-      <div class="search-container">
-        <div class="search-box">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" placeholder="Buscar produtos, categorias ou marcas..." id="searchInput" onkeyup="buscarProdutos()">
-        </div>
+    <div class="search-container">
+      <div class="search-box">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" placeholder="Buscar produtos..." id="searchInput" onkeyup="buscarProdutos()">
       </div>
+    </div>
 
+    <div class="nav-actions" id="navActions">
       <div class="user-actions">
-        <button type="button" class="theme-toggle-premium" aria-label="Ativar modo escuro" title="Modo escuro">
-          <i class="fas fa-sun theme-icon-light"></i>
-          <i class="fas fa-moon theme-icon-dark"></i>
-        </button>
-
         <div id="authButtons" class="auth-group">
           <a href="pages/login.html" class="link-login">Entrar</a>
           <a href="pages/cadastro.html" class="btn-register-premium">Cadastre-se</a>
@@ -95,7 +96,7 @@
       <h1 class="hero-title">
         Tecnologia que<br>
         <span class="hero-title-line2">
-          <span class="word-rotate" id="wordRotate">transforma</span>
+          <span class="word-rotate" id="wordRotate">evolui</span>
           seu dia.
         </span>
       </h1>
@@ -170,173 +171,171 @@
   </div>
 </section>
 
-<!-- CATEGORIAS -->
-<section class="section categories-premium">
-  <div class="section-header">
-    <h2 class="cat-title-premium">Categorias</h2>
-    <a href="#" class="ver-todos-premium" onclick="verTodasCategorias(event)">Ver todas →</a>
-  </div>
-  
-  <div class="cat-grid-premium">
-    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'smartphones')">
-      <span class="cat-icon-premium">📱</span>
-      <div class="cat-name-premium">Smartphones</div>
-      <div class="cat-count-premium">48 produtos</div>
-    </a>
-    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'notebooks')">
-      <span class="cat-icon-premium">💻</span>
-      <div class="cat-name-premium">Notebooks</div>
-      <div class="cat-count-premium">32 produtos</div>
-    </a>
-    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'audio')">
-      <span class="cat-icon-premium">🎧</span>
-      <div class="cat-name-premium">Áudio</div>
-      <div class="cat-count-premium">56 produtos</div>
-    </a>
-    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'tvs')">
-      <span class="cat-icon-premium">📺</span>
-      <div class="cat-name-premium">TVs</div>
-      <div class="cat-count-premium">24 produtos</div>
-    </a>
-    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'wearables')">
-      <span class="cat-icon-premium">⌚</span>
-      <div class="cat-name-premium">Wearables</div>
-      <div class="cat-count-premium">19 produtos</div>
-    </a>
-    <a class="cat-card-premium" href="#" onclick="selecionarCategoria(event, 'games')">
-      <span class="cat-icon-premium">🎮</span>
-      <div class="cat-name-premium">Games</div>
-      <div class="cat-count-premium">37 produtos</div>
-    </a>
-  </div>
-</section>
-
-<hr class="divider">
-
-<!-- PRODUTOS -->
-<section class="section" id="produtos">
-  <div class="section-header">
-    <h2>Mais vendidos</h2>
-    <a href="#" class="ver-todos">Ver todos →</a>
-  </div>
-  
-  <div class="filtros-container">
-    <select id="filtroCategoria" onchange="aplicarFiltros()">
-      <option value="">Todas as categorias</option>
-      <option value="smartphones">Smartphones</option>
-      <option value="notebooks">Notebooks</option>
-      <option value="audio">Áudio</option>
-      <option value="tvs">TVs</option>
-      <option value="wearables">Wearables</option>
-      <option value="games">Games</option>
-    </select>
-    
-    <select id="ordenarPor" onchange="aplicarFiltros()">
-      <option value="padrao">Ordenar por: Padrão</option>
-      <option value="preco-asc">Preço: Menor para Maior</option>
-      <option value="preco-desc">Preço: Maior para Menor</option>
-      <option value="nome-asc">Nome: A-Z</option>
-      <option value="nome-desc">Nome: Z-A</option>
-    </select>
-  </div>
-  
-  <div class="produtos-grid" id="produtosGrid">
-  </div>
-</section>
-
-<!-- BANNER PROMO -->
-<div class="banner" id="ofertas">
-  <div class="banner-text">
-    <h2>Frete grátis em todo o Brasil</h2>
-    <p>Compras acima de R$ 299 têm frete grátis. Entrega em até 3 dias úteis.</p>
-  </div>
-  <a href="#produtos" class="btn-banner" onclick="scrollToSection(event, 'produtos')">Aproveitar →</a>
+<!-- STORE SECTION PREMIUM -->
+<div class="store-root" id="store-app">
+  <!-- O conteúdo será gerado dinamicamente pelo interacoes.js seguindo o modelo STORE-SECTION.HTML -->
 </div>
 
-<!-- DEPOIMENTOS -->
-<section class="section">
-  <div class="section-header">
-    <h2>O que dizem nossos clientes</h2>
+<!-- BANNER PROMO PREMIUM -->
+<section class="banner-premium" id="ofertas">
+  <div class="banner-glow"></div>
+  <div class="banner-container">
+    <div class="banner-content">
+      <div class="banner-tag">Oferta Limitada</div>
+      <h2 class="banner-title">Frete grátis em todo o Brasil</h2>
+      <p class="banner-text">Compras acima de R$ 299 têm frete grátis. Entrega em até 3 dias úteis com seguro total.</p>
+    </div>
+    <a href="#produtos" class="btn-banner-premium" onclick="scrollToSection(event, 'produtos')">
+      Aproveitar agora
+      <span class="btn-arrow">→</span>
+    </a>
   </div>
-  <div class="depoimentos-grid">
-    <div class="depoimento">
-      <div class="estrelas">★★★★★</div>
-      <p>"Recebi meu notebook em 2 dias. Produto original, embalagem impecável. Com certeza vou comprar de novo!"</p>
-      <div class="depoimento-autor">
-        <div class="avatar">👩</div>
-        <div class="autor-info">
-          <div class="nome">Mariana Costa</div>
-          <div class="cidade">São Paulo, SP</div>
-        </div>
+</section>
+
+<!-- DEPOIMENTOS PREMIUM Z-CORE -->
+<section class="volt-testimonials">
+  <div class="container">
+    <div class="metrics-container reveal-volt">
+      <div class="metric-item">
+        <span class="metric-value">4.9★</span>
+        <span class="metric-label">Avaliação média</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-value">1.200+</span>
+        <span class="metric-label">Avaliações</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-value">98%</span>
+        <span class="metric-label">Satisfeitos</span>
       </div>
     </div>
-    <div class="depoimento">
-      <div class="estrelas">★★★★★</div>
-      <p>"Melhor loja de eletrônicos que já comprei. Atendimento rápido e produto chegou antes do prazo!"</p>
-      <div class="depoimento-autor">
-        <div class="avatar">👨</div>
-        <div class="autor-info">
-          <div class="nome">Rafael Almeida</div>
-          <div class="cidade">Curitiba, PR</div>
+
+    <div class="testimonials-layout">
+      <!-- Card Principal -->
+      <div class="testimonial-card main-card reveal-volt delay-1">
+        <div class="card-header">
+          <div class="avatar-volt">JS</div>
+          <div class="author-info">
+            <h4>Juliano Silva</h4>
+            <div class="verified-tag">Compra verificada ✓</div>
+          </div>
         </div>
+        <p class="testimonial-text">
+          "A experiência com a Z-Core superou todas as expectativas. O acabamento dos produtos é impecável e a performance redefine o que eu entendia por hardware high-end."
+        </p>
       </div>
-    </div>
-    <div class="depoimento">
-      <div class="estrelas">★★★★★</div>
-      <p>"Preço justo, produto original e suporte excelente. Recomendo demais para quem quer qualidade!"</p>
-      <div class="depoimento-autor">
-        <div class="avatar">👩</div>
-        <div class="autor-info">
-          <div class="nome">Camila Souza</div>
-          <div class="cidade">Belo Horizonte, MG</div>
+
+      <!-- Cards Empilhados -->
+      <div class="stacked-cards">
+        <div class="testimonial-card reveal-volt delay-2">
+          <div class="card-header">
+            <div class="avatar-volt" style="background: linear-gradient(135deg, var(--blue), var(--accent));">AM</div>
+            <div class="author-info">
+              <h4>Ana Martins</h4>
+              <div class="verified-tag">Compra verificada ✓</div>
+            </div>
+          </div>
+          <p class="testimonial-text">
+            "Entrega ultra rápida e suporte técnico extremamente qualificado. Voltarei a comprar com certeza."
+          </p>
+        </div>
+
+        <div class="testimonial-card reveal-volt delay-3">
+          <div class="card-header">
+            <div class="avatar-volt">PR</div>
+            <div class="author-info">
+              <h4>Paulo Ricardo</h4>
+              <div class="verified-tag">Compra verificada ✓</div>
+            </div>
+          </div>
+          <p class="testimonial-text">
+            "Design minimalista e tecnologia de ponta. Exatamente o que eu buscava para o meu setup profissional."
+          </p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- BADGES DE CONFIANÇA -->
-<section class="trust-badges">
-  <div class="trust-badge">
-    <span class="badge-icon"><i class="fas fa-lock"></i></span>
-    <div class="badge-text">
-      <strong>Compra Segura</strong>
-      <span>Dados 100% protegidos</span>
+<!-- TRUST BADGES PREMIUM -->
+<section class="trust-section-premium">
+  <div class="trust-container">
+    <div class="trust-item">
+      <div class="trust-icon-wrap">
+        <i class="fas fa-lock"></i>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="trust-content">
+        <h3>Compra Segura</h3>
+        <p>Dados 100% criptografados</p>
+      </div>
     </div>
-  </div>
-  <div class="trust-badge">
-    <span class="badge-icon"><i class="fas fa-truck"></i></span>
-    <div class="badge-text">
-      <strong>Frete Grátis</strong>
-      <span>Acima de R$ 299</span>
+
+    <div class="trust-item">
+      <div class="trust-icon-wrap">
+        <i class="fas fa-credit-card"></i>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="trust-content">
+        <h3>Até 12x no Cartão</h3>
+        <p>Parcelamento facilitado</p>
+      </div>
     </div>
-  </div>
-  <div class="trust-badge">
-    <span class="badge-icon"><i class="fas fa-shield-alt"></i></span>
-    <div class="badge-text">
-      <strong>Garantia</strong>
-      <span>12 meses de garantia</span>
+    
+    <div class="trust-item">
+      <div class="trust-icon-wrap">
+        <i class="fas fa-truck-fast"></i>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="trust-content">
+        <h3>Frete Express</h3>
+        <p>Grátis acima de R$ 299</p>
+      </div>
     </div>
-  </div>
-  <div class="trust-badge">
-    <span class="badge-icon"><i class="fas fa-undo"></i></span>
-    <div class="badge-text">
-      <strong>Troca Fácil</strong>
-      <span>30 dias para trocar</span>
+    
+    <div class="trust-item">
+      <div class="trust-icon-wrap">
+        <i class="fas fa-award"></i>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="trust-content">
+        <h3>Garantia Total</h3>
+        <p>12 meses de cobertura</p>
+      </div>
+    </div>
+    
+    <div class="trust-item">
+      <div class="trust-icon-wrap">
+        <i class="fas fa-rotate-left"></i>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="trust-content">
+        <h3>Troca Fácil</h3>
+        <p>30 dias para devolução</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- NEWSLETTER -->
-<section class="newsletter-section">
-  <div class="newsletter-container">
-    <div class="newsletter-text">
-      <h3>Receba nossas ofertas exclusivas</h3>
-      <p>Cadastre-se e ganhe 10% de desconto na primeira compra!</p>
+<!-- NEWSLETTER PREMIUM -->
+<section class="newsletter-premium">
+  <div class="newsletter-glow"></div>
+  <div class="newsletter-container-premium">
+    <div class="newsletter-content">
+      <div class="newsletter-badge">Stay Updated</div>
+      <h2 class="newsletter-title">Receba nossas ofertas exclusivas</h2>
+      <p class="newsletter-sub">Cadastre-se e ganhe <strong>10% OFF</strong> na sua primeira compra!</p>
     </div>
-    <form class="newsletter-form" onsubmit="inscreverNewsletter(event)">
-      <input type="email" id="newsletterEmail" placeholder="Seu e-mail" required>
-      <button type="submit" class="btn-newsletter">Inscrever-se</button>
+    
+    <form class="newsletter-form-premium" onsubmit="inscreverNewsletter(event)">
+      <div class="input-group-premium">
+        <i class="far fa-envelope"></i>
+        <input type="email" id="newsletterEmail" placeholder="Seu melhor e-mail..." required>
+      </div>
+      <button type="submit" class="btn-newsletter-premium">
+        Inscrever-se
+        <i class="fas fa-paper-plane"></i>
+      </button>
     </form>
   </div>
 </section>
@@ -345,8 +344,10 @@
 <footer class="footer-full">
   <div class="footer-content">
     <div class="footer-section">
-      <div class="footer-logo"><span>Z</span>-Core</div>
-      <p class="footer-desc">A sua loja de eletrônicos com os melhores preços, garantia e entrega rápida em todo o Brasil.</p>
+        <div class="footer-logo">Z-CORE<span>.</span></div>
+        <p class="footer-desc">
+          A melhor tecnologia e hardware high-end para entusiastas e profissionais.
+        </p>
       <div class="social-links">
         <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
         <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>

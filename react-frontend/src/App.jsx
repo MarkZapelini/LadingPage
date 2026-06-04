@@ -2,14 +2,9 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Pagamentos from './Pagamentos'
 import HeroSection from './HeroSection'
-
-const produtos = {
-  "Z-Core Básico": { emoji: "🎮", preco: 49 },
-  "Z-Core Plus": { emoji: "⚡", preco: 99 },
-  "Z-Core Premium": { emoji: "👑", preco: 199 },
-  "Z-Core Ultra": { emoji: "🚀", preco: 399 },
-  "Z-Core VIP": { emoji: "💎", preco: 599 }
-}
+import Store from './Store'
+import Checkout from './Checkout'
+import { initialProducts } from './data'
 
 function App() {
   const [cart, setCart] = useState([])
@@ -19,7 +14,7 @@ function App() {
     return localStorage.getItem('zcore-theme') || 'dark'
   })
 
-  const [view, setView] = useState('loja') // 'loja' | 'pagamentos'
+  const [view, setView] = useState('loja') // 'loja' | 'pagamentos' | 'checkout'
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -32,7 +27,9 @@ function App() {
   }, [cart])
 
   const addToCart = (nome) => {
-    const prod = produtos[nome]
+    const prod = initialProducts.find(p => p.nome === nome)
+    if (!prod) return;
+    
     const existing = cart.find(item => item.nome === nome)
     
     if (existing) {
@@ -95,27 +92,18 @@ function App() {
       {view === 'loja' ? (
         <>
           <HeroSection />
-
-          <section className="produtos">
-            <h2>Nossos Produtos</h2>
-            <div className="produtos-grid">
-              {Object.entries(produtos).map(([nome, prod]) => (
-                <div key={nome} className="produto-card">
-                  <div className="produto-emoji">{prod.emoji}</div>
-                  <h3>{nome}</h3>
-                  <p className="preco">R$ {prod.preco}</p>
-                  <button onClick={() => addToCart(nome)} className="btn-add">
-                    Adicionar ao Carrinho
-                  </button>
-                </div>
-              ))}
-            </div>
-          </section>
+          <Store addToCart={addToCart} />
         </>
-      ) : (
+      ) : view === 'pagamentos' ? (
         <div style={{ marginTop: '2rem' }}>
           <Pagamentos />
         </div>
+      ) : (
+        <Checkout 
+          cart={cart} 
+          totalPrice={totalPrice} 
+          onBack={() => setView('loja')} 
+        />
       )}
 
       {cartOpen && (
@@ -156,7 +144,15 @@ function App() {
                   <span>Total:</span>
                   <strong>R$ {totalPrice}</strong>
                 </div>
-                <button className="btn-checkout">Finalizar Compra</button>
+                <button 
+                  className="btn-checkout" 
+                  onClick={() => {
+                    setCartOpen(false);
+                    setView('checkout');
+                  }}
+                >
+                  Finalizar Compra
+                </button>
               </div>
             )}
           </div>

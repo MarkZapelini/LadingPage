@@ -134,10 +134,6 @@
                 <div class="header-title" id="pageTitle">Dashboard</div>
 
                 <div class="header-actions">
-                    <button class="btn btn-ghost" id="themeToggle">
-                        <i class="ti ti-sun theme-icon-light"></i>
-                        <i class="ti ti-moon theme-icon-dark"></i>
-                    </button>
                     <a href="../index.html" class="btn btn-ghost">
                         <i class="ti ti-home"></i>
                         Voltar ao Site
@@ -638,6 +634,54 @@
                                                     <option>Sem juros</option>
                                                     <option>Com juros</option>
                                                 </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Boleto -->
+                                <div class="method-card" id="card-boleto" data-method="boleto">
+                                    <div class="method-header">
+                                        <div class="method-icon boleto">📄</div>
+                                        <div class="method-info">
+                                            <p class="method-name">Boleto Bancário</p>
+                                            <p class="method-desc">Aprovação em até 48h — 5% de desconto</p>
+                                        </div>
+                                        <span class="pay-badge" id="badge-boleto">Inativo</span>
+                                        <button class="pay-toggle" id="toggle-boleto" onclick="togglePaymentMethod('boleto')"></button>
+                                        <button class="btn btn-ghost btn-sm" onclick="togglePaymentCfg('cfg-boleto')">⚙ Config.</button>
+                                    </div>
+                                    <div class="cfg-panel" id="cfg-boleto">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label>Dias para Vencimento</label>
+                                                <input type="number" class="pay-input" value="3" oninput="salvarConfigPagamentos()">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Instruções no Boleto</label>
+                                                <input type="text" class="pay-input" placeholder="Ex: Não receber após o vencimento" oninput="salvarConfigPagamentos()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pagamento HTML (Customizado) -->
+                                <div class="method-card" id="card-html" data-method="html">
+                                    <div class="method-header">
+                                        <div class="method-icon html">🔗</div>
+                                        <div class="method-info">
+                                            <p class="method-name">Pagamento HTML (Link)</p>
+                                            <p class="method-desc">Integração via link ou código HTML customizado</p>
+                                        </div>
+                                        <span class="pay-badge" id="badge-html">Inativo</span>
+                                        <button class="pay-toggle" id="toggle-html" onclick="togglePaymentMethod('html')"></button>
+                                        <button class="btn btn-ghost btn-sm" onclick="togglePaymentCfg('cfg-html')">⚙ Config.</button>
+                                    </div>
+                                    <div class="cfg-panel" id="cfg-html">
+                                        <div class="form-grid">
+                                            <div class="form-group full">
+                                                <label>Código HTML / Link de Pagamento</label>
+                                                <textarea class="pay-input" rows="3" placeholder="Insira o link ou o botão de pagamento HTML aqui..." oninput="salvarConfigPagamentos()"></textarea>
                                             </div>
                                         </div>
                                     </div>
