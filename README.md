@@ -29,24 +29,32 @@ O projeto possui **front-end** (HTML/CSS/JS) e **back-end** (Node.js + Express +
 
 Requisitos: [Node.js](https://nodejs.org/) 18+ e npm.
 
-```bash
+**Opção 1: Via npm (Recomendado)**
+
+```powershell
 # Na raiz do projeto
-cd backend
-npm install
-copy .env.example .env    # Windows — ou cp no Linux/Mac
-npm start
+npm run install:backend  # Instala dependências do backend
+npm start                # Inicia o servidor na porta 3000
 ```
 
 Acesse:
+- Loja: http://localhost:3000/index.html
+- Admin: http://localhost:3000/admin/login-admin.html
 
-- Loja: http://localhost:3000/INDEX.HTML
-- Admin: http://localhost:3000/login-admin.html
+**Opção 2: Via PowerShell (Porta 8080)**
 
-O servidor serve o front-end e a API na mesma porta.
+Se preferir rodar apenas o frontend em um servidor simples sem Node.js (limitado):
+
+```powershell
+# Na raiz do projeto
+powershell -ExecutionPolicy Bypass -File scripts/start-server-porta8080.ps1
+```
+
+Acesse: http://localhost:8080/index.html
 
 ### Modo só front-end (sem backend)
 
-1. Abra `frontend/INDEX.HTML` no navegador ou use **Live Server**.
+1. Abra `frontend/index.html` diretamente no navegador ou use **Live Server**.
 2. Dados ficam no `localStorage` do navegador.
 
 ---
@@ -94,32 +102,20 @@ ADMIN_PASS=admin123
 ```
 LadingPage/
 ├── README.md                 ← Esta documentação
-├── frontend/
-│   ├── INDEX.HTML            ← Página inicial da loja
-│   ├── login.html            ← Login do cliente
-│   ├── cadastro.html         ← Cadastro do cliente
-│   ├── CHECKOUT.HTML         ← Finalização de compra
-│   ├── pedidos.html          ← Pedidos do cliente
-│   ├── perfil.html           ← Perfil do cliente
-│   ├── reset-password.html   ← Redefinição de senha
-│   ├── login-admin.html      ← Login do administrador
-│   ├── admin.html            ← Painel administrativo
-│   ├── css/
-│   │   └── style.css         ← Estilos globais da loja
-│   └── js/
-│       ├── api.js            ← Cliente HTTP da API
-│       ├── interacoes.js     ← Loja, carrinho, wishlist
-│       └── tema.js           ← Modo claro/escuro
-├── backend/
-│   ├── server.js             ← Servidor Express
-│   ├── package.json
-│   ├── .env.example
-│   ├── data/zcore.db         ← SQLite (gerado ao rodar)
-│   └── src/
-│       ├── db/               ← Schema e seed
-│       ├── middleware/       ← JWT auth
-│       └── routes/           ← auth, products, orders, cart...
-└── package.json              ← Scripts npm na raiz
+├── package.json              ← Scripts npm na raiz
+├── docs/                     ← Documentação adicional (Changelog, Guias)
+├── scripts/                  ← Scripts utilitários (Servidores, Automação)
+├── frontend/                 ← Código do Front-end (HTML/CSS/JS)
+│   ├── index.html            ← Página inicial da loja
+│   ├── pages/                ← Demais páginas da loja
+│   ├── admin/                ← Painel administrativo
+│   ├── css/                  ← Estilos globais
+│   ├── js/                   ← Lógica e integração API
+│   └── assets/               ← Imagens e recursos
+├── backend/                  ← Código do Back-end (Node.js/Express)
+│   ├── server.js             ← Servidor principal
+│   └── src/                  ← Rotas, DB e middlewares
+└── react-frontend/           ← Versão experimental em React
 ```
 
 > A pasta `backend/ADMIN/User` é legado — **não usar**. Use `frontend/admin.html`.
