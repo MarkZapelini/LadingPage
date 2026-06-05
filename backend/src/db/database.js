@@ -45,6 +45,7 @@ db.exec(`
     bairro TEXT DEFAULT '',
     cidade TEXT DEFAULT '',
     estado TEXT DEFAULT '',
+    role TEXT DEFAULT 'user',
     created_at TEXT DEFAULT (datetime('now'))
   );
 
