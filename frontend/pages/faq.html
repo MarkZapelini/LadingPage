@@ -226,8 +226,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  let cart = JSON.parse(localStorage.getItem('cart') || []);
-  let wishlist = JSON.parse(localStorage.getItem('wishlist') || []);
+  let cart = JSON.parse(localStorage.getItem('zcore_cart') || '[]');
+  let wishlist = JSON.parse(localStorage.getItem('zcore_wishlist') || '[]');
   
   function toggleFaq(button) {
     const faqItem = button.parentElement;
@@ -295,14 +295,14 @@
     if (cart[index].quantidade <= 0) {
       removerItemCart(index);
     } else {
-      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem('zcore_cart', JSON.stringify(cart));
       atualizarCarrinho();
     }
   }
   
   function removerItemCart(index) {
     cart.splice(index, 1);
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('zcore_cart', JSON.stringify(cart));
     atualizarCarrinho();
   }
   
@@ -374,7 +374,7 @@
     const index = wishlist.findIndex(item => item === nome);
     if (index > -1) {
       wishlist.splice(index, 1);
-      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      localStorage.setItem('zcore_wishlist', JSON.stringify(wishlist));
       atualizarWishlist();
     }
   }

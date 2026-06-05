@@ -39,12 +39,12 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
-    const savedCart = localStorage.getItem('cart')
+    const savedCart = localStorage.getItem('zcore_cart')
     if (savedCart) setCart(JSON.parse(savedCart))
   }, [theme])
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart))
+    localStorage.setItem('zcore_cart', JSON.stringify(cart))
   }, [cart])
 
   const addToCart = (nome) => {

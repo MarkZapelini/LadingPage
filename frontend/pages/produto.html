@@ -264,8 +264,8 @@
     localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
   }
   
-  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+  let cart = JSON.parse(localStorage.getItem('zcore_cart') || '[]');
+  let wishlist = JSON.parse(localStorage.getItem('zcore_wishlist') || '[]');
   
   function mostrarToast(mensagem, tipo = 'sucesso') {
     const toast = document.getElementById('toast');
@@ -351,7 +351,7 @@
       });
     }
     
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('zcore_cart', JSON.stringify(cart));
     atualizarCarrinho();
     mostrarToast('✅ ' + quantidadeSelecionada + 'x ' + produtoAtual.nome + ' adicionado ao carrinho!');
   }
@@ -368,7 +368,7 @@
       mostrarToast('❤️ Adicionado à lista de desejos!');
     }
     
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('zcore_wishlist', JSON.stringify(wishlist));
     atualizarWishlistIcon();
   }
   
@@ -433,14 +433,14 @@
     if (cart[index].quantidade <= 0) {
       removerItemCart(index);
     } else {
-      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem('zcore_cart', JSON.stringify(cart));
       atualizarCarrinho();
     }
   }
   
   function removerItemCart(index) {
     cart.splice(index, 1);
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('zcore_cart', JSON.stringify(cart));
     atualizarCarrinho();
   }
   
@@ -520,7 +520,7 @@
     }
     
     removerWishlist(nome);
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('zcore_cart', JSON.stringify(cart));
     atualizarCarrinho();
     mostrarToast('✅ Adicionado ao carrinho!');
   }
@@ -529,7 +529,7 @@
     const index = wishlist.findIndex(item => item === nome);
     if (index > -1) {
       wishlist.splice(index, 1);
-      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      localStorage.setItem('zcore_wishlist', JSON.stringify(wishlist));
       atualizarWishlist();
       atualizarWishlistIcon();
     }

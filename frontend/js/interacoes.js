@@ -65,8 +65,8 @@
         .catch((error) => { console.error('Login Error:', error); });
     }
   
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    let cart = JSON.parse(localStorage.getItem('zcore_cart') || '[]');
+    let wishlist = JSON.parse(localStorage.getItem('zcore_wishlist') || '[]');
     
     const produtosPadrao = [
       { id: 1, nome: 'MacBook Air M3', marca: 'Apple', cat: 'notebooks', preco: 10499, promo: null, estoque: 15, desc: 'Chip M3, 8GB RAM, SSD 256GB, tela 13"', emoji: '💻', status: 'Ativo', avaliacao: 5, qtdAvaliacoes: 324 },
@@ -95,55 +95,61 @@
     function buildStore() {
       const app = document.getElementById('store-app');
       if (!app) return;
-      app.innerHTML = `
-        <section class="cat-section section">
-          <div class="section-header-premium">
-            <div class="badge-dot">✦</div>
-            <h2 class="sec-title">Explorar Categorias</h2>
-            <p class="sec-subtitle">Navegue por nossa seleção premium de tecnologia</p>
-          </div>
-          <div class="cat-grid" id="cat-grid"></div>
-        </section>
-        <div class="store-divider"></div>
-        <section class="prod-section section" id="produtos">
-          <div class="section-header-premium">
-            <div class="badge-dot">✦</div>
-            <h2 class="sec-title">Mais Vendidos</h2>
-            <p class="sec-subtitle">Os dispositivos mais desejados da coleção 2025</p>
-          </div>
-          <div class="prod-controls">
-            <select class="ctrl-select" id="filtroCategoria" onchange="aplicarFiltros()">
-              <option value="">Todas as categorias</option>
-              ${categoriesList.map(c => `<option value="${c.id}">${c.label}</option>`).join('')}
-            </select>
-            <select class="ctrl-select" id="ordenarPor" onchange="aplicarFiltros()">
-              <option value="padrao">Ordenar por: Padrão</option>
-              <option value="preco-asc">Menor preço</option>
-              <option value="preco-desc">Maior preço</option>
-            </select>
-            <div class="ctrl-pill">
-              <button class="active" onclick="filtrarStatus(event, '')">Coleção Completa</button>
-              <button onclick="filtrarStatus(event, 'Destaque')">Lançamentos</button>
+      try {
+        app.innerHTML = `
+          <section class="cat-section section">
+            <div class="section-header-premium">
+              <div class="badge-dot">✦</div>
+              <h2 class="sec-title">Explorar Categorias</h2>
+              <p class="sec-subtitle">Navegue por nossa seleção premium de tecnologia</p>
             </div>
-          </div>
-          <div class="prod-grid" id="produtosGrid"></div>
-        </section>
-      `;
-      
-      const catGrid = document.getElementById('cat-grid');
-      categoriesList.forEach(c => {
-        const el = document.createElement('div');
-        el.className = 'ccat';
-        el.onclick = () => selecionarCategoria(c.id);
-        el.innerHTML = `
-          <span class="ccat__icon">${c.icon}</span>
-          <div class="ccat__name">${c.label}</div>
-          <div class="ccat__count">${c.count} produtos</div>
-          <div class="ccat__bar"></div>
+            <div class="cat-grid" id="cat-grid"></div>
+          </section>
+          <div class="store-divider"></div>
+          <section class="prod-section section" id="produtos">
+            <div class="section-header-premium">
+              <div class="badge-dot">✦</div>
+              <h2 class="sec-title">Mais Vendidos</h2>
+              <p class="sec-subtitle">Os dispositivos mais desejados da coleção 2025</p>
+            </div>
+            <div class="prod-controls">
+              <select class="ctrl-select" id="filtroCategoria" onchange="aplicarFiltros()">
+                <option value="">Todas as categorias</option>
+                ${categoriesList.map(c => `<option value="${c.id}">${c.label}</option>`).join('')}
+              </select>
+              <select class="ctrl-select" id="ordenarPor" onchange="aplicarFiltros()">
+                <option value="padrao">Ordenar por: Padrão</option>
+                <option value="preco-asc">Menor preço</option>
+                <option value="preco-desc">Maior preço</option>
+              </select>
+              <div class="ctrl-pill">
+                <button class="active" onclick="filtrarStatus(event, '')">Coleção Completa</button>
+                <button onclick="filtrarStatus(event, 'Destaque')">Lançamentos</button>
+              </div>
+            </div>
+            <div class="prod-grid" id="produtosGrid"></div>
+          </section>
         `;
-        catGrid.appendChild(el);
-      });
-      renderizarProdutos();
+        
+        const catGrid = document.getElementById('cat-grid');
+        if (catGrid) {
+          categoriesList.forEach(c => {
+            const el = document.createElement('div');
+            el.className = 'ccat';
+            el.onclick = () => selecionarCategoria(c.id);
+            el.innerHTML = `
+              <span class="ccat__icon">${c.icon}</span>
+              <div class="ccat__name">${c.label}</div>
+              <div class="ccat__count">${c.count} produtos</div>
+              <div class="ccat__bar"></div>
+            `;
+            catGrid.appendChild(el);
+          });
+        }
+        renderizarProdutos();
+      } catch (err) {
+        console.error("Erro ao construir a loja:", err);
+      }
     }
   
     function renderizarProdutos() {
@@ -185,13 +191,19 @@
     window.cliqueProduto = (n) => { const p = adminProducts.find(x => x.nome === n); if(p) window.location.href = `pages/produto.html?id=${p.id}`; };
 
     window.addCarrinho = function(nome) {
-      const p = adminProducts.find(x => x.nome === nome);
-      const exists = cart.find(i => i.nome === nome);
-      if (exists) exists.quantidade++;
-      else cart.push({ nome, preco: p.preco, emoji: p.emoji, quantidade: 1 });
-      localStorage.setItem('cart', JSON.stringify(cart));
-      atualizarCarrinho();
-      mostrarToast('✓ Adicionado ao carrinho');
+      try {
+        const p = adminProducts.find(x => x.nome === nome);
+        if (!p) throw new Error("Produto não encontrado: " + nome);
+        const exists = cart.find(i => i.nome === nome);
+        if (exists) exists.quantidade++;
+        else cart.push({ nome, preco: p.preco, emoji: p.emoji, quantidade: 1 });
+        localStorage.setItem('zcore_cart', JSON.stringify(cart));
+        atualizarCarrinho();
+        mostrarToast('✓ Adicionado ao carrinho');
+      } catch (err) {
+        console.error("Erro ao adicionar ao carrinho:", err);
+        mostrarToast('❌ Erro ao adicionar produto', 'erro');
+      }
     };
 
     window.atualizarCarrinho = function() {
@@ -242,12 +254,12 @@
     window.alterarQuantidade = (idx, delta) => {
       cart[idx].quantidade += delta;
       if (cart[idx].quantidade <= 0) cart.splice(idx, 1);
-      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem('zcore_cart', JSON.stringify(cart));
       atualizarCarrinho();
     };
     window.removerItem = (idx) => {
       cart.splice(idx, 1);
-      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem('zcore_cart', JSON.stringify(cart));
       atualizarCarrinho();
     };
     window.finalizarCompra = () => { window.location.href = 'pages/checkout.html'; };

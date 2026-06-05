@@ -6,12 +6,12 @@ export default function Store({ addToCart, id, onProductClick }) {
   const [filter, setFilter] = useState('');
   const [sort, setSort] = useState('padrao');
   const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem('wishlist');
+    const saved = localStorage.getItem('zcore_wishlist');
     return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('zcore_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
 
   const toggleWishlist = (id) => {
