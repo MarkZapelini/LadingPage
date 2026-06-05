@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { initialProducts, categories } from './data';
 
-export default function Store({ addToCart }) {
+export default function Store({ addToCart, id, onProductClick }) {
   const [products, setProducts] = useState(initialProducts);
   const [filter, setFilter] = useState('');
   const [sort, setSort] = useState('padrao');
@@ -31,7 +31,7 @@ export default function Store({ addToCart }) {
     });
 
   return (
-    <div className="store-container">
+    <div className="store-container" id={id}>
       {/* CATEGORIES */}
       <section className="section categories-premium">
         <div className="section-header">
@@ -60,7 +60,7 @@ export default function Store({ addToCart }) {
       <section className="section products-section">
         <div className="section-header">
           <h2 className="cat-title-premium">Mais vendidos</h2>
-          <button className="ver-todos-premium">Ver todos →</button>
+          <button className="ver-todos-premium" onClick={() => setFilter('')}>Ver todos →</button>
         </div>
 
         <div className="filtros-container-premium">
@@ -82,7 +82,12 @@ export default function Store({ addToCart }) {
 
         <div className="produtos-grid-premium">
           {filteredProducts.map(p => (
-            <div key={p.id} className="produto-card-premium">
+            <div 
+              key={p.id} 
+              className="produto-card-premium"
+              onClick={() => onProductClick(p)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="produto-img-premium">
                 {p.status === 'Destaque' && <span className="badge-novo-premium">NOVO</span>}
                 <button 

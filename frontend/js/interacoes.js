@@ -289,10 +289,4 @@
           }, 500);
         }, 3000);
       }
-
-      // Intersection Observer for Testimonials
-      const obs = new IntersectionObserver(entries => {
-        entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('active'); });
-      }, { threshold: 0.1 });
-      document.querySelectorAll('.reveal-volt').forEach(el => obs.observe(el));
     };

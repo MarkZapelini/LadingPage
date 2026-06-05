@@ -182,7 +182,10 @@ function inicializarEventos() {
     });
 
     // Theme Toggle
-    document.getElementById('themeToggle').addEventListener('click', toggleTema);
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTema);
+    }
 
     // Logout
     document.getElementById('btnLogout').addEventListener('click', fazerLogout);
@@ -246,6 +249,62 @@ function inicializarEventos() {
             atualizarPreview();
         });
     }
+
+    // Search
+    const searchInput = document.getElementById('searchProduto');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => filtrarProdutos(e.target.value));
+    }
+
+    // Filter Chips
+    document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            filtrarPedidos(chip.getAttribute('data-filter'));
+        });
+    });
+
+    // Perfil
+    const adminProfile = document.getElementById('adminProfile');
+    if (adminProfile) adminProfile.addEventListener('click', abrirModalPerfil);
+    
+    const closeProfileModal = document.getElementById('closeProfileModal');
+    if (closeProfileModal) closeProfileModal.addEventListener('click', fecharModalPerfil);
+    
+    const btnCancelarPerfil = document.getElementById('btnCancelarPerfil');
+    if (btnCancelarPerfil) btnCancelarPerfil.addEventListener('click', fecharModalPerfil);
+    
+    const formPerfil = document.getElementById('formPerfil');
+    if (formPerfil) formPerfil.addEventListener('submit', salvarPerfil);
+    
+    const btnSelecionarFoto = document.getElementById('btnSelecionarFoto');
+    if (btnSelecionarFoto) btnSelecionarFoto.addEventListener('click', () => document.getElementById('fotoInput').click());
+    
+    const fotoInput = document.getElementById('fotoInput');
+    if (fotoInput) fotoInput.addEventListener('change', handleFotoPerfil);
+    
+    const btnRemoverFoto = document.getElementById('btnRemoverFoto');
+    if (btnRemoverFoto) btnRemoverFoto.addEventListener('click', removerFotoPerfil);
+
+    // Delete Modal
+    const closeDeleteModal = document.getElementById('closeDeleteModal');
+    if (closeDeleteModal) closeDeleteModal.addEventListener('click', fecharModalDelete);
+    
+    const btnCancelarDelete = document.getElementById('btnCancelarDelete');
+    if (btnCancelarDelete) btnCancelarDelete.addEventListener('click', fecharModalDelete);
+    
+    const btnConfirmarDelete = document.getElementById('btnConfirmarDelete');
+    if (btnConfirmarDelete) btnConfirmarDelete.addEventListener('click', confirmarExclusao);
+
+    // Close Modal on Overlay Click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.classList.remove('open');
+            }
+        });
+    });
 }
 
 function processarArquivo(file) {
@@ -266,41 +325,6 @@ function processarArquivo(file) {
         atualizarPreview();
     };
     reader.readAsDataURL(file);
-
-    // Search
-    document.getElementById('searchProduto').addEventListener('input', (e) => filtrarProdutos(e.target.value));
-
-    // Filter Chips
-    document.querySelectorAll('.chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            filtrarPedidos(chip.getAttribute('data-filter'));
-        });
-    });
-
-    // Perfil
-    document.getElementById('adminProfile').addEventListener('click', abrirModalPerfil);
-    document.getElementById('closeProfileModal').addEventListener('click', fecharModalPerfil);
-    document.getElementById('btnCancelarPerfil').addEventListener('click', fecharModalPerfil);
-    document.getElementById('formPerfil').addEventListener('submit', salvarPerfil);
-    document.getElementById('btnSelecionarFoto').addEventListener('click', () => document.getElementById('fotoInput').click());
-    document.getElementById('fotoInput').addEventListener('change', handleFotoPerfil);
-    document.getElementById('btnRemoverFoto').addEventListener('click', removerFotoPerfil);
-
-    // Delete Modal
-    document.getElementById('closeDeleteModal').addEventListener('click', fecharModalDelete);
-    document.getElementById('btnCancelarDelete').addEventListener('click', fecharModalDelete);
-    document.getElementById('btnConfirmarDelete').addEventListener('click', confirmarExclusao);
-
-    // Close Modal on Overlay Click
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                overlay.classList.remove('open');
-            }
-        });
-    });
 }
 
 // ========================================
@@ -404,7 +428,13 @@ function renderizarDashboard() {
     document.getElementById('statTotalProdutos').textContent = produtos.length;
     document.getElementById('statPedidos').textContent = pedidos.length;
     document.getElementById('statClientes').textContent = usuarios.length;
-    document.querySelector('.badge-count').textContent = produtos.length;
+    
+    // Atualizar badges na sidebar
+    const productsBadge = document.querySelector('.nav-item[data-page="produtos"] .badge-count');
+    if (productsBadge) productsBadge.textContent = produtos.length;
+    
+    const ordersBadge = document.querySelector('.nav-item[data-page="pedidos"] .badge-count');
+    if (ordersBadge) ordersBadge.textContent = pedidos.length;
 
     const receita = pedidos
         .filter(p => (p.status || '').toLowerCase() !== 'cancelado')

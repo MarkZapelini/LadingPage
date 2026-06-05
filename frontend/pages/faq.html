@@ -12,40 +12,52 @@
 <body>
 
 <!-- NAV -->
-<nav>
-  <div class="logo"><span>Z</span>-Core</div>
-  <ul class="nav-links">
-    <li><a href="../index.html">Início</a></li>
-    <li><a href="../index.html#produtos">Produtos</a></li>
-    <li><a href="../index.html#ofertas">Ofertas</a></li>
-    <li><a href="#">Contato</a></li>
-  </ul>
-  <div class="nav-actions" id="navActions">
-    <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
-      <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
-      <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
-    </button>
-    <div id="authButtons">
-      <a href="login.html" class="btn-login">Entrar</a>
-      <a href="cadastro.html" class="btn-register">Cadastre-se</a>
-    </div>
-    <div id="userLogged" style="display: none;">
-      <div class="user-info">
-        <div class="user-avatar" id="userAvatar">U</div>
-        <span class="user-name" id="userName">Usuário</span>
+<nav class="premium-header">
+  <div class="header-container">
+    <a href="../index.html" class="logo">
+      <span class="logo-symbol">Z</span>
+      <span class="logo-text">Core</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="../index.html">Início</a></li>
+      <li><a href="../index.html#produtos">Produtos</a></li>
+      <li><a href="../index.html#ofertas">Ofertas</a></li>
+      <li><a href="#">Contato</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+        <i class="fas fa-sun theme-icon-light"></i>
+        <i class="fas fa-moon theme-icon-dark"></i>
+      </button>
+
+      <div id="authButtons" class="auth-group">
+        <a href="login.html" class="link-login">Entrar</a>
+        <a href="cadastro.html" class="btn-register-premium">Cadastre-se</a>
       </div>
-      <a href="pedidos.html" class="btn-login">Meus Pedidos</a>
-      <a href="perfil.html" class="btn-login">Meu Perfil</a>
-      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+
+      <div id="userLogged" style="display: none;" class="user-group">
+        <div class="user-info-premium">
+          <div class="user-avatar-premium" id="userAvatar">U</div>
+          <span class="user-name-premium" id="userName">Usuário</span>
+        </div>
+        <button class="btn-logout-premium" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+
+      <button class="btn-action-premium" onclick="abrirWishlist()" title="Favoritos">
+        <i class="fas fa-heart"></i>
+        <span class="badge-premium" id="wishlistCount">0</span>
+      </button>
+      
+      <button class="btn-cart-premium" onclick="abrirCarrinho()">
+        <div class="cart-icon-wrapper">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="badge-premium badge-cart" id="cartCount">0</span>
+        </div>
+        <span class="cart-label">Carrinho</span>
+      </button>
     </div>
-    <button class="btn-wishlist" onclick="abrirWishlist()">
-      <i class="fas fa-heart"></i>
-      <span class="wishlist-count" id="wishlistCount">0</span>
-    </button>
-    <button class="btn-cart" onclick="abrirCarrinho()">
-      <i class="fas fa-shopping-cart"></i> Carrinho
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
   </div>
 </nav>
 
@@ -119,6 +131,60 @@
     </div>
   </div>
 </section>
+
+<!-- FOOTER -->
+<footer class="footer-full">
+  <div class="footer-content">
+    <div class="footer-section">
+        <div class="footer-logo">
+          <span class="logo-symbol">Z</span>
+          <span class="logo-text">Core</span>
+        </div>
+        <p class="footer-desc">
+          A melhor tecnologia e hardware high-end para entusiastas e profissionais.
+        </p>
+      <div class="social-links">
+        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Institucional</h4>
+      <a href="sobre.html">Sobre Nós</a>
+      <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+      <a href="#">Trabalhe Conosco</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Ajuda</h4>
+      <a href="faq.html">FAQ</a>
+      <a href="#">Trocas e Devoluções</a>
+      <a href="#">Entregas</a>
+      <a href="#">Garantia</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Contato</h4>
+      <p class="contact-item">📧 contato@zcore.com.br</p>
+      <p class="contact-item">📞 (11) 99999-9999</p>
+      <p class="contact-item">📍 São Paulo, SP</p>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>© 2025 Z-Core Eletrônicos. Todos os direitos reservados.</p>
+    <div class="payment-methods">
+      <span><i class="fab fa-cc-visa"></i></span>
+      <span><i class="fab fa-cc-mastercard"></i></span>
+      <span><i class="fas fa-money-bill-wave"></i></span>
+      <span><i class="fab fa-pix"></i></span>
+    </div>
+  </div>
+</footer>
 
 <!-- MODAL CARRINHO -->
 <div class="cart-modal-overlay" id="cartModal">

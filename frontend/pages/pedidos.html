@@ -16,21 +16,36 @@
 <body>
 
 <!-- NAV -->
-<nav>
-  <div class="logo"><span>Z</span>-Core</div>
-  <ul class="nav-links">
-    <li><a href="../index.html">Início</a></li>
-    <li><a href="../index.html#produtos">Produtos</a></li>
-    <li><a href="../index.html#ofertas">Ofertas</a></li>
-    <li><a href="#">Contato</a></li>
-  </ul>
-  <div class="nav-actions">
-    <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
-      <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
-      <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
-    </button>
-    <a href="perfil.html" class="btn-login">Meu Perfil</a>
-    <a href="../index.html" class="btn-register">Voltar ao Site</a>
+<nav class="premium-header">
+  <div class="header-container">
+    <a href="../index.html" class="logo">
+      <span class="logo-symbol">Z</span>
+      <span class="logo-text">Core</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="../index.html">Início</a></li>
+      <li><a href="../index.html#produtos">Produtos</a></li>
+      <li><a href="../index.html#ofertas">Ofertas</a></li>
+      <li><a href="#">Contato</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+        <i class="fas fa-sun theme-icon-light"></i>
+        <i class="fas fa-moon theme-icon-dark"></i>
+      </button>
+
+      <div id="userLogged" class="user-group">
+        <div class="user-info-premium">
+          <div class="user-avatar-premium" id="userAvatar">U</div>
+          <span class="user-name-premium" id="userName">Usuário</span>
+        </div>
+        <button class="btn-logout-premium" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+
+      <a href="../index.html" class="btn-register-premium">Voltar ao Site</a>
+    </div>
   </div>
 </nav>
 

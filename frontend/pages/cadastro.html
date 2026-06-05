@@ -17,30 +17,38 @@
 <body>
 
 <!-- NAV -->
-<nav>
-  <div class="logo"><span>Z</span>-Core</div>
-  <ul class="nav-links">
-    <li><a href="../index.html">Início</a></li>
-    <li><a href="../index.html#produtos">Produtos</a></li>
-    <li><a href="../index.html#ofertas">Ofertas</a></li>
-    <li><a href="#">Contato</a></li>
-  </ul>
-  <div class="nav-actions" id="navActions">
-    <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
-      <i class="fas fa-sun theme-icon-light" aria-hidden="true"></i>
-      <i class="fas fa-moon theme-icon-dark" aria-hidden="true"></i>
-    </button>
-    <div id="authButtons">
-      <a href="../pages/login.html" class="btn-login">Entrar</a>
-      <a href="../pages/cadastro.html" class="btn-register">Cadastre-se</a>
-    </div>
-    <div id="userLogged" style="display: none;">
-      <div class="user-info">
-        <div class="user-avatar" id="userAvatar">U</div>
-        <span class="user-name" id="userName">Usuário</span>
+<nav class="premium-header">
+  <div class="header-container">
+    <a href="../index.html" class="logo">
+      <span class="logo-symbol">Z</span>
+      <span class="logo-text">Core</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="../index.html">Início</a></li>
+      <li><a href="../index.html#produtos">Produtos</a></li>
+      <li><a href="../index.html#ofertas">Ofertas</a></li>
+      <li><a href="#">Contato</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+        <i class="fas fa-sun theme-icon-light"></i>
+        <i class="fas fa-moon theme-icon-dark"></i>
+      </button>
+
+      <div id="authButtons" class="auth-group">
+        <a href="login.html" class="link-login">Entrar</a>
+        <a href="cadastro.html" class="btn-register-premium active">Cadastre-se</a>
       </div>
-      <a href="../pages/perfil.html" class="btn-login">Meu Perfil</a>
-      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+
+      <div id="userLogged" style="display: none;" class="user-group">
+        <div class="user-info-premium">
+          <div class="user-avatar-premium" id="userAvatar">U</div>
+          <span class="user-name-premium" id="userName">Usuário</span>
+        </div>
+        <button class="btn-logout-premium" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
     </div>
   </div>
 </nav>
@@ -103,7 +111,10 @@
 <footer class="footer-full">
   <div class="footer-content">
     <div class="footer-section">
-      <div class="footer-logo"><span>Z</span>-Core</div>
+      <div class="footer-logo">
+        <span class="logo-symbol">Z</span>
+        <span class="logo-text">Core</span>
+      </div>
       <p class="footer-desc">A sua loja de eletrônicos com os melhores preços, garantia e entrega rápida em todo o Brasil.</p>
       <div class="social-links">
         <a href="#" class="social-icon">📘</a>
@@ -115,7 +126,7 @@
 
     <div class="footer-section">
       <h4>Institucional</h4>
-      <a href="#">Sobre Nós</a>
+      <a href="sobre.html">Sobre Nós</a>
       <a href="#">Política de Privacidade</a>
       <a href="#">Termos de Uso</a>
       <a href="#">Trabalhe Conosco</a>
@@ -123,7 +134,7 @@
 
     <div class="footer-section">
       <h4>Ajuda</h4>
-      <a href="#">FAQ</a>
+      <a href="faq.html">FAQ</a>
       <a href="#">Trocas e Devoluções</a>
       <a href="#">Entregas</a>
       <a href="#">Garantia</a>

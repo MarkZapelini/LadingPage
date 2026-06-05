@@ -4,6 +4,7 @@ import Pagamentos from './Pagamentos'
 import HeroSection from './HeroSection'
 import Store from './Store'
 import Checkout from './Checkout'
+import ProductDetail from './ProductDetail'
 import { initialProducts } from './data'
 
 function App() {
@@ -14,7 +15,27 @@ function App() {
     return localStorage.getItem('zcore-theme') || 'dark'
   })
 
-  const [view, setView] = useState('loja') // 'loja' | 'pagamentos' | 'checkout'
+  const [view, setView] = useState('loja') // 'loja' | 'pagamentos' | 'checkout' | 'produto'
+  const [selectedProduct, setSelectedProduct] = useState(null)
+
+  const handleSetView = (newView, product = null) => {
+    setView(newView)
+    if (product) setSelectedProduct(product)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const scrollToStore = () => {
+    if (view !== 'loja') {
+      handleSetView('loja');
+      setTimeout(() => {
+        const storeElement = document.getElementById('store-section');
+        if (storeElement) storeElement.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const storeElement = document.getElementById('store-section');
+      if (storeElement) storeElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -74,9 +95,9 @@ function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <div className="logo" onClick={() => setView('loja')} style={{ cursor: 'pointer' }}>Z-Core</div>
+        <div className="logo" onClick={() => handleSetView('loja')} style={{ cursor: 'pointer' }}>Z-Core</div>
         <div className="nav-actions">
-          <button onClick={() => setView(view === 'loja' ? 'pagamentos' : 'loja')} className="btn-nav">
+          <button onClick={() => handleSetView(view === 'loja' ? 'pagamentos' : 'loja')} className="btn-nav">
             {view === 'loja' ? '💳 Pagamentos' : '🏠 Loja'}
           </button>
           <button onClick={toggleTheme} className="btn-theme">
@@ -91,18 +112,28 @@ function App() {
 
       {view === 'loja' ? (
         <>
-          <HeroSection />
-          <Store addToCart={addToCart} />
+          <HeroSection scrollToStore={scrollToStore} />
+          <Store 
+            addToCart={addToCart} 
+            id="store-section" 
+            onProductClick={(p) => handleSetView('produto', p)}
+          />
         </>
       ) : view === 'pagamentos' ? (
         <div style={{ marginTop: '2rem' }}>
           <Pagamentos />
         </div>
+      ) : view === 'produto' ? (
+        <ProductDetail 
+          product={selectedProduct} 
+          onBack={() => handleSetView('loja')} 
+          addToCart={addToCart}
+        />
       ) : (
         <Checkout 
           cart={cart} 
           totalPrice={totalPrice} 
-          onBack={() => setView('loja')} 
+          onBack={() => handleSetView('loja')} 
         />
       )}
 
@@ -148,7 +179,7 @@ function App() {
                   className="btn-checkout" 
                   onClick={() => {
                     setCartOpen(false);
-                    setView('checkout');
+                    handleSetView('checkout');
                   }}
                 >
                   Finalizar Compra

@@ -11,7 +11,7 @@ const categories = [
 
 const words = ["transforma", "redefine", "eleva", "conecta"];
 
-export default function HeroSection() {
+export default function HeroSection({ scrollToStore }) {
   const [wordIndex, setWordIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -77,11 +77,11 @@ export default function HeroSection() {
           </p>
 
           <div className="hero-actions">
-            <button className="btn-primary-hero">
+            <button className="btn-primary-hero" onClick={scrollToStore}>
               Ver produtos
               <span className="btn-arrow">→</span>
             </button>
-            <button className="btn-secondary-hero">
+            <button className="btn-secondary-hero" onClick={scrollToStore}>
               ◆ Ofertas do dia
             </button>
           </div>
@@ -167,7 +167,9 @@ export default function HeroSection() {
       <section className="categories-section">
         <div className="cat-header">
           <span className="cat-title">Categorias</span>
-          <a href="#" className="cat-link">Ver todas →</a>
+          <button onClick={scrollToStore} className="cat-link-btn" style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}>
+            Ver todas →
+          </button>
         </div>
         <div className="cat-grid">
           {categories.map((c) => (
