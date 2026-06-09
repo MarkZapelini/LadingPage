@@ -17,7 +17,7 @@
 }
 
 .logo {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 28px;
   font-weight: 800;
   background: linear-gradient(135deg, var(--highlight), var(--highlight-secondary));
@@ -88,7 +88,7 @@
 .hero-root {
   background: #080A0E;
   color: #fff;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   overflow: hidden;
   position: relative;
 }
@@ -166,7 +166,7 @@
 }
 
 .hero-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 800;
   font-size: clamp(42px, 5vw, 72px);
   line-height: 1.05;
@@ -218,7 +218,7 @@
   gap: 10px;
   background: linear-gradient(135deg, #A020F0, #8B00D4);
   color: #fff;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 500;
   padding: 14px 28px;
@@ -249,7 +249,7 @@
   background: transparent;
   border: 1px solid rgba(255,255,255,0.12);
   color: rgba(255,255,255,0.7);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
   padding: 14px 24px;
   border-radius: 14px;
@@ -270,7 +270,7 @@
   border-top: 1px solid rgba(255,255,255,0.06);
 }
 .stat-num {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 26px;
   background: linear-gradient(90deg, #fff, rgba(255,255,255,0.7));
@@ -320,7 +320,7 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   color: rgba(255,255,255,0.3);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .product-display {
@@ -370,7 +370,7 @@
   font-size: 16px;
 }
 .badge-num {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 18px;
   color: #fff;
@@ -417,7 +417,7 @@
 }
 .float-label { color: rgba(255,255,255,0.4); margin-bottom: 4px; }
 .float-val {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 15px;
   color: #fff;
@@ -445,7 +445,7 @@
   margin-bottom: 28px;
 }
 .cat-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -528,7 +528,7 @@
 .btn-back:hover { color: white; }
 
 .checkout-title-premium {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 42px;
   font-weight: 800;
   color: white;
@@ -568,7 +568,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 800;
   font-size: 14px;
 }
@@ -694,7 +694,7 @@
 .sticky-summary { position: sticky; top: 120px; }
 
 .summary-card-premium h3 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 20px;
   margin-bottom: 24px;
 }
@@ -753,7 +753,7 @@
 }
 
 .total-main-premium span { font-size: 16px; font-weight: 700; color: white; }
-.total-main-premium strong { font-family: 'Syne', sans-serif; font-size: 28px; color: #A020F0; }
+.total-main-premium strong { font-family: 'Poppins', sans-serif; font-size: 28px; color: #A020F0; }
 
 .secure-badge-premium {
   display: flex;
@@ -830,7 +830,7 @@
 }
 
 .cat-name-premium {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: #fff;
@@ -876,7 +876,7 @@
   color: #fff;
   padding: 10px 16px;
   border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   cursor: pointer;
   outline: none;
@@ -978,7 +978,7 @@
 }
 
 .produto-nome-premium {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 18px;
   font-weight: 700;
   color: #fff;
@@ -1021,7 +1021,7 @@
 }
 
 .produto-preco-premium {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 22px;
   font-weight: 800;
   color: #fff;
@@ -1169,7 +1169,7 @@
 }
 
 .product-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 56px;
   font-weight: 800;
   line-height: 1.1;
@@ -1218,7 +1218,7 @@
 }
 
 .product-price {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 48px;
   font-weight: 800;
   color: #fff;
@@ -1412,7 +1412,7 @@
 }
 
 .cart-item-nome {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 4px;
@@ -1482,7 +1482,7 @@
 }
 
 .cart-total strong {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 24px;
   font-weight: 700;
 }
@@ -1494,7 +1494,7 @@
   border: none;
   padding: 16px;
   border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -1540,3 +1540,4 @@
     font-size: 32px;
   }
 }
+
