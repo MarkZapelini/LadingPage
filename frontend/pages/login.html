@@ -89,7 +89,7 @@
       </p>
       <p class="auth-link">
         Não tem uma conta? 
-        <a href="../pages/cadastro.html">Cadastre-se</a>
+        <a href="cadastro.html">Cadastre-se</a>
       </p>
     </div>
   </div>
@@ -383,10 +383,16 @@
 
   async function fazerLogin(e) {
     e.preventDefault();
+    console.log('🔐 Iniciando processo de login...');
+    
     const email = document.getElementById('loginEmail').value;
     const senha = document.getElementById('loginSenha').value;
+    
+    console.log('📧 Email informado:', email);
+    console.log('🔑 Senha informada:', senha);
 
     if (typeof ZCoreAPI !== 'undefined') {
+      console.log('📡 Tentando login via API...');
       await ZCoreAPI.init();
       if (ZCoreAPI._online) {
         try {
@@ -396,19 +402,28 @@
           setTimeout(() => { window.location.href = '../index.html'; }, 1500);
           return;
         } catch (err) {
+          console.error('❌ Erro na API:', err);
           mostrarToast('❌ ' + err.message, 'erro');
           return;
         }
+      } else {
+        console.log('📡 API offline, usando localStorage...');
       }
     }
 
     const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    console.log('👥 Usuários no localStorage:', usuarios);
+    
     const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+    console.log('👤 Usuário encontrado:', usuario);
+    
     if (usuario) {
       localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+      console.log('✅ Sessão salva! Redirecionando...');
       mostrarToast('✅ Login realizado com sucesso!');
       setTimeout(() => { window.location.href = '../index.html'; }, 1500);
     } else {
+      console.error('❌ Usuário ou senha incorretos!');
       mostrarToast('❌ E-mail ou senha incorretos!', 'erro');
     }
   }

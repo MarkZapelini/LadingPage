@@ -167,7 +167,7 @@
           <div class="pcard" onclick="cliqueProduto('${p.nome}')">
             <div class="pcard__spotlight"></div>
             <div class="pcard__img-area">
-              <div class="pcard__emoji">${p.emoji || '📦'}</div>
+              ${p.foto ? `<img src="${p.foto}" alt="${p.nome}" class="pcard__img">` : `<div class="pcard__emoji">${p.emoji || '📦'}</div>`}
             </div>
             <div class="pcard__info">
               <span class="pcard__brand">${p.marca || 'Z-Core'}</span>

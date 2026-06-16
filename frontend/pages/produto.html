@@ -292,8 +292,14 @@
     document.getElementById('productTitle').textContent = produtoAtual.nome;
     document.getElementById('productBrand').textContent = produtoAtual.marca || '';
     document.getElementById('productDescription').textContent = produtoAtual.desc || '';
-    document.getElementById('productEmoji').textContent = produtoAtual.emoji || '📦';
     document.getElementById('stockCount').textContent = produtoAtual.estoque;
+    
+    const productMainImage = document.getElementById('productMainImage');
+    if (produtoAtual.foto) {
+      productMainImage.innerHTML = `<img src="${produtoAtual.foto}" alt="${produtoAtual.nome}" style="width: 100%; height: 100%; object-fit: cover;">`;
+    } else {
+      document.getElementById('productEmoji').textContent = produtoAtual.emoji || '📦';
+    }
     document.getElementById('ratingCount').textContent = '(' + (produtoAtual.qtdAvaliacoes || 0) + ' avaliações)';
     
     // Estrelas

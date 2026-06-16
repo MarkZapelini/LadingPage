@@ -9,21 +9,12 @@
     {
       "src": "frontend/**",
       "use": "@vercel/static"
-    },
-    {
-      "src": "react-frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "backend/server.js"
-    },
-    {
-      "src": "/react/(.*)",
-      "dest": "react-frontend/$1"
     },
     {
       "src": "/(.*)",

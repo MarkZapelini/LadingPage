@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Logar Automaticamente</title>
+  <style>
+    body { font-family: Poppins, sans-serif; max-width: 600px; margin: 80px auto; padding: 20px; background: #0A0A0A; color: #fff; text-align: center; }
+    .card { background: #111520; padding: 40px; border-radius: 20px; border: 1px solid #2a2a2a; }
+    h1 { color: #A020F0; }
+    .success { color: #00C9A7; font-size: 18px; font-weight: bold; }
+    button { background: linear-gradient(135deg,#A020F0,#7a17b5); color: #fff; border: none; padding: 16px 32px; border-radius: 12px; font-size: 18px; cursor: pointer; margin:10px; }
+    .btn-success { background: linear-gradient(135deg,#00C9A7,#00997a); }
+    .info { text-align: left; background: #1A1D26; padding: 20px; border-radius: 12px; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🚀 Entrar Automaticamente</h1>
+    <p class="success">Clique no botão abaixo para criar a conta e entrar direto na loja!</p>
+    
+    <div class="info">
+      <p><strong>Conta que será criada:</strong></p>
+      <p>E-mail: teste@zcore.com.br</p>
+      <p>Senha: 123456</p>
+      <p>Nome: Teste Z-Core</p>
+    </div>
+    
+    <button id="btnLogar" class="btn-success" onclick="logarAutomaticamente()">✨ CRIAR CONTA E ENTRAR</button>
+    <button onclick="window.location.href='frontend/index.html'">Ir para Loja</button>
+    <button onclick="window.location.href='diagnostico.html'">Diagnóstico</button>
+    <button onclick="window.location.href='criar-conta-teste.html'">Criar Conta</button>
+    
+    <div id="status" style="margin-top:30px;"></div>
+  </div>
+
+  <script>
+    function logarAutomaticamente() {
+      const status = document.getElementById('status');
+      status.innerHTML = '<p>⏳ Criando conta...</p>';
+      
+      // 1. Pegar contas existentes
+      let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      
+      // 2. Remover conta de teste se já existir
+      usuarios = usuarios.filter(u => u.email !== 'teste@zcore.com.br');
+      
+      // 3. Criar nova conta de teste
+      const novaConta = {
+        id: Date.now(),
+        nome: 'Teste Z-Core',
+        email: 'teste@zcore.com.br',
+        cpf: '123.456.789-00',
+        telefone: '(11) 99999-9999',
+        senha: '123456',
+        pedidos: []
+      };
+      usuarios.push(novaConta);
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      
+      // 4. Fazer login (salvar sessão)
+      localStorage.setItem('usuarioLogado', JSON.stringify(novaConta));
+      
+      status.innerHTML = '<p class="success">✅ CONTA CRIADA E LOGIN FEITO! Redirecionando...</p>';
+      
+      // 5. Redirecionar para a loja
+      setTimeout(() => {
+        window.location.href = 'frontend/index.html';
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

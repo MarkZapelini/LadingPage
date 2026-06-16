@@ -156,6 +156,13 @@ LadingPage/
 
 ### Entrar na conta
 
+**Conta de teste (modo localStorage):**
+- E-mail: `teste@zcore.com.br`
+- Senha: `123456`
+- Nome: Teste Z-Core
+
+*Nota: Para usar a conta de teste, abra o arquivo `criar-conta-teste.html` no navegador para salvar a conta no seu localStorage.*
+
 **E-mail e senha**
 
 1. Acesse **Entrar** (`login.html`).

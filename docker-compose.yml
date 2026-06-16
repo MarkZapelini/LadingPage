@@ -11,10 +11,3 @@ services:
       - ADMIN_PASS=admin123
     volumes:
       - ./backend/data:/app/data
-
-  # Opcional: Servir o React frontend separadamente
-  frontend-react:
-    build:
-      context: ./react-frontend
-    ports:
-      - "5173:5173"

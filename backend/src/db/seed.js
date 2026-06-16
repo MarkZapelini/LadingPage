@@ -1,5 +1,6 @@
 require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
 const { db } = require('./database');
+const bcrypt = require('bcryptjs');
 
 const produtos = [
   { nome: 'MacBook Air M3', marca: 'Apple', cat: 'notebooks', preco: 10499, promo: 0, estoque: 15, desc: 'Chip M3, 8GB RAM, SSD 256GB, tela 13"', emoji: '💻', status: 'Ativo', avaliacao: 5, qtd: 324 },
@@ -25,4 +26,15 @@ if (count === 0) {
     avaliacao: p.avaliacao, qtd: p.qtd
   })));
   console.log('Seed: produtos padrão inseridos.');
+}
+
+// Adiciona conta de teste
+const countUsers = db.prepare('SELECT COUNT(*) as c FROM users WHERE email = ?').get('teste@zcore.com.br').c;
+if (countUsers === 0) {
+  const senhaHash = bcrypt.hashSync('123456', 10);
+  db.prepare(`
+    INSERT INTO users (nome, email, cpf, telefone, senha_hash)
+    VALUES (?, ?, ?, ?, ?)
+  `).run('Teste Z-Core', 'teste@zcore.com.br', '123.456.789-00', '(11) 99999-9999', senhaHash);
+  console.log('Seed: conta de teste inserida (teste@zcore.com.br / 123456).');
 }
