@@ -50,6 +50,13 @@
 
   .footer-content { grid-template-columns: 1fr; gap: 40px; }
   .footer-bottom { flex-direction: column; text-align: center; gap: 20px; }
+
+  /* Produtos: 2 colunas em tablets */
+  .prod-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .pcard { margin: 0; }
+
+  /* Categorias: 3 colunas em tablets */
+  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 15px; }
 }
 
 /* MOBILE (até 480px) */
@@ -62,8 +69,31 @@
   .newsletter-container-premium { padding: 40px 20px; border-radius: 30px; }
   .newsletter-title { font-size: 28px; }
   
-  .banner-premium { border-radius: 30px; }
+  .banner-premium { border-radius: 30px; margin: 40px 15px; padding: 30px; }
   .btn-banner-premium { width: 100%; justify-content: center; }
 
   .section-header-premium h2 { font-size: 28px; }
+
+  /* Produtos: 1 coluna em celulares */
+  .prod-grid { grid-template-columns: 1fr; gap: 20px; padding: 0 15px; }
+  .pcard { max-width: 100%; }
+
+  /* Categorias: 2 colunas em celulares */
+  .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px; }
+
+  /* Header com espaçamento menor */
+  .header-container { padding: 0 15px; }
+  .logo-text { font-size: 20px; }
+
+  /* Busca com tamanho adequado */
+  .search-container { max-width: 140px; }
+
+  /* Hero com padding menor */
+  .hero-container { padding: 60px 15px; }
+  .hero-subtitle { font-size: 16px; }
+
+  /* Ajustes nas seções */
+  .section-header-premium { padding: 0 15px; }
+  .testimonials-premium { padding: 60px 15px; }
+  .trust-container { padding: 40px 15px; }
 }

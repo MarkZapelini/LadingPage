@@ -725,7 +725,6 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 @media (max-width: 900px) {
   .cat-grid { grid-template-columns: repeat(3, 1fr); }
   .prod-grid { grid-template-columns: repeat(2, 1fr); }
-  .nav-links { display: none; }
 }
 
 /* ========================================
