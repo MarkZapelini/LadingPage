@@ -38,24 +38,3 @@ if (countUsers === 0) {
   `).run('Teste Z-Core', 'teste@zcore.com.br', '123.456.789-00', '(11) 99999-9999', senhaHash);
   console.log('Seed: conta de teste inserida (teste@zcore.com.br / 123456).');
 }
-
-// Adiciona conta admin no banco (baseada nas variáveis de ambiente)
-const adminEmail = process.env.ADMIN_EMAIL || 'admin@zcore.local';
-const adminUser = process.env.ADMIN_USER || 'admin';
-const adminPass = process.env.ADMIN_PASS || 'admin123';
-
-const existingAdmin = db.prepare('SELECT * FROM users WHERE email = ? OR nome = ?').get(adminEmail, adminUser);
-if (!existingAdmin) {
-  const senhaHashAdmin = bcrypt.hashSync(adminPass, 10);
-  db.prepare(`
-    INSERT INTO users (nome, email, senha_hash, role)
-    VALUES (?, ?, ?, ?)
-  `).run(adminUser, adminEmail, senhaHashAdmin, 'admin');
-  console.log(`Seed: conta admin inserida (${adminUser} / ${adminPass}) com email ${adminEmail}`);
-} else if (existingAdmin.role !== 'admin') {
-  const senhaHashAdmin = bcrypt.hashSync(adminPass, 10);
-  db.prepare('UPDATE users SET role = ?, senha_hash = ? WHERE id = ?').run('admin', senhaHashAdmin, existingAdmin.id);
-  console.log('Seed: usuário existente promovido para admin e senha atualizada.');
-} else {
-  // Admin já existe
-}

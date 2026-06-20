@@ -273,18 +273,10 @@
       const user = JSON.parse(localStorage.getItem('usuarioLogado'));
       const auth = document.getElementById('authButtons');
       const logged = document.getElementById('userLogged');
-      const adminLink = document.getElementById('adminLink');
       if (user && logged) {
         auth.style.display = 'none';
         logged.style.display = 'flex';
         document.getElementById('userName').textContent = user.nome.split(' ')[0];
-        if (adminLink) {
-          adminLink.style.display = (user.role === 'admin') ? 'flex' : 'none';
-        }
-      } else {
-        if (auth) auth.style.display = 'flex';
-        if (logged) logged.style.display = 'none';
-        if (adminLink) adminLink.style.display = 'none';
       }
     };
 
