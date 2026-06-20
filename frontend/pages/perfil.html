@@ -2,366 +2,1047 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<script>(function(){try{var t=localStorage.getItem('zcore-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meu Perfil — Z-Core Eletrônicos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/responsive.css">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<title>Meu Perfil — Z-Core</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,500italic&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#08080d;
+    --bg-soft:#0d0d14;
+    --card:#131320;
+    --card-border:#222231;
+    --card-border-hover:#312d4a;
+    --input-bg:#0e0e17;
+    --input-border:#262638;
+    --input-border-focus:#7c3aed;
+    --text:#f5f4f9;
+    --text-dim:#8c8c9c;
+    --text-faint:#56566a;
+    --accent:#7c3aed;
+    --accent-soft:#a78bfa;
+    --accent-glow:rgba(124,58,237,.32);
+    --success:#34d399;
+    --warn:#fbbf24;
+    --radius:16px;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* textura de grão sutil + glows radiais — dá profundidade sem ficar carregado */
+  .bg-fx{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+  }
+  .bg-fx::before{
+    content:'';
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 10% -10%, rgba(124,58,237,.14), transparent 42%),
+      radial-gradient(circle at 105% 15%, rgba(124,58,237,.08), transparent 38%),
+      radial-gradient(circle at 50% 120%, rgba(124,58,237,.06), transparent 45%);
+  }
+  .bg-fx::after{
+    content:'';
+    position:absolute; inset:0;
+    opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:48px 24px 150px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ---------- entrada suave dos blocos ---------- */
+  @keyframes rise{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .reveal{animation:rise .6s var(--ease) both;}
+  .reveal-1{animation-delay:.02s;}
+  .reveal-2{animation-delay:.08s;}
+  .reveal-3{animation-delay:.14s;}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{animation:none;}
+  }
+
+  .back-link{
+    display:inline-flex; align-items:center; gap:6px;
+    color:var(--text-dim);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    margin-bottom:30px;
+    transition:color .25s var(--ease), gap .25s var(--ease);
+  }
+  .back-link:hover{color:var(--accent-soft); gap:10px;}
+  .back-link svg{width:13px; height:13px; transition:transform .25s var(--ease);}
+  .back-link:hover svg{transform:translateX(-2px);}
+
+  h1.page-title{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-style:italic;
+    font-size:34px;
+    letter-spacing:-.01em;
+    margin:0 0 34px;
+    background:linear-gradient(135deg, #fff 40%, var(--accent-soft));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  /* ---------- HEADER DO PERFIL ---------- */
+  .profile-header{
+    display:flex;
+    align-items:center;
+    gap:26px;
+    background:linear-gradient(155deg, var(--card), var(--bg-soft) 70%);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    padding:30px;
+    margin-bottom:32px;
+    flex-wrap:wrap;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 30px 60px -40px rgba(0,0,0,.6);
+    transition:border-color .3s var(--ease);
+  }
+  .profile-header:hover{border-color:var(--card-border-hover);}
+  .profile-header::after{
+    content:'';
+    position:absolute; top:-60%; right:-10%;
+    width:280px; height:280px;
+    background:radial-gradient(circle, rgba(124,58,237,.14), transparent 70%);
+    pointer-events:none;
+  }
+
+  .avatar-shell{
+    position:relative;
+    width:88px; height:88px;
+    flex-shrink:0;
+    cursor:pointer;
+  }
+  .avatar-ring{
+    width:100%; height:100%;
+    border-radius:50%;
+    padding:3px;
+    background:conic-gradient(from 180deg, var(--accent), var(--accent-soft), var(--accent));
+    transition:filter .3s var(--ease), transform .3s var(--ease);
+  }
+  .avatar-shell:hover .avatar-ring{filter:brightness(1.25); transform:scale(1.03);}
+  .avatar{
+    width:100%; height:100%;
+    border-radius:50%;
+    background:var(--bg-soft);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif;
+    font-size:30px;
+    font-weight:600;
+    color:var(--accent-soft);
+    overflow:hidden;
+    background-size:cover;
+    background-position:center;
+  }
+  .avatar-overlay{
+    position:absolute; inset:3px;
+    border-radius:50%;
+    background:rgba(8,8,13,.55);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0;
+    transition:opacity .25s var(--ease);
+    color:#fff;
+  }
+  .avatar-overlay svg{width:18px; height:18px;}
+  .avatar-shell:hover .avatar-overlay{opacity:1;}
+
+  .avatar-edit{
+    position:absolute; bottom:-2px; right:-2px;
+    width:30px; height:30px;
+    border-radius:50%;
+    background:var(--accent);
+    border:3px solid var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff;
+    transition:transform .2s var(--ease), background .2s;
+  }
+  .avatar-shell:hover .avatar-edit{background:var(--accent-soft); transform:scale(1.1) rotate(-8deg);}
+  .avatar-edit svg{width:13px; height:13px;}
+
+  .profile-meta{flex:1; min-width:200px;}
+  .profile-name{font-size:20px; font-weight:600; margin:0 0 3px; letter-spacing:-.01em;}
+  .profile-email{color:var(--text-dim); font-size:13.5px; margin:0;}
+  .profile-badge{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:11px;
+    background:rgba(124,58,237,.12);
+    border:1px solid rgba(124,58,237,.28);
+    color:var(--accent-soft);
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.02em;
+    padding:5px 11px 5px 9px;
+    border-radius:100px;
+  }
+  .profile-badge .dot{
+    width:6px; height:6px; border-radius:50%; background:var(--accent-soft);
+    box-shadow:0 0 0 0 rgba(167,139,250,.5);
+    animation:pulseDot 2.2s infinite;
+  }
+  @keyframes pulseDot{
+    0%{box-shadow:0 0 0 0 rgba(167,139,250,.45);}
+    70%{box-shadow:0 0 0 6px rgba(167,139,250,0);}
+    100%{box-shadow:0 0 0 0 rgba(167,139,250,0);}
+  }
+
+  .completion{min-width:170px; text-align:right;}
+  .completion-label{
+    font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--text-faint); font-weight:600; margin-bottom:9px;
+  }
+  .completion-bar{
+    width:170px; height:5px;
+    background:var(--input-bg);
+    border-radius:100px;
+    overflow:hidden;
+    margin-left:auto;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
+  }
+  .completion-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--accent), var(--accent-soft));
+    width:18%;
+    border-radius:100px;
+    transition:width .55s var(--ease);
+    position:relative;
+  }
+  .completion-fill::after{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+    width:30px;
+    animation:shimmerBar 2.4s infinite;
+  }
+  @keyframes shimmerBar{
+    0%{transform:translateX(-40px);}
+    100%{transform:translateX(200px);}
+  }
+  .completion-pct{font-size:12px; color:var(--text-dim); margin-top:7px; font-variant-numeric:tabular-nums;}
+
+  /* ---------- GRID DE CARDS ---------- */
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:760px){
+    .grid{grid-template-columns:1fr;}
+    .profile-header{flex-direction:column; align-items:flex-start;}
+    .completion{text-align:left; margin-top:6px;}
+    .completion-bar{margin-left:0;}
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    padding:28px;
+    transition:border-color .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .card:hover{
+    border-color:var(--card-border-hover);
+    box-shadow:0 24px 50px -36px rgba(124,58,237,.35);
+  }
+  .card-title{
+    font-family:'Fraunces',serif;
+    font-size:18.5px;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .card-sub{font-size:12.5px; color:var(--text-faint); margin:0 0 24px;}
+
+  .field{margin-bottom:19px; position:relative;}
+  .field:last-child{margin-bottom:0;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .field-row .field{margin-bottom:19px;}
+
+  label{
+    display:block;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    font-weight:600;
+    color:var(--text-faint);
+    margin-bottom:8px;
+    transition:color .2s var(--ease);
+  }
+  .field:focus-within label{color:var(--accent-soft);}
+
+  .input-shell{position:relative;}
+  input{
+    width:100%;
+    background:var(--input-bg);
+    border:1px solid var(--input-border);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:12px 14px;
+    border-radius:10px;
+    outline:none;
+    transition:border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease);
+  }
+  input::placeholder{color:var(--text-faint);}
+  input:hover{border-color:#33334a;}
+  input:focus{
+    border-color:var(--input-border-focus);
+    box-shadow:0 0 0 4px var(--accent-glow);
+    background:#111120;
+  }
+  input.valid-pulse{animation:validPulse .5s var(--ease);}
+  @keyframes validPulse{
+    0%{box-shadow:0 0 0 0 rgba(52,211,153,.4);}
+    100%{box-shadow:0 0 0 6px rgba(52,211,153,0);}
+  }
+
+  .check-icon{
+    position:absolute; right:13px; top:38px;
+    width:15px; height:15px;
+    color:var(--success);
+    opacity:0;
+    transform:scale(.6);
+    transition:opacity .25s var(--ease), transform .25s var(--ease);
+    pointer-events:none;
+  }
+  .field.filled .check-icon{opacity:1; transform:scale(1);}
+  .field.filled input{padding-right:36px;}
+
+  .hint{font-size:11.5px; color:var(--text-faint); margin-top:7px; min-height:14px; transition:color .2s;}
+  .hint.loading{color:var(--accent-soft);}
+  .hint.success{color:var(--success);}
+  .hint.error{color:#f87171;}
+
+  /* ---------- SELECT CUSTOMIZADO (não-nativo) ---------- */
+  .custom-select{position:relative;}
+  .select-trigger{
+    width:100%;
+    background:var(--input-bg);
+    border:1px solid var(--input-border);
+    color:var(--text-faint);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:12px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between;
+    transition:border-color .2s var(--ease), box-shadow .2s var(--ease);
+    user-select:none;
+  }
+  .select-trigger:hover{border-color:#33334a;}
+  .select-trigger.open, .select-trigger.has-value{color:var(--text);}
+  .select-trigger.open{border-color:var(--input-border-focus); box-shadow:0 0 0 4px var(--accent-glow);}
+  .select-trigger svg{width:11px; height:11px; transition:transform .25s var(--ease); color:var(--text-faint);}
+  .select-trigger.open svg{transform:rotate(180deg);}
+
+  .select-panel{
+    position:absolute; top:calc(100% + 8px); left:0; right:0;
+    background:#15151f;
+    border:1px solid var(--card-border-hover);
+    border-radius:12px;
+    padding:6px;
+    max-height:220px;
+    overflow-y:auto;
+    box-shadow:0 20px 40px -12px rgba(0,0,0,.6);
+    z-index:20;
+    opacity:0; visibility:hidden; transform:translateY(-6px) scale(.98);
+    transition:opacity .18s var(--ease), transform .18s var(--ease), visibility .18s;
+  }
+  .select-panel.open{opacity:1; visibility:visible; transform:translateY(0) scale(1);}
+  .select-option{
+    padding:9px 12px;
+    border-radius:8px;
+    font-size:13.5px;
+    color:var(--text-dim);
+    cursor:pointer;
+    transition:background .15s, color .15s;
+  }
+  .select-option:hover{background:rgba(124,58,237,.14); color:var(--text);}
+  .select-option.selected{color:var(--accent-soft); font-weight:600;}
+
+  .divider{border:none; border-top:1px solid var(--card-border); margin:26px 0;}
+
+  /* ---------- BARRA DE SALVAR ---------- */
+  .save-bar{
+    position:fixed; left:0; right:0; bottom:0;
+    background:rgba(8,8,13,.78);
+    backdrop-filter:blur(16px) saturate(140%);
+    border-top:1px solid var(--card-border);
+    padding:18px 24px;
+    display:flex; justify-content:center;
+    z-index:10;
+  }
+  .save-bar-inner{
+    max-width:920px; width:100%;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .save-status{
+    font-size:12.5px; color:var(--text-faint);
+    display:flex; align-items:center; gap:8px;
+  }
+  .save-status .pulse{width:7px; height:7px; border-radius:50%; background:var(--text-faint); transition:background .25s;}
+  .save-status.dirty .pulse{background:var(--warn); box-shadow:0 0 0 0 rgba(251,191,36,.5); animation:pulseDot 1.8s infinite;}
+  .save-status.saved .pulse{background:var(--success);}
+
+  button.save-btn{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(135deg, var(--accent), #6d28d9);
+    color:#fff;
+    border:none;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:13px 30px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:filter .2s var(--ease), transform .12s var(--ease), box-shadow .2s var(--ease);
+    box-shadow:0 10px 26px -10px var(--accent-glow);
+  }
+  button.save-btn::before{
+    content:'';
+    position:absolute; top:0; left:-60%;
+    width:40%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,.25), transparent);
+    transform:skewX(-20deg);
+    transition:left .6s var(--ease);
+  }
+  button.save-btn:hover::before{left:130%;}
+  button.save-btn:hover{filter:brightness(1.1); box-shadow:0 14px 30px -10px var(--accent-glow);}
+  button.save-btn:active{transform:scale(.97);}
+  button.save-btn:disabled{opacity:.55; cursor:default; filter:none;}
+  button.save-btn .check{display:inline-flex; vertical-align:-2px; margin-right:6px; opacity:0; width:0; transition:opacity .2s, width .2s;}
+  button.save-btn.success .check{opacity:1; width:14px;}
+</style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="premium-header">
-  <div class="header-container">
-    <a href="../index.html" class="logo">
-      <span class="logo-symbol">Z</span>
-      <span class="logo-text">Core</span>
-    </a>
+<div class="bg-fx"></div>
 
-    <button class="menu-toggle-premium" id="mobileMenuBtn" aria-label="Abrir menu">
-      <i class="fas fa-bars"></i>
+<div class="wrap">
+
+  <a href="../index.html" class="back-link reveal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+    Voltar à loja
+  </a>
+  <h1 class="page-title reveal">Meu Perfil</h1>
+
+  <!-- HEADER -->
+  <div class="profile-header reveal reveal-1">
+    <div class="avatar-shell" id="avatarShell">
+      <div class="avatar-ring">
+        <div class="avatar" id="avatarInitial">U</div>
+      </div>
+      <div class="avatar-overlay">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      </div>
+      <div class="avatar-edit" title="Alterar foto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      </div>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none">
+    </div>
+
+    <div class="profile-meta">
+      <p class="profile-name" id="headerName">Usuário</p>
+      <p class="profile-email" id="headerEmail">email@exemplo.com</p>
+      <span class="profile-badge"><span class="dot"></span>Conta verificada</span>
+    </div>
+
+    <div class="completion">
+      <div class="completion-label">Perfil completo</div>
+      <div class="completion-bar"><div class="completion-fill" id="completionFill"></div></div>
+      <div class="completion-pct" id="completionPct">18% preenchido</div>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- DADOS PESSOAIS -->
+    <div class="card reveal reveal-2">
+      <h2 class="card-title">Dados Pessoais</h2>
+      <p class="card-sub">Usados para identificação e contato.</p>
+
+      <div class="field" data-field="nome">
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" placeholder="Seu nome completo">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+
+      <div class="field" data-field="email">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+
+      <div class="field" data-field="cpf">
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" inputmode="numeric">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+
+      <div class="field" data-field="telefone">
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone" placeholder="(00) 00000-0000" maxlength="15" inputmode="numeric">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+    </div>
+
+    <!-- ENDEREÇO -->
+    <div class="card reveal reveal-3">
+      <h2 class="card-title">Endereço</h2>
+      <p class="card-sub">Usado para cálculo de frete e entregas.</p>
+
+      <div class="field" data-field="cep">
+        <label for="cep">CEP</label>
+        <input type="text" id="cep" placeholder="00000-000" maxlength="9" inputmode="numeric">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+        <div class="hint" id="cepHint">Digite o CEP para preencher o endereço automaticamente.</div>
+      </div>
+
+      <div class="field" data-field="rua">
+        <label for="rua">Rua</label>
+        <input type="text" id="rua" placeholder="Nome da rua">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+
+      <div class="field-row">
+        <div class="field" data-field="numero">
+          <label for="numero">Número</label>
+          <input type="text" id="numero" placeholder="Número" inputmode="numeric">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="field" data-field="complemento">
+          <label for="complemento">Complemento</label>
+          <input type="text" id="complemento" placeholder="Apto, bloco, etc.">
+        </div>
+      </div>
+
+      <div class="field" data-field="bairro">
+        <label for="bairro">Bairro</label>
+        <input type="text" id="bairro" placeholder="Bairro">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+
+      <div class="field-row">
+        <div class="field" data-field="cidade">
+          <label for="cidade">Cidade</label>
+          <input type="text" id="cidade" placeholder="Cidade">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="field" data-field="estado">
+          <label for="estado">Estado</label>
+          <div class="custom-select" id="estadoSelect">
+            <div class="select-trigger" id="estadoTrigger">
+              <span id="estadoValue">Selecione</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="select-panel" id="estadoPanel"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BARRA DE SALVAR -->
+<div class="save-bar">
+  <div class="save-bar-inner">
+    <div class="save-status" id="saveStatus">
+      <span class="pulse"></span>
+      <span>Nenhuma alteração</span>
+    </div>
+    <button class="save-btn" id="saveBtn">
+      <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
+      Salvar Alterações
     </button>
-    
-    <ul class="nav-links" id="navLinks">
-      <li><a href="../index.html">Início</a></li>
-      <li><a href="../index.html#produtos">Produtos</a></li>
-      <li><a href="../index.html#ofertas">Ofertas</a></li>
-      <li><a href="#">Contato</a></li>
-    </ul>
-
-    <div class="nav-actions">
-      <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
-        <i class="fas fa-sun theme-icon-light"></i>
-        <i class="fas fa-moon theme-icon-dark"></i>
-      </button>
-
-      <div id="userLogged" class="user-group">
-        <div class="user-info-premium">
-          <div class="user-avatar-premium" id="userAvatar">U</div>
-          <span class="user-name-premium" id="userName">Usuário</span>
-        </div>
-        <button class="btn-logout-premium" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
-      </div>
-
-      <button class="btn-cart-premium" onclick="window.location.href='../pages/checkout.html'">
-        <div class="cart-icon-wrapper">
-          <i class="fas fa-shopping-cart"></i>
-        </div>
-        <span class="cart-label">Carrinho</span>
-      </button>
-    </div>
   </div>
-</nav>
-
-<!-- PERFIL -->
-<section class="perfil-section">
-  <div class="perfil-container">
-    <a href="../index.html" class="back-link">← Voltar à loja</a>
-    
-    <h1 class="perfil-title">Meu Perfil</h1>
-    
-    <div class="perfil-card">
-      <div class="perfil-header">
-        <div class="perfil-avatar" id="perfilAvatar">U</div>
-        <div class="perfil-info-header">
-          <h2 id="perfilNomeHeader">Usuário</h2>
-          <p id="perfilEmailHeader">email@exemplo.com</p>
-        </div>
-      </div>
-      
-      <div class="perfil-divider"></div>
-      
-      <h3>Dados Pessoais</h3>
-      <form id="perfilForm" onsubmit="salvarPerfil(event)">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nome completo</label>
-            <input type="text" id="perfilNome" placeholder="Seu nome completo" required>
-          </div>
-          <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" id="perfilEmail" placeholder="seu@email.com" required disabled>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label>CPF</label>
-            <input type="text" id="perfilCPF" placeholder="000.000.000-00">
-          </div>
-          <div class="form-group">
-            <label>Telefone</label>
-            <input type="text" id="perfilTelefone" placeholder="(00) 00000-0000">
-          </div>
-        </div>
-        
-        <h3>Endereço</h3>
-        <div class="form-row">
-          <div class="form-group">
-            <label>CEP</label>
-            <input type="text" id="perfilCEP" placeholder="00000-000">
-          </div>
-          <div class="form-group">
-            <label>Rua</label>
-            <input type="text" id="perfilRua" placeholder="Nome da rua">
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label>Número</label>
-            <input type="text" id="perfilNumero" placeholder="Número">
-          </div>
-          <div class="form-group">
-            <label>Complemento</label>
-            <input type="text" id="perfilComplemento" placeholder="Apto, bloco, etc.">
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label>Bairro</label>
-            <input type="text" id="perfilBairro" placeholder="Bairro">
-          </div>
-          <div class="form-group">
-            <label>Cidade</label>
-            <input type="text" id="perfilCidade" placeholder="Cidade">
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label>Estado</label>
-            <select id="perfilEstado">
-              <option value="">Selecione</option>
-              <option value="AC">Acre</option>
-              <option value="AL">Alagoas</option>
-              <option value="AP">Amapá</option>
-              <option value="AM">Amazonas</option>
-              <option value="BA">Bahia</option>
-              <option value="CE">Ceará</option>
-              <option value="DF">Distrito Federal</option>
-              <option value="ES">Espírito Santo</option>
-              <option value="GO">Goiás</option>
-              <option value="MA">Maranhão</option>
-              <option value="MT">Mato Grosso</option>
-              <option value="MS">Mato Grosso do Sul</option>
-              <option value="MG">Minas Gerais</option>
-              <option value="PA">Pará</option>
-              <option value="PB">Paraíba</option>
-              <option value="PR">Paraná</option>
-              <option value="PE">Pernambuco</option>
-              <option value="PI">Piauí</option>
-              <option value="RJ">Rio de Janeiro</option>
-              <option value="RN">Rio Grande do Norte</option>
-              <option value="RS">Rio Grande do Sul</option>
-              <option value="RO">Rondônia</option>
-              <option value="RR">Roraima</option>
-              <option value="SC">Santa Catarina</option>
-              <option value="SP">São Paulo</option>
-              <option value="SE">Sergipe</option>
-              <option value="TO">Tocantins</option>
-            </select>
-          </div>
-        </div>
-        
-        <button type="submit" class="btn-auth">Salvar Alterações</button>
-      </form>
-    </div>
-  </div>
-</section>
+</div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- FOOTER -->
-<footer class="footer-full">
-  <div class="footer-content">
-    <div class="footer-section">
-      <div class="footer-logo"><span>Z</span>-Core</div>
-      <p class="footer-desc">A sua loja de eletrônicos com os melhores preços, garantia e entrega rápida em todo o Brasil.</p>
-      <div class="social-links">
-        <a href="#" class="social-icon">📘</a>
-        <a href="#" class="social-icon">📷</a>
-        <a href="#" class="social-icon">🐦</a>
-        <a href="#" class="social-icon">📺</a>
-      </div>
-    </div>
-
-    <div class="footer-section">
-      <h4>Institucional</h4>
-      <a href="#">Sobre Nós</a>
-      <a href="#">Política de Privacidade</a>
-      <a href="#">Termos de Uso</a>
-      <a href="#">Trabalhe Conosco</a>
-    </div>
-
-    <div class="footer-section">
-      <h4>Ajuda</h4>
-      <a href="#">FAQ</a>
-      <a href="#">Trocas e Devoluções</a>
-      <a href="#">Entregas</a>
-      <a href="#">Garantia</a>
-    </div>
-
-    <div class="footer-section">
-      <h4>Contato</h4>
-      <p class="contact-item">📧 contato@zcore.com.br</p>
-      <p class="contact-item">📞 (11) 99999-9999</p>
-      <p class="contact-item">📍 São Paulo, SP</p>
-    </div>
-  </div>
-  
-  <div class="footer-bottom">
-    <p>© 2025 Z-Core Eletrônicos. Todos os direitos reservados.</p>
-    <div class="payment-methods">
-      <span>💳</span>
-      <span>💳</span>
-      <span>💰</span>
-      <span>📱</span>
-    </div>
-  </div>
-</footer>
-
 <script>
-  // === CONFIGURAÇÃO DO FIREBASE ===
-  const firebaseConfig = {
-    apiKey: "AIzaSyA7gHgpS2dBrIa2dJamylsg9DUdgOHt3Sk",
-    authDomain: "pg-de-vendas.firebaseapp.com",
-    databaseURL: "https://pg-de-vendas-default-rtdb.firebaseio.com",
-    projectId: "pg-de-vendas",
-    storageBucket: "pg-de-vendas.firebasestorage.app",
-    messagingSenderId: "803403474499",
-    appId: "1:803403474499:web:e729b5b49b75dfa4cd16f6",
-    measurementId: "G-5LPWHGFWK5"
+  // ---------- helpers de máscara ----------
+  const maskCPF = (v) =>
+    v.replace(/\D/g, "").slice(0, 11)
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+
+  const maskPhone = (v) => {
+    v = v.replace(/\D/g, "").slice(0, 11);
+    return v.length > 10
+      ? v.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3")
+      : v.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
   };
 
-  // Inicializa o Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  
-  // === FUNÇÕES DO FIRESTORE ===
-  async function salvarUsuarioFirestore(usuario) {
-    try {
-      await db.collection('usuarios').doc(usuario.id.toString()).set(usuario);
-      console.log('✅ Usuário salvo no Firestore!');
-    } catch (error) {
-      console.error('❌ Erro ao salvar usuário:', error);
-    }
-  }
-  
-  function mostrarToast(mensagem, tipo = 'sucesso') {
-    const toast = document.getElementById('toast');
-    toast.textContent = mensagem;
-    toast.className = 'toast ' + tipo;
-    toast.classList.add('show');
-    
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
-  }
+  const maskCEP = (v) =>
+    v.replace(/\D/g, "").slice(0, 8).replace(/(\d{5})(\d{1,3})/, "$1-$2");
 
-  function verificarLogin() {
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-    const authButtons = document.getElementById('authButtons');
-    const userLogged = document.getElementById('userLogged');
-    
-    if (usuarioLogado) {
-      authButtons.style.display = 'none';
-      userLogged.style.display = 'flex';
-      document.getElementById('userName').textContent = usuarioLogado.nome.split(' ')[0];
-      document.getElementById('userAvatar').textContent = usuarioLogado.nome[0].toUpperCase();
-      carregarDadosPerfil(usuarioLogado);
+  const ESTADOS = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
+  const EMPTY_FORM = {
+    nome: "", email: "", cpf: "", telefone: "",
+    cep: "", rua: "", numero: "", complemento: "", bairro: "", cidade: "", estado: "",
+  };
+
+  // ---------- estado da página ----------
+  let form = { ...EMPTY_FORM };
+  let dirty = false;
+  let savedFlash = false;
+  let cepLoading = false;
+  let usuarioLogado = null;
+
+  // ---------- DOM refs ----------
+  const dom = {
+    avatarShell: document.getElementById("avatarShell"),
+    avatarInput: document.getElementById("avatarInput"),
+    avatarInitial: document.getElementById("avatarInitial"),
+    headerName: document.getElementById("headerName"),
+    headerEmail: document.getElementById("headerEmail"),
+    completionFill: document.getElementById("completionFill"),
+    completionPct: document.getElementById("completionPct"),
+    cepHint: document.getElementById("cepHint"),
+    saveStatus: document.getElementById("saveStatus"),
+    saveBtn: document.getElementById("saveBtn"),
+    estadoSelect: document.getElementById("estadoSelect"),
+    estadoTrigger: document.getElementById("estadoTrigger"),
+    estadoPanel: document.getElementById("estadoPanel"),
+    estadoValue: document.getElementById("estadoValue"),
+    toast: document.getElementById("toast"),
+  };
+
+  // ---------- cálculo de completude ----------
+  const calculateCompletion = () => {
+    const values = Object.values(form);
+    const filled = values.filter((v) => v && v.trim() !== "").length;
+    return Math.round((filled / values.length) * 100);
+  };
+
+  const updateCompletion = () => {
+    const pct = calculateCompletion();
+    dom.completionFill.style.width = `${pct}%`;
+    dom.completionPct.textContent = `${pct}% preenchido`;
+  };
+
+  // ---------- atualização visual dos campos (check-icon) ----------
+  const updateFieldCheck = (fieldName) => {
+    const fieldEl = document.querySelector(`[data-field="${fieldName}"]`);
+    if (!fieldEl) return;
+    const hasValue = form[fieldName] && form[fieldName].trim() !== "";
+    fieldEl.classList.toggle("filled", hasValue);
+  };
+
+  // ---------- estado "dirty" e UI de salvar ----------
+  const markDirty = () => {
+    dirty = true;
+    savedFlash = false;
+    updateSaveUI();
+  };
+
+  const updateSaveUI = () => {
+    const status = dom.saveStatus;
+    const btn = dom.saveBtn;
+    status.classList.remove("dirty", "saved");
+    if (savedFlash) {
+      status.classList.add("saved");
+      status.querySelector("span:last-child").textContent = "Alterações salvas";
+      btn.classList.add("success");
+    } else if (dirty) {
+      status.classList.add("dirty");
+      status.querySelector("span:last-child").textContent = "Alterações não salvas";
+      btn.classList.remove("success");
     } else {
-      mostrarToast('❌ Você precisa estar logado!', 'erro');
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 1500);
+      status.querySelector("span:last-child").textContent = "Nenhuma alteração";
+      btn.classList.remove("success");
     }
-  }
+  };
 
-  function fazerLogout() {
-    localStorage.removeItem('usuarioLogado');
-    verificarLogin();
-    mostrarToast('✅ Você saiu da sua conta!');
-  }
+  // ---------- preencher formulário com dados ----------
+  const fillForm = (data) => {
+    form = { ...EMPTY_FORM, ...data };
+    Object.keys(form).forEach((key) => {
+      const input = document.getElementById(key);
+      if (input && input.tagName === "INPUT") {
+        input.value = form[key] || "";
+      }
+      updateFieldCheck(key);
+    });
+    // update custom select
+    if (form.estado) {
+      dom.estadoValue.textContent = form.estado;
+      dom.estadoTrigger.classList.add("has-value");
+      // mark selected option
+      const options = dom.estadoPanel.querySelectorAll(".select-option");
+      options.forEach(opt => opt.classList.toggle("selected", opt.dataset.value === form.estado));
+    }
+    // update header
+    updateHeader();
+    updateCompletion();
+    updateSaveUI();
+  };
 
-  function carregarDadosPerfil(usuario) {
-    // Preenche o header do perfil
-    document.getElementById('perfilAvatar').textContent = usuario.nome[0].toUpperCase();
-    document.getElementById('perfilNomeHeader').textContent = usuario.nome;
-    document.getElementById('perfilEmailHeader').textContent = usuario.email;
-    
-    // Preenche os campos do formulário
-    document.getElementById('perfilNome').value = usuario.nome || '';
-    document.getElementById('perfilEmail').value = usuario.email || '';
-    document.getElementById('perfilCPF').value = usuario.cpf || '';
-    document.getElementById('perfilTelefone').value = usuario.telefone || '';
-    document.getElementById('perfilCEP').value = usuario.cep || '';
-    document.getElementById('perfilRua').value = usuario.rua || '';
-    document.getElementById('perfilNumero').value = usuario.numero || '';
-    document.getElementById('perfilComplemento').value = usuario.complemento || '';
-    document.getElementById('perfilBairro').value = usuario.bairro || '';
-    document.getElementById('perfilCidade').value = usuario.cidade || '';
-    document.getElementById('perfilEstado').value = usuario.estado || '';
-  }
+  const updateHeader = () => {
+    const initial = (form.nome || "U").trim().charAt(0).toUpperCase();
+    dom.avatarInitial.textContent = initial;
+    dom.headerName.textContent = form.nome || "Usuário";
+    dom.headerEmail.textContent = form.email || "email@exemplo.com";
+  };
 
-  async function salvarPerfil(e) {
-    e.preventDefault();
-    
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-    
-    // Atualiza os dados do usuário
-    const usuarioAtualizado = {
-      ...usuarioLogado,
-      nome: document.getElementById('perfilNome').value,
-      cpf: document.getElementById('perfilCPF').value,
-      telefone: document.getElementById('perfilTelefone').value,
-      cep: document.getElementById('perfilCEP').value,
-      rua: document.getElementById('perfilRua').value,
-      numero: document.getElementById('perfilNumero').value,
-      complemento: document.getElementById('perfilComplemento').value,
-      bairro: document.getElementById('perfilBairro').value,
-      cidade: document.getElementById('perfilCidade').value,
-      estado: document.getElementById('perfilEstado').value
-    };
-    
+  // ---------- custom select estado ----------
+  const buildEstadoOptions = () => {
+    dom.estadoPanel.innerHTML = "";
+    ESTADOS.forEach((uf) => {
+      const option = document.createElement("div");
+      option.className = "select-option";
+      option.dataset.value = uf;
+      option.textContent = uf;
+      option.addEventListener("click", () => {
+        form.estado = uf;
+        dom.estadoValue.textContent = uf;
+        dom.estadoTrigger.classList.add("has-value");
+        closeEstadoPanel();
+        updateFieldCheck("estado");
+        markDirty();
+        updateCompletion();
+      });
+      if (form.estado === uf) option.classList.add("selected");
+      dom.estadoPanel.appendChild(option);
+    });
+  };
+
+  const openEstadoPanel = () => {
+    dom.estadoTrigger.classList.add("open");
+    dom.estadoPanel.classList.add("open");
+  };
+
+  const closeEstadoPanel = () => {
+    dom.estadoTrigger.classList.remove("open");
+    dom.estadoPanel.classList.remove("open");
+  };
+
+  // ---------- busca de CEP ----------
+  const handleCepChange = async (raw) => {
+    const masked = maskCEP(raw);
+    document.getElementById("cep").value = masked;
+    form.cep = masked;
+    updateFieldCheck("cep");
+    markDirty();
+    updateCompletion();
+
+    const digits = masked.replace(/\D/g, "");
+    if (digits.length !== 8) {
+      dom.cepHint.classList.remove("loading", "success", "error");
+      dom.cepHint.textContent = "Digite o CEP para preencher o endereço automaticamente.";
+      return;
+    }
+
+    cepLoading = true;
+    dom.cepHint.classList.add("loading");
+    dom.cepHint.textContent = "Buscando endereço...";
+
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+      const data = await res.json();
+      if (data.erro) {
+        dom.cepHint.classList.remove("loading");
+        dom.cepHint.classList.add("error");
+        dom.cepHint.textContent = "CEP não encontrado, preencha manualmente.";
+      } else {
+        form.rua = data.logradouro || "";
+        form.bairro = data.bairro || "";
+        form.cidade = data.localidade || "";
+        form.estado = data.uf || "";
+
+        document.getElementById("rua").value = form.rua;
+        document.getElementById("bairro").value = form.bairro;
+        document.getElementById("cidade").value = form.cidade;
+        if (form.estado) {
+          dom.estadoValue.textContent = form.estado;
+          dom.estadoTrigger.classList.add("has-value");
+          const options = dom.estadoPanel.querySelectorAll(".select-option");
+          options.forEach(opt => opt.classList.toggle("selected", opt.dataset.value === form.estado));
+        }
+
+        ["rua", "bairro", "cidade", "estado"].forEach(updateFieldCheck);
+        updateCompletion();
+
+        dom.cepHint.classList.remove("loading");
+        dom.cepHint.classList.add("success");
+        dom.cepHint.textContent = "Endereço encontrado automaticamente.";
+      }
+    } catch {
+      dom.cepHint.classList.remove("loading");
+      dom.cepHint.classList.add("error");
+      dom.cepHint.textContent = "Não foi possível buscar o CEP agora.";
+    } finally {
+      cepLoading = false;
+    }
+  };
+
+  // ---------- salvar perfil ----------
+  const salvarPerfil = async () => {
+    dom.saveBtn.disabled = true;
+
     // Atualiza no localStorage
-    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtualizado));
-    
-    // Atualiza na lista de usuários
-    let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    const usuarioIndex = usuarios.findIndex(u => u.id === usuarioLogado.id);
-    if (usuarioIndex !== -1) {
-      usuarios[usuarioIndex] = usuarioAtualizado;
-      localStorage.setItem('usuarios', JSON.stringify(usuarios));
-    }
-    
-    // Atualiza no Firestore
-    await salvarUsuarioFirestore(usuarioAtualizado);
-    
-    // Atualiza o header
-    document.getElementById('perfilNomeHeader').textContent = usuarioAtualizado.nome;
-    document.getElementById('perfilAvatar').textContent = usuarioAtualizado.nome[0].toUpperCase();
-    document.getElementById('userName').textContent = usuarioAtualizado.nome.split(' ')[0];
-    document.getElementById('userAvatar').textContent = usuarioAtualizado.nome[0].toUpperCase();
-    
-    mostrarToast('✅ Dados salvos com sucesso!');
-  }
+    if (usuarioLogado) {
+      usuarioLogado = { ...usuarioLogado, ...form };
+      localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
 
-  window.onload = verificarLogin;
+      // Atualiza na lista de usuários
+      let usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
+      const usuarioIndex = usuarios.findIndex(u => u.id === usuarioLogado.id);
+      if (usuarioIndex !== -1) {
+        usuarios[usuarioIndex] = usuarioLogado;
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+      }
+    }
+
+    // Tenta usar a API se estiver online
+    try {
+      if (typeof ZCoreAPI !== "undefined") {
+        await ZCoreAPI.init();
+        if (ZCoreAPI._online) {
+          const data = await ZCoreAPI.updateProfile(form);
+          const usuarioAPI = data.usuario || data;
+          usuarioLogado = { ...usuarioLogado, ...usuarioAPI };
+          localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao atualizar via API:", err);
+    }
+
+    // Feedback visual
+    dirty = false;
+    savedFlash = true;
+    updateSaveUI();
+
+    // Pulse no último campo editado
+    const inputs = document.querySelectorAll("input");
+    if (inputs.length) {
+      inputs[inputs.length - 1].classList.add("valid-pulse");
+      setTimeout(() => inputs[inputs.length - 1].classList.remove("valid-pulse"), 500);
+    }
+
+    // Reset saved flash após tempo
+    setTimeout(() => {
+      savedFlash = false;
+      updateSaveUI();
+    }, 2500);
+
+    dom.saveBtn.disabled = false;
+  };
+
+  // ---------- avatar upload ----------
+  const handleAvatarClick = () => dom.avatarInput.click();
+  const handleAvatarFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const imgUrl = ev.target.result;
+      dom.avatarInitial.style.backgroundImage = `url(${imgUrl})`;
+      dom.avatarInitial.textContent = "";
+      // Salva no localStorage
+      if (usuarioLogado) {
+        usuarioLogado.avatar = imgUrl;
+        localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // ---------- toast ----------
+  const mostrarToast = (mensagem, tipo = "sucesso") => {
+    dom.toast.textContent = mensagem;
+    dom.toast.style.background = tipo === "sucesso" ? "#34d399" : tipo === "erro" ? "#ef4444" : "#fbbf24";
+    dom.toast.style.color = "#08080d";
+    dom.toast.style.padding = "12px 24px";
+    dom.toast.style.borderRadius = "10px";
+    dom.toast.style.position = "fixed";
+    dom.toast.style.bottom = "100px";
+    dom.toast.style.left = "50%";
+    dom.toast.style.transform = "translateX(-50%)";
+    dom.toast.style.zIndex = "100";
+    dom.toast.style.fontFamily = "'Inter', sans-serif";
+    dom.toast.style.fontWeight = "600";
+    dom.toast.style.fontSize = "14px";
+    dom.toast.style.boxShadow = "0 10px 30px rgba(0,0,0,.4)";
+    dom.toast.style.opacity = "1";
+    dom.toast.style.transition = "opacity .3s";
+    setTimeout(() => {
+      dom.toast.style.opacity = "0";
+    }, 3000);
+  };
+
+  // ---------- verificar login e carregar dados ----------
+  const verificarLogin = async () => {
+    const usuarioLogadoStr = localStorage.getItem("usuarioLogado");
+    if (!usuarioLogadoStr) {
+      mostrarToast("❌ Você precisa estar logado!", "erro");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
+      return;
+    }
+
+    usuarioLogado = JSON.parse(usuarioLogadoStr);
+
+    // Tenta carregar dados da API se estiver online
+    try {
+      if (typeof ZCoreAPI !== "undefined") {
+        await ZCoreAPI.init();
+        if (ZCoreAPI._online) {
+          const data = await ZCoreAPI.getMe();
+          const usuarioAPI = data.usuario || data;
+          usuarioLogado = { ...usuarioLogado, ...usuarioAPI };
+          localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao carregar perfil via API:", err);
+    }
+
+    // Preenche o formulário
+    fillForm(usuarioLogado);
+
+    // Carrega avatar se existir
+    if (usuarioLogado.avatar) {
+      dom.avatarInitial.style.backgroundImage = `url(${usuarioLogado.avatar})`;
+      dom.avatarInitial.textContent = "";
+    }
+  };
+
+  // ---------- eventos ----------
+  const initEvents = () => {
+    // Nome
+    document.getElementById("nome").addEventListener("input", (e) => {
+      form.nome = e.target.value;
+      updateFieldCheck("nome");
+      updateHeader();
+      markDirty();
+      updateCompletion();
+    });
+
+    // Email
+    document.getElementById("email").addEventListener("input", (e) => {
+      form.email = e.target.value;
+      updateFieldCheck("email");
+      updateHeader();
+      markDirty();
+      updateCompletion();
+    });
+
+    // CPF
+    document.getElementById("cpf").addEventListener("input", (e) => {
+      const masked = maskCPF(e.target.value);
+      document.getElementById("cpf").value = masked;
+      form.cpf = masked;
+      updateFieldCheck("cpf");
+      markDirty();
+      updateCompletion();
+    });
+
+    // Telefone
+    document.getElementById("telefone").addEventListener("input", (e) => {
+      const masked = maskPhone(e.target.value);
+      document.getElementById("telefone").value = masked;
+      form.telefone = masked;
+      updateFieldCheck("telefone");
+      markDirty();
+      updateCompletion();
+    });
+
+    // CEP
+    document.getElementById("cep").addEventListener("input", (e) => handleCepChange(e.target.value));
+
+    // Rua
+    document.getElementById("rua").addEventListener("input", (e) => {
+      form.rua = e.target.value;
+      updateFieldCheck("rua");
+      markDirty();
+      updateCompletion();
+    });
+
+    // Número
+    document.getElementById("numero").addEventListener("input", (e) => {
+      form.numero = e.target.value;
+      updateFieldCheck("numero");
+      markDirty();
+      updateCompletion();
+    });
+
+    // Complemento
+    document.getElementById("complemento").addEventListener("input", (e) => {
+      form.complemento = e.target.value;
+      markDirty();
+      updateCompletion();
+    });
+
+    // Bairro
+    document.getElementById("bairro").addEventListener("input", (e) => {
+      form.bairro = e.target.value;
+      updateFieldCheck("bairro");
+      markDirty();
+      updateCompletion();
+    });
+
+    // Cidade
+    document.getElementById("cidade").addEventListener("input", (e) => {
+      form.cidade = e.target.value;
+      updateFieldCheck("cidade");
+      markDirty();
+      updateCompletion();
+    });
+
+    // Custom select estado
+    dom.estadoTrigger.addEventListener("click", () => {
+      if (dom.estadoPanel.classList.contains("open")) closeEstadoPanel();
+      else openEstadoPanel();
+    });
+
+    // Fechar select ao clicar fora
+    document.addEventListener("click", (e) => {
+      if (!dom.estadoSelect.contains(e.target)) closeEstadoPanel();
+    });
+
+    // Avatar
+    dom.avatarShell.addEventListener("click", handleAvatarClick);
+    dom.avatarInput.addEventListener("change", handleAvatarFile);
+
+    // Salvar
+    dom.saveBtn.addEventListener("click", salvarPerfil);
+  };
+
+  // ---------- inicializar ----------
+  const init = () => {
+    buildEstadoOptions();
+    initEvents();
+    verificarLogin();
+  };
+
+  window.onload = init;
 </script>
 <script src="../js/api.js"></script>
-<script src="../js/tema.js"></script>
-<script src="../js/menu-mobile.js"></script>
 
 </body>
 </html>
-

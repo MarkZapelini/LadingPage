@@ -154,6 +154,7 @@ function rowToUser(row, includePrivate = false) {
     bairro: row.bairro,
     cidade: row.cidade,
     estado: row.estado,
+    role: row.role || 'user',
     pedidos: []
   };
   if (includePrivate) user.senha_hash = row.senha_hash;

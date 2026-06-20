@@ -1,3 +1,21 @@
+    // --- MENU DROPDOWN DO USUÁRIO ---
+    function toggleUserMenu() {
+      const dropdown = document.getElementById('userDropdown');
+      if (dropdown) {
+        const isHidden = dropdown.style.display === 'none';
+        dropdown.style.display = isHidden ? 'block' : 'none';
+      }
+    }
+
+    // Fechar o dropdown quando clica fora
+    document.addEventListener('click', function(event) {
+      const userInfo = document.querySelector('.user-info-premium');
+      const dropdown = document.getElementById('userDropdown');
+      if (userInfo && dropdown && !userInfo.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+
     // --- CONFIGURAÇÃO DO FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyA7gHgpS2dBrIa2dJamylsg9DUdgOHt3Sk",
@@ -273,11 +291,30 @@
       const user = JSON.parse(localStorage.getItem('usuarioLogado'));
       const auth = document.getElementById('authButtons');
       const logged = document.getElementById('userLogged');
+      const adminLink = document.getElementById('adminLink');
+      const adminLinkDropdown = document.getElementById('adminLinkDropdown');
       if (user && logged) {
         auth.style.display = 'none';
         logged.style.display = 'flex';
         document.getElementById('userName').textContent = user.nome.split(' ')[0];
+        if (adminLink) {
+          adminLink.style.display = (user.role === 'admin') ? 'flex' : 'none';
+        }
+        if (adminLinkDropdown) {
+          adminLinkDropdown.style.display = (user.role === 'admin') ? 'flex' : 'none';
+        }
+      } else {
+        if (auth) auth.style.display = 'flex';
+        if (logged) logged.style.display = 'none';
+        if (adminLink) adminLink.style.display = 'none';
+        if (adminLinkDropdown) adminLinkDropdown.style.display = 'none';
       }
+    };
+
+    window.fazerLogout = function(event) {
+      if (event) event.preventDefault();
+      localStorage.removeItem('usuarioLogado');
+      window.location.href = 'index.html';
     };
 
     window.scrollToSection = (e, id) => { if(e) e.preventDefault(); document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); };

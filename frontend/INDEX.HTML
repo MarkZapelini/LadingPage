@@ -35,7 +35,6 @@
       <li><a href="#produtos" onclick="scrollToSection(event, 'produtos')">Produtos</a></li>
       <li><a href="#ofertas" onclick="scrollToSection(event, 'ofertas')">Ofertas</a></li>
       <li><a href="#">Contato</a></li>
-      <li class="admin-item"><a href="admin/admin-full.html" class="btn-admin-nav"><i class="fas fa-cog"></i> Admin</a></li>
     </ul>
 
     <div class="search-container">
@@ -53,11 +52,28 @@
         </div>
 
         <div id="userLogged" style="display: none;" class="user-group">
-          <div class="user-info-premium">
+          <div class="user-info-premium" onclick="toggleUserMenu()">
             <div class="user-avatar-premium" id="userAvatar">U</div>
             <span class="user-name-premium" id="userName">Usuário</span>
+            <i class="fas fa-chevron-down"></i>
           </div>
-          <button class="btn-logout-premium" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
+          <!-- Dropdown do usuário -->
+          <div class="user-dropdown" id="userDropdown">
+            <a href="pages/perfil.html">
+              <i class="fas fa-user"></i> Meu Perfil
+            </a>
+            <a href="pages/pedidos.html">
+              <i class="fas fa-shopping-bag"></i> Meus Pedidos
+            </a>
+            <div class="user-dropdown-divider"></div>
+            <a href="admin/admin-full.html" id="adminLinkDropdown">
+              <i class="fas fa-cog"></i> Painel Admin
+            </a>
+            <a href="#" onclick="fazerLogout(event)" class="user-dropdown-logout">
+              <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+          </div>
+          <button class="btn-logout-premium" id="logoutBtnDesktop" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
         <div class="action-buttons">
@@ -436,6 +452,7 @@
 <script src="js/api.js"></script>
 <script src="js/tema.js"></script>
 <script src="js/interacoes.js"></script>
+<script src="js/seed-local-users.js"></script>
 <script src="js/menu-mobile.js"></script>
 </body>
 </html>
