@@ -1,0 +1,12 @@
+.sobre-user-group-hidden,
+.sobre-cart-footer-hidden {
+  display: none;
+}
+
+.sobre-section-spaced {
+  padding-top: 40px;
+}
+
+.sobre-header-spaced {
+  margin-top: 60px;
+}

@@ -83,6 +83,10 @@ body {
     gap: 12px;
 }
 
+.admin-hidden {
+    display: none;
+}
+
 .logo-icon {
     width: 40px;
     height: 40px;

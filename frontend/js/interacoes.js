@@ -293,10 +293,25 @@
       const logged = document.getElementById('userLogged');
       const adminLink = document.getElementById('adminLink');
       const adminLinkDropdown = document.getElementById('adminLinkDropdown');
+      const userAvatar = document.getElementById('userAvatar');
       if (user && logged) {
         auth.style.display = 'none';
         logged.style.display = 'flex';
         document.getElementById('userName').textContent = user.nome.split(' ')[0];
+        
+        // Exibe o avatar se existir
+        if (userAvatar) {
+          if (user.avatar) {
+            userAvatar.style.backgroundImage = `url(${user.avatar})`;
+            userAvatar.style.backgroundSize = 'cover';
+            userAvatar.style.backgroundPosition = 'center';
+            userAvatar.textContent = '';
+          } else {
+            userAvatar.textContent = (user.nome || 'U').trim().charAt(0).toUpperCase();
+            userAvatar.style.backgroundImage = '';
+          }
+        }
+        
         if (adminLink) {
           adminLink.style.display = (user.role === 'admin') ? 'flex' : 'none';
         }
@@ -308,6 +323,7 @@
         if (logged) logged.style.display = 'none';
         if (adminLink) adminLink.style.display = 'none';
         if (adminLinkDropdown) adminLinkDropdown.style.display = 'none';
+        if (userAvatar) userAvatar.textContent = 'U';
       }
     };
 

@@ -1,0 +1,8 @@
+.faq-user-group-hidden,
+.faq-cart-footer-hidden {
+  display: none;
+}
+
+.faq-section-spaced {
+  padding-top: 40px;
+}

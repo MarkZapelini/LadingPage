@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico do Sistema</title>
+  <link rel="stylesheet" href="../css/pages/diagnostico.css">
+</head>
+<body>
+  <div class="card">
+    <h1>🔍 Diagnóstico do Sistema Z-Core</h1>
+    <p>Verificando o estado do seu sistema...</p>
+  </div>
+
+  <div class="card">
+    <h2>1. Estado do localStorage</h2>
+    <div id="localStorageStatus"></div>
+    <button onclick="verificarLocalStorage()">Atualizar Verificação</button>
+  </div>
+
+  <div class="card">
+    <h2>2. Contas Cadastradas</h2>
+    <div id="contasStatus"></div>
+    <button onclick="listarContas()">Listar Contas</button>
+    <button class="btn-success" onclick="criarContaTeste()">Criar/Recriar Conta de Teste</button>
+  </div>
+
+  <div class="card">
+    <h2>3. Teste de Login Rápido</h2>
+    <div id="loginStatus"></div>
+    <button class="btn-success" onclick="testarLogin()">Testar Login com Conta de Teste</button>
+  </div>
+
+  <div class="card">
+    <h2>4. Ações Rápidas</h2>
+    <button onclick="window.location.href='login.html'">Ir para Login</button>
+    <button onclick="window.location.href='../index.html'">Ir para Loja</button>
+    <button onclick="limparLogin()">Limpar Sessão Atual</button>
+  </div>
+
+  <script>
+    function verificarLocalStorage() {
+      const div = document.getElementById('localStorageStatus');
+      let html = '<div class="item">';
+      
+      const keys = ['usuarios', 'usuarioLogado', 'adminProducts', 'cart', 'wishlist'];
+      
+      keys.forEach(key => {
+        const valor = localStorage.getItem(key);
+        const existe = valor !== null;
+        html += `<p><strong>${key}:</strong> <span class="${existe ? 'success' : 'error'}">${existe ? '✅ Presente' : '❌ Ausente'}</span></p>`;
+        if (existe) {
+          try {
+            const dados = JSON.parse(valor);
+            html += `<pre class="diagnostico-pre">${JSON.stringify(dados, null, 2)}</pre>`;
+          } catch(e) {
+            html += `<pre class="diagnostico-pre">${valor}</pre>`;
+          }
+        }
+      });
+      
+      html += '</div>';
+      div.innerHTML = html;
+    }
+
+    function listarContas() {
+      const div = document.getElementById('contasStatus');
+      let html = '<div class="item">';
+      
+      const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      
+      if (usuarios.length === 0) {
+        html += '<p class="error">Nenhuma conta cadastrada!</p>';
+      } else {
+        html += `<p class="success">Total de contas: ${usuarios.length}</p>`;
+        usuarios.forEach(u => {
+          html += `<div class="diagnostico-account-card">`;
+          html += `<p><strong>Nome:</strong> ${u.nome}</p>`;
+          html += `<p><strong>Email:</strong> ${u.email}</p>`;
+          html += `<p><strong>Senha:</strong> ${u.senha || '****'}</p>`;
+          html += `</div>`;
+        });
+      }
+      
+      html += '</div>';
+      div.innerHTML = html;
+    }
+
+    function criarContaTeste() {
+      const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      
+      // Remove a conta de teste se já existir
+      const usuariosFiltrados = usuarios.filter(u => u.email !== 'teste@zcore.com.br');
+      
+      const novaConta = {
+        id: Date.now(),
+        nome: 'Teste Z-Core',
+        email: 'teste@zcore.com.br',
+        cpf: '123.456.789-00',
+        telefone: '(11) 99999-9999',
+        senha: '123456',
+        pedidos: []
+      };
+      
+      usuariosFiltrados.push(novaConta);
+      localStorage.setItem('usuarios', JSON.stringify(usuariosFiltrados));
+      
+      alert('✅ Conta de teste criada com sucesso!');
+      listarContas();
+      verificarLocalStorage();
+    }
+
+    function testarLogin() {
+      const div = document.getElementById('loginStatus');
+      
+      const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      const usuario = usuarios.find(u => u.email === 'teste@zcore.com.br' && u.senha === '123456');
+      
+      if (usuario) {
+        div.innerHTML = `
+          <div class="item success">
+            <p>✅ Login encontrado com sucesso!</p>
+            <p><strong>Usuário:</strong> ${usuario.nome}</p>
+            <p><strong>Email:</strong> ${usuario.email}</p>
+          </div>
+        `;
+        
+        // Faz login automaticamente para testar
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+        div.innerHTML += `<p class="success diagnostico-login-note">✅ Sessão criada! Agora você está logado.</p>`;
+        
+      } else {
+        div.innerHTML = `
+          <div class="item error">
+            <p>❌ Conta de teste não encontrada!</p>
+            <p>Clique em "Criar/Recriar Conta de Teste".</p>
+          </div>
+        `;
+      }
+    }
+
+    function limparLogin() {
+      localStorage.removeItem('usuarioLogado');
+      alert('Sessão limpa!');
+      verificarLocalStorage();
+    }
+
+    // Carrega o diagnóstico automaticamente
+    window.onload = function() {
+      verificarLocalStorage();
+      listarContas();
+    };
+  </script>
+</body>
+</html>
