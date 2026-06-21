@@ -1,0 +1,128 @@
+.pedidos-empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--muted);
+}
+
+.pedidos-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.pedidos-empty-link {
+  display: inline-block;
+  margin-top: 16px;
+}
+
+.pedido-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.pedido-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.pedido-meta {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.pedido-date,
+.pedido-address,
+.pedido-total-label,
+.pedido-item-qty {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.pedido-address {
+  font-size: 14px;
+}
+
+.pedido-status-wrap,
+.pedido-total-wrap {
+  text-align: right;
+}
+
+.pedido-status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.pedido-status-pendente {
+  background: #f59e0b;
+}
+
+.pedido-status-em-andamento {
+  background: #3b82f6;
+}
+
+.pedido-status-enviado {
+  background: #6366f1;
+}
+
+.pedido-status-entregue {
+  background: #10b981;
+}
+
+.pedido-status-cancelado {
+  background: #ef4444;
+}
+
+.pedido-status-default {
+  background: #6c757d;
+}
+
+.pedido-items {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-bottom: 16px;
+}
+
+.pedido-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.pedido-item-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pedido-item-emoji {
+  font-size: 28px;
+}
+
+.pedido-item-name,
+.pedido-item-price {
+  font-weight: 600;
+}
+
+.pedido-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.pedido-total-value {
+  font-size: 24px;
+  font-weight: 700;
+}

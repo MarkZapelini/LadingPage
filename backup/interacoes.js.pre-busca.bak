@@ -109,27 +109,6 @@
       { id: 'wearables', label: 'Wearables', icon: '⌚', count: 19 },
       { id: 'games', label: 'Games', icon: '🎮', count: 37 },
     ];
-
-    function normalizarTextoBusca(valor) {
-      return String(valor || '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim();
-    }
-
-    function produtoCorrespondeBusca(produto, termoBusca) {
-      if (!termoBusca) return true;
-
-      return [
-        produto.nome,
-        produto.marca,
-        produto.cat,
-        produto.categoria,
-        produto.desc,
-        produto.status
-      ].some(campo => normalizarTextoBusca(campo).includes(termoBusca));
-    }
   
     function buildStore() {
       const app = document.getElementById('store-app');
@@ -196,12 +175,10 @@
       if (!grid) return;
       const cat = document.getElementById('filtroCategoria')?.value || '';
       const statusFiltro = window._statusFiltro || '';
-      const termoBusca = normalizarTextoBusca(document.getElementById('searchInput')?.value);
       
       let filtered = adminProducts.filter(p => p.status !== 'Rascunho');
       if (cat) filtered = filtered.filter(p => p.cat === cat || p.categoria?.toLowerCase().includes(cat));
       if (statusFiltro) filtered = filtered.filter(p => p.status === statusFiltro);
-      if (termoBusca) filtered = filtered.filter(p => produtoCorrespondeBusca(p, termoBusca));
 
       grid.innerHTML = filtered.map(p => `
         <div class="pcard-wrap">
@@ -227,7 +204,6 @@
       renderizarProdutos();
     };
 
-    window.buscarProdutos = renderizarProdutos;
     window.aplicarFiltros = renderizarProdutos;
     window.selecionarCategoria = (id) => { document.getElementById('filtroCategoria').value = id; renderizarProdutos(); };
     window.cliqueProduto = (n) => { const p = adminProducts.find(x => x.nome === n); if(p) window.location.href = `pages/produto.html?id=${p.id}`; };

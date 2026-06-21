@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug - Criar Conta</title>
+    <link rel="stylesheet" href="../css/pages/debug-cadastro.css">
+</head>
+<body>
+
+    <div class="logo">Z-CORE</div>
+    <h1>🔧 Diagnóstico: Criar Conta</h1>
+    
+    <div class="step">
+        <h3>Passo 1: Verificar Firebase</h3>
+        <div id="status-firebase" class="status warning">⏳ Verificando...</div>
+        <button onclick="testarFirebase()">Testar Conexão com Firebase</button>
+        <textarea id="log-firebase"></textarea>
+    </div>
+    
+    <div class="step">
+        <h3>Passo 2: Testar API Node.js</h3>
+        <div id="status-api" class="status warning">⏳ Verificando...</div>
+        <button onclick="testarAPI()">Testar Conexão com API</button>
+        <textarea id="log-api"></textarea>
+    </div>
+    
+    <div class="step">
+        <h3>Passo 3: Verificar LocalStorage</h3>
+        <div id="status-local" class="status warning">⏳ Verificando...</div>
+        <button onclick="verificarLocalStorage()">Verificar LocalStorage</button>
+        <textarea id="log-local"></textarea>
+    </div>
+    
+    <div class="step">
+        <h3>Passo 4: Testar Criação de Conta (Modo Seguro)</h3>
+        <div id="status-criar" class="status warning">⏳ Aguardando...</div>
+        <button onclick="testarCriarConta()">Testar Criar Conta (Teste)</button>
+        <textarea id="log-criar"></textarea>
+    </div>
+    
+    <div class="step">
+        <h3>Links Úteis</h3>
+        <a href="../index.html" class="link">🏠 Ir para a Home</a><br>
+        <a href="cadastro.html" class="link">📝 Ir para o Cadastro</a><br>
+        <a href="login.html" class="link">🔐 Ir para o Login</a>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script>
+        // === CONFIGURAÇÃO DO FIREBASE ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7gHgpS2dBrIa2dJamylsg9DUdgOHt3Sk",
+            authDomain: "pg-de-vendas.firebaseapp.com",
+            databaseURL: "https://pg-de-vendas-default-rtdb.firebaseio.com",
+            projectId: "pg-de-vendas",
+            storageBucket: "pg-de-vendas.firebasestorage.app",
+            messagingSenderId: "803403474499",
+            appId: "1:803403474499:web:e729b5b49b75dfa4cd16f6",
+            measurementId: "G-5LPWHGFWK5"
+        };
+
+        let db = null;
+        let firebaseApp = null;
+        
+        function logar(elementId, texto) {
+            const textarea = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString('pt-BR');
+            textarea.value += `[${timestamp}] ${texto}\n`;
+            textarea.scrollTop = textarea.scrollHeight;
+        }
+        
+        function setStatus(elementId, tipo, texto) {
+            const el = document.getElementById(elementId);
+            el.className = `status ${tipo}`;
+            el.textContent = texto;
+        }
+        
+        async function testarFirebase() {
+            setStatus('status-firebase', 'warning', '🔄 Conectando ao Firebase...');
+            logar('log-firebase', 'Iniciando conexão com Firebase...');
+            
+            try {
+                firebaseApp = firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                setStatus('status-firebase', 'ok', '✅ Firebase conectado com sucesso!');
+                logar('log-firebase', '✅ Firebase inicializado com sucesso!');
+                logar('log-firebase', 'Project ID: ' + firebaseConfig.projectId);
+                
+                // Testar escrita
+                const testDoc = db.collection('testes').doc('teste-conexao');
+                await testDoc.set({
+                    data: new Date().toISOString(),
+                    mensagem: 'Conexão OK!'
+                });
+                logar('log-firebase', '✅ Teste de escrita no Firestore OK!');
+                
+                // Testar leitura
+                const doc = await testDoc.get();
+                if (doc.exists) {
+                    logar('log-firebase', '✅ Teste de leitura no Firestore OK! Dados: ' + JSON.stringify(doc.data()));
+                }
+                
+            } catch (error) {
+                console.error(error);
+                setStatus('status-firebase', 'error', '❌ Erro no Firebase!');
+                logar('log-firebase', '❌ ERRO: ' + error.message);
+                logar('log-firebase', 'Stack: ' + error.stack);
+            }
+        }
+        
+        async function testarAPI() {
+            setStatus('status-api', 'warning', '🔄 Tentando conectar à API...');
+            logar('log-api', 'Tentando conectar à API em http://localhost:3000/api/health...');
+            
+            try {
+                const resposta = await fetch('http://localhost:3000/api/health');
+                if (resposta.ok) {
+                    const dados = await resposta.json();
+                    setStatus('status-api', 'ok', '✅ API online! Versão: ' + dados.version);
+                    logar('log-api', '✅ Resposta da API: ' + JSON.stringify(dados));
+                } else {
+                    setStatus('status-api', 'error', '❌ API retornou erro!');
+                    logar('log-api', '❌ Status: ' + resposta.status + ' ' + resposta.statusText);
+                }
+            } catch (error) {
+                setStatus('status-api', 'error', '❌ API offline ou inacessível!');
+                logar('log-api', '❌ ERRO: ' + error.message);
+                logar('log-api', '💡 Dica: Você precisa rodar o servidor com "npm start"!');
+            }
+        }
+        
+        async function verificarLocalStorage() {
+            setStatus('status-local', 'warning', '🔄 Verificando...');
+            logar('log-local', 'Verificando conteúdo do localStorage...');
+            
+            try {
+                const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+                const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
+                
+                setStatus('status-local', 'ok', '✅ LocalStorage OK!');
+                logar('log-local', 'Total de usuários no localStorage: ' + usuarios.length);
+                logar('log-local', 'Usuários: ' + JSON.stringify(usuarios, null, 2));
+                logar('log-local', 'Usuário logado: ' + JSON.stringify(usuarioLogado, null, 2));
+                
+            } catch (error) {
+                setStatus('status-local', 'error', '❌ Erro no LocalStorage!');
+                logar('log-local', '❌ ERRO: ' + error.message);
+            }
+        }
+        
+        async function testarCriarConta() {
+            setStatus('status-criar', 'warning', '🔄 Tentando criar conta de teste...');
+            logar('log-criar', 'Iniciando criação de conta de teste...');
+            
+            const emailTeste = 'teste-debug-' + Date.now() + '@zcore.com.br';
+            const senhaTeste = '123456';
+            const novoUsuario = {
+                id: Date.now(),
+                nome: 'Usuário Teste Debug',
+                email: emailTeste,
+                cpf: '000.000.000-00',
+                telefone: '(00) 00000-0000',
+                senha: senhaTeste,
+                pedidos: []
+            };
+            
+            logar('log-criar', 'Dados do usuário: ' + JSON.stringify(novoUsuario));
+            
+            try {
+                // 1. Salvar no LocalStorage
+                let usuariosLocal = JSON.parse(localStorage.getItem('usuarios') || '[]');
+                usuariosLocal.push(novoUsuario);
+                localStorage.setItem('usuarios', JSON.stringify(usuariosLocal));
+                logar('log-criar', '✅ Salvo no LocalStorage');
+                
+                // 2. Tentar Firebase
+                if (!db) {
+                    await testarFirebase();
+                }
+                if (db) {
+                    await db.collection('usuarios').doc(novoUsuario.id.toString()).set(novoUsuario);
+                    logar('log-criar', '✅ Salvo no Firebase Firestore');
+                }
+                
+                setStatus('status-criar', 'ok', '✅ Conta criada com sucesso!');
+                logar('log-criar', `🎉 CONTA CRIADA! Use: ${emailTeste} / ${senhaTeste} para testar login!`);
+                logar('log-criar', '💡 Agora vá para a página de login e teste!');
+                
+            } catch (error) {
+                console.error(error);
+                setStatus('status-criar', 'error', '❌ Erro ao criar conta!');
+                logar('log-criar', '❌ ERRO: ' + error.message);
+                logar('log-criar', 'Stack: ' + error.stack);
+            }
+        }
+        
+        // Auto-runs on load
+        window.onload = function() {
+            verificarLocalStorage();
+            testarAPI();
+        };
+    </script>
+</body>
+</html>

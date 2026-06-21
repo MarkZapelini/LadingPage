@@ -86,7 +86,9 @@ Para instruções completas de deploy, use `DEPLOY.md`.
 - O backend grava dados em SQLite em `backend/data/zcore.db`.
 - O modo sem backend funciona, mas usa `localStorage` e não é adequado para produção.
 - Em servidores Linux, nomes de arquivo maiúsculos podem ser sensíveis.
-
+- Segue o login e senha para a cessar a conta no site do " PAINEL ADMIN" Email admin@zcore.local, Usurario admin , senha: admin123
 ---
+
+
 
 **Z-Core Eletrônicos** — © 2025

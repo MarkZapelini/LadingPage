@@ -9,6 +9,7 @@ const orderRoutes = require('./src/routes/orders');
 const cartRoutes = require('./src/routes/cart');
 const wishlistRoutes = require('./src/routes/wishlist');
 const userRoutes = require('./src/routes/users');
+const paymentRoutes = require('./src/routes/payments');
 
 require('./src/db/database');
 require('./src/db/seed');
@@ -29,6 +30,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/payments', paymentRoutes);
 
 const frontendPath = path.join(__dirname, '../frontend');
 app.use(express.static(frontendPath));

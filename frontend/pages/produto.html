@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/pages/produto.css">
 </head>
 <body>
 
@@ -41,7 +42,7 @@
         <a href="cadastro.html" class="btn-register-premium">Cadastre-se</a>
       </div>
 
-      <div id="userLogged" style="display: none;" class="user-group">
+      <div id="userLogged" class="user-group produto-user-group-hidden">
         <div class="user-info-premium">
           <div class="user-avatar-premium" id="userAvatar">U</div>
           <span class="user-name-premium" id="userName">Usuário</span>
@@ -83,8 +84,8 @@
       <!-- Detalhes do Produto -->
       <div class="product-details-section">
         <div class="product-badges">
-          <span class="badge-novo" id="badgeNovo" style="display: none;">LANÇAMENTO</span>
-          <span class="badge-off" id="badgeOff" style="display: none;"></span>
+          <span class="badge-novo produto-hidden" id="badgeNovo">LANÇAMENTO</span>
+          <span class="badge-off produto-hidden" id="badgeOff"></span>
         </div>
         
         <div class="product-brand" id="productBrand">Z-Core</div>
@@ -96,7 +97,7 @@
         </div>
         
         <div class="product-price-section">
-          <div class="product-price-old" id="priceOld" style="display: none;"></div>
+          <div class="product-price-old produto-hidden" id="priceOld"></div>
           <div class="product-price" id="price">R$ 0,00</div>
         </div>
         
@@ -221,7 +222,7 @@
       <i class="fas fa-shopping-cart"></i> Seu carrinho está vazio
     </div>
     <div class="cart-items" id="cartItems"></div>
-    <div class="cart-footer" id="cartFooter" style="display: none;">
+    <div class="cart-footer produto-cart-footer-hidden" id="cartFooter">
       <div class="cart-total">
         <span>Total</span>
         <strong id="cartTotal">R$ 0,00</strong>
@@ -300,7 +301,7 @@
     
     const productMainImage = document.getElementById('productMainImage');
     if (produtoAtual.foto) {
-      productMainImage.innerHTML = `<img src="${produtoAtual.foto}" alt="${produtoAtual.nome}" style="width: 100%; height: 100%; object-fit: cover;">`;
+      productMainImage.innerHTML = `<img src="${produtoAtual.foto}" alt="${produtoAtual.nome}" class="produto-main-image-tag">`;
     } else {
       document.getElementById('productEmoji').textContent = produtoAtual.emoji || '📦';
     }
