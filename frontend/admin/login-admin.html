@@ -7,7 +7,141 @@
   <title>Login Admin — Z-Core</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="../css/admin/login-admin.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+    :root { --login-box-bg: #fff; --login-text: #0A0A0A; --login-muted: #64748b; --login-input-border: #e2e8f0; color-scheme: light; }
+    [data-theme="dark"] { --login-box-bg: #16161f; --login-text: #f0f0f5; --login-muted: #9ca3af; --login-input-border: #2d2d3a; color-scheme: dark; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0A0A0A 0%, #1a0033 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: background 0.2s;
+    }
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #050508 0%, #12001f 100%);
+    }
+    .login-theme-wrap {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .theme-toggle:hover {
+      border-color: #A020F0;
+      background: rgba(160, 32, 240, 0.25);
+    }
+    .theme-toggle .theme-icon-dark { display: none; }
+    [data-theme="dark"] .theme-toggle .theme-icon-light { display: none; }
+    [data-theme="dark"] .theme-toggle .theme-icon-dark { display: inline-block; }
+    .login-box {
+      background: var(--login-box-bg);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .login-logo {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--login-text);
+      margin-bottom: 8px;
+    }
+    .login-logo span { color: #A020F0; }
+    .login-subtitle {
+      color: var(--login-muted);
+      font-size: 14px;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--login-text);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--login-input-border);
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.2s;
+      outline: none;
+      background: var(--login-box-bg);
+      color: var(--login-text);
+    }
+    .form-group input:focus {
+      border-color: #A020F0;
+      box-shadow: 0 0 0 3px rgba(160, 32, 240, 0.1);
+    }
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #A020F0, #7a17b5);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 8px;
+    }
+    .btn-login:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(160, 32, 240, 0.4);
+    }
+    .btn-login:active { transform: translateY(0); }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: var(--login-muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .back-link:hover { color: #A020F0; }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0A0A0A;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      transition: transform 0.3s;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.erro { background: #ef4444; }
+  </style>
 </head>
 <body>
 

@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive.css">
-  <link rel="stylesheet" href="../css/pages/login.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -49,7 +48,7 @@
         <a href="cadastro.html" class="btn-register-premium">Cadastre-se</a>
       </div>
 
-      <div id="userLogged" class="user-group login-user-group-hidden">
+      <div id="userLogged" style="display: none;" class="user-group">
         <div class="user-info-premium">
           <div class="user-avatar-premium" id="userAvatar">U</div>
           <span class="user-name-premium" id="userName">Usuário</span>
@@ -88,7 +87,7 @@
         <span>ou</span>
       </div>
       
-      <p class="auth-link auth-link-compact">
+      <p class="auth-link" style="margin-bottom:8px">
         Esqueceu a senha? 
         <a href="#" onclick="abrirModalRecuperar()">Recuperar</a>
       </p>
@@ -153,32 +152,32 @@
 </footer>
 
 <!-- MODAL DE RECUPERAÇÃO DE SENHA -->
-<div class="modal-overlay login-modal-overlay" id="modalRecuperarSenha">
-  <div class="modal login-modal">
-    <div class="login-modal-header">
+<div class="modal-overlay" id="modalRecuperarSenha" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;justify-content:center;align-items:center">
+  <div class="modal" style="background:#fff;border-radius:16px;width:100%;max-width:420px;padding:32px;box-shadow:0 25px 80px rgba(0,0,0,0.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
       <div>
-        <h2 class="login-modal-title">Recuperar Senha</h2>
-        <p class="login-modal-subtitle">Digite seu e-mail para receber o link de recuperação</p>
+        <h2 style="font-size:22px;font-weight:700;color:#0A0A0A;margin:0">Recuperar Senha</h2>
+        <p style="font-size:13px;color:#64748b;margin-top:4px">Digite seu e-mail para receber o link de recuperação</p>
       </div>
-      <button onclick="fecharModalRecuperar()" class="login-modal-close">×</button>
+      <button onclick="fecharModalRecuperar()" style="background:transparent;border:none;font-size:24px;cursor:pointer;color:#64748b">×</button>
     </div>
     
     <div id="step1">
-      <div class="form-group login-modal-step">
-        <label class="login-modal-label">E-mail Cadastrado</label>
-        <input type="email" id="recuperarEmail" placeholder="seu@email.com" class="login-modal-input">
+      <div class="form-group" style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:600;color:#334155;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">E-mail Cadastrado</label>
+        <input type="email" id="recuperarEmail" placeholder="seu@email.com" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;outline:none;transition:all .2s;font-family:'DM Sans',sans-serif" onfocus="this.style.borderColor='#A020F0';this.style.boxShadow='0 0 0 3px rgba(160,32,240,0.1)'">
       </div>
       
-      <button onclick="enviarLinkRecuperacao()" class="login-modal-primary-btn">
-        <i class="fas fa-paper-plane login-modal-icon"></i>Enviar Link de Recuperação
+      <button onclick="enviarLinkRecuperacao()" style="width:100%;padding:13px;background:linear-gradient(135deg,#A020F0,#7a17b5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 10px 25px rgba(160,32,240,0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+        <i class="fas fa-paper-plane" style="margin-right:8px"></i>Enviar Link de Recuperação
       </button>
     </div>
     
-    <div id="step2" class="login-modal-success">
-      <div class="login-modal-success-icon">✅</div>
-      <h3 class="login-modal-success-title">Link Enviado!</h3>
-      <p class="login-modal-success-text">Verifique seu e-mail para redefinir sua senha!</p>
-      <button onclick="fecharModalRecuperar()" class="login-modal-secondary-btn">
+    <div id="step2" style="display:none;text-align:center">
+      <div style="font-size:48px;margin-bottom:16px">✅</div>
+      <h3 style="font-size:18px;font-weight:700;color:#0A0A0A;margin-bottom:8px">Link Enviado!</h3>
+      <p style="font-size:14px;color:#64748b;margin-bottom:20px">Verifique seu e-mail para redefinir sua senha!</p>
+      <button onclick="fecharModalRecuperar()" style="width:100%;padding:13px;background:transparent;color:#A020F0;border:2px solid #A020F0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.background='#A020F0';this.style.color='#fff'">
         Voltar ao Login
       </button>
     </div>
@@ -295,28 +294,15 @@
     const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
     const authButtons = document.getElementById('authButtons');
     const userLogged = document.getElementById('userLogged');
-    const userAvatar = document.getElementById('userAvatar');
     
     if (usuarioLogado) {
       authButtons.style.display = 'none';
       userLogged.style.display = 'flex';
       document.getElementById('userName').textContent = usuarioLogado.nome.split(' ')[0];
-      
-      if (userAvatar) {
-        if (usuarioLogado.avatar) {
-          userAvatar.style.backgroundImage = `url(${usuarioLogado.avatar})`;
-          userAvatar.style.backgroundSize = 'cover';
-          userAvatar.style.backgroundPosition = 'center';
-          userAvatar.textContent = '';
-        } else {
-          userAvatar.textContent = (usuarioLogado.nome || 'U')[0].toUpperCase();
-          userAvatar.style.backgroundImage = '';
-        }
-      }
+      document.getElementById('userAvatar').textContent = usuarioLogado.nome[0].toUpperCase();
     } else {
       authButtons.style.display = 'flex';
       userLogged.style.display = 'none';
-      if (userAvatar) userAvatar.textContent = 'U';
     }
   }
 
@@ -367,10 +353,7 @@
     
     localStorage.setItem('resetTokens', JSON.stringify(resetTokens));
 
-    const linkRecuperacao = new URL(
-      `reset-password.html?token=${token}&email=${encodeURIComponent(email)}`,
-      window.location.href
-    ).toString();
+    const linkRecuperacao = window.location.origin + window.location.pathname.replace('login.html', '') + '../pages/reset-password.html?token=' + token + '&email=' + encodeURIComponent(email);
 
     if (typeof emailjs !== 'undefined') {
       const templateParams = {
@@ -412,7 +395,6 @@
     console.log('📧 Email informado:', email);
     console.log('🔑 Senha informada:', senha);
 
-    // 1. Tenta login via API primeiro
     if (typeof ZCoreAPI !== 'undefined') {
       console.log('📡 Tentando login via API...');
       await ZCoreAPI.init();
@@ -429,36 +411,10 @@
           return;
         }
       } else {
-        console.log('📡 API offline, tentando Firestore...');
+        console.log('📡 API offline, usando localStorage...');
       }
     }
 
-    // 2. Tenta buscar no Firebase Firestore
-    try {
-      console.log('🔍 Tentando login via Firestore...');
-      const usuarioFirestore = await getUsuarioFirestore(email);
-      if (usuarioFirestore && usuarioFirestore.senha === senha) {
-        console.log('✅ Usuário encontrado no Firestore!');
-        
-        // Salva no localStorage local para uso offline
-        let usuariosLocal = JSON.parse(localStorage.getItem('usuarios') || '[]');
-        const usuarioExistenteLocal = usuariosLocal.find(u => u.email === email);
-        if (!usuarioExistenteLocal) {
-          usuariosLocal.push(usuarioFirestore);
-          localStorage.setItem('usuarios', JSON.stringify(usuariosLocal));
-        }
-        
-        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioFirestore));
-        mostrarToast('✅ Login realizado com sucesso!');
-        setTimeout(() => { window.location.href = '../index.html'; }, 1500);
-        return;
-      }
-    } catch (error) {
-      console.error('❌ Erro ao buscar no Firestore:', error);
-    }
-
-    // 3. Última tentativa: localStorage local
-    console.log('👥 Tentando login via localStorage local...');
     const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
     console.log('👥 Usuários no localStorage:', usuarios);
     
@@ -485,3 +441,4 @@
 
 </body>
 </html>
+

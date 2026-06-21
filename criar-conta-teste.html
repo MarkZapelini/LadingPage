@@ -2,10 +2,60 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=frontend/pages/criar-conta-teste.html">
-  <title>Redirecionando</title>
+  <title>Criar Conta de Teste</title>
+  <style>
+    body { font-family: Poppins, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; background: #0A0A0A; color: #fff; }
+    .card { background: #111520; padding: 30px; border-radius: 20px; border: 1px solid #2a2a2a; }
+    h1 { color: #A020F0; }
+    .info { background: #1A1D26; padding: 20px; border-radius: 12px; margin: 20px 0; }
+    .success { color: #00C9A7; font-weight: bold; }
+    button { background: linear-gradient(135deg,#A020F0,#7a17b5); color: #fff; border: none; padding: 14px 24px; border-radius: 12px; font-size: 16px; cursor: pointer; }
+  </style>
 </head>
 <body>
-  <p>Redirecionando para <a href="frontend/pages/criar-conta-teste.html">frontend/pages/criar-conta-teste.html</a>...</p>
+  <div class="card">
+    <h1>✅ Conta de Teste Criada!</h1>
+    
+    <div class="info">
+      <h3>Dados de Acesso:</h3>
+      <p><strong>E-mail:</strong> teste@zcore.com.br</p>
+      <p><strong>Senha:</strong> 123456</p>
+      <p><strong>Nome:</strong> Teste Z-Core</p>
+    </div>
+
+    <p class="success">A conta já está salva no seu navegador! Agora você pode:</p>
+    <ul style="margin:20px 0; padding-left:20px;">
+      <li>Ir para a página de login: <a href="frontend/pages/login.html" style="color:#A020F0;">login.html</a></li>
+      <li>Ou voltar para a loja: <a href="frontend/index.html" style="color:#A020F0;">index.html</a></li>
+    </ul>
+    
+    <button onclick="window.location.href='frontend/index.html'">Ir para a Loja</button>
+  </div>
+
+  <script>
+    // Adiciona a conta de teste no localStorage
+    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    
+    // Verifica se a conta já existe
+    const contaExistente = usuarios.find(u => u.email === 'teste@zcore.com.br');
+    
+    if (!contaExistente) {
+      const novaConta = {
+        id: Date.now(),
+        nome: 'Teste Z-Core',
+        email: 'teste@zcore.com.br',
+        cpf: '123.456.789-00',
+        telefone: '(11) 99999-9999',
+        senha: '123456',
+        pedidos: []
+      };
+      
+      usuarios.push(novaConta);
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      console.log('✅ Conta de teste criada!');
+    } else {
+      console.log('ℹ️ Conta de teste já existe!');
+    }
+  </script>
 </body>
 </html>

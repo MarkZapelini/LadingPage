@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Z-Core - Iniciar Aqui</title>
+  <style>
+    body { font-family: Poppins, sans-serif; max-width: 800px; margin: 60px auto; padding: 20px; background: linear-gradient(135deg,#0A0A0A 0%, #111520 100%); color: #fff; }
+    .card { background: #111520; padding: 40px; border-radius: 20px; border: 1px solid #2a2a2a; margin-bottom: 20px; }
+    h1 { color: #A020F0; font-size: 42px; margin: 0 0 20px 0; }
+    h2 { color: #00C9A7; margin-top: 30px; }
+    .btn { display: inline-block; background: linear-gradient(135deg,#A020F0,#7a17b5); color: #fff; border: none; padding: 16px 32px; border-radius: 12px; font-size: 18px; cursor: pointer; margin: 8px; text-decoration: none; }
+    .btn-success { background: linear-gradient(135deg,#00C9A7,#00997a); }
+    .info { background: #1A1D26; padding: 20px; border-radius: 12px; margin: 15px 0; }
+    .code { background: #0D0F14; padding: 10px 15px; border-radius: 8px; font-family: 'Courier New', monospace; margin: 10px 0; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="card">
+    <h1>🚀 Z-Core Eletrônicos</h1>
+    <p>Bem-vindo ao seu e-commerce premium! Escolha como quer iniciar:</p>
+  </div>
+
+  <div class="card">
+    <h2>1. Modo Rápido (Sem servidor)</h2>
+    <p>Abra diretamente no navegador, sem precisar instalar nada:</p>
+    <a class="btn-success btn" href="logar-automaticamente.html">✨ Criar Conta e Entrar</a>
+    <a class="btn" href="frontend/index.html">🛒 Abrir Loja</a>
+    <a class="btn" href="diagnostico.html">🔍 Diagnóstico</a>
+  </div>
+
+  <div class="card">
+    <h2>2. Modo Completo (Com servidor)</h2>
+    <p>Use o backend Node.js com banco de dados SQLite:</p>
+    <div class="info">
+      <p><strong>Passo 1:</strong> Instale as dependências</p>
+      <div class="code">npm run install:backend</div>
+      <p><strong>Passo 2:</strong> Inicie o servidor</p>
+      <div class="code">npm start</div>
+      <p><strong>Passo 3:</strong> Acesse no navegador</p>
+      <a class="btn" href="http://localhost:3000/index.html" target="_blank">http://localhost:3000/index.html</a>
+    </div>
+    
+    <div class="info">
+      <h3 style="color:#00C9A7;margin-top:0;">Contas Padrão:</h3>
+      <p><strong>Usuário Teste:</strong> teste@zcore.com.br / 123456</p>
+      <p><strong>Admin:</strong> admin / admin123</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Links Úteis</h2>
+    <a class="btn" href="frontend/admin/login-admin.html">👑 Painel Admin</a>
+    <a class="btn" href="frontend/pages/login.html">🔐 Login</a>
+    <a class="btn" href="frontend/pages/cadastro.html">📝 Cadastro</a>
+    <a class="btn" href="README.md">📖 Leia-me</a>
+  </div>
+</body>
+</html>

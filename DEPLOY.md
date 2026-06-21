@@ -107,5 +107,5 @@ CORS_ORIGIN=*
 ---
 
 ## Dúvidas?
-- Abra `frontend/index.html` para começar rapidamente
+- Abra o arquivo `INICIAR_AQUI.html` para começar rapidamente
 - Consulte o `README.md` para mais informações

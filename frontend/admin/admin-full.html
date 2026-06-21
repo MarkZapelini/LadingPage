@@ -359,13 +359,13 @@
                                 <div class="form-group full">
                                     <label>Foto do Produto</label>
                                     <div class="upload-area" id="uploadArea">
-                                        <input type="file" id="fFoto" accept="image/*" class="admin-hidden">
+                                        <input type="file" id="fFoto" accept="image/*" style="display: none;">
                                         <div class="upload-placeholder" id="uploadPlaceholder">
                                             <i class="ti ti-upload"></i>
                                             <p>Arraste uma imagem ou clique para selecionar</p>
                                             <span>PNG, JPG até 5MB</span>
                                         </div>
-                                        <div class="upload-preview admin-hidden" id="uploadPreview">
+                                        <div class="upload-preview" id="uploadPreview" style="display: none;">
                                             <img id="uploadedImage" alt="Preview">
                                             <button type="button" class="remove-image" id="removeFoto">
                                                 <i class="ti ti-x"></i>
@@ -390,16 +390,16 @@
                             <div class="product-preview" id="productPreview">
                                 <div class="preview-image-wrapper" id="previewImageWrapper">
                                     <div class="preview-emoji" id="previewEmoji">📦</div>
-                                    <img class="preview-image admin-hidden" id="previewImage" alt="Produto">
+                                    <img class="preview-image" id="previewImage" style="display: none;" alt="Produto">
                                 </div>
-                                <div class="preview-badge admin-hidden" id="previewBadge">Destaque</div>
+                                <div class="preview-badge" id="previewBadge" style="display: none;">Destaque</div>
                                 <div class="preview-info">
                                     <div class="preview-categoria" id="previewCategoria">Categoria</div>
                                     <div class="preview-nome" id="previewNome">Nome do Produto</div>
-                                    <div class="preview-marca admin-hidden" id="previewMarca">Marca</div>
+                                    <div class="preview-marca" id="previewMarca" style="display: none;">Marca</div>
                                     <div class="preview-precos">
                                         <span class="preview-preco" id="previewPreco">R$ 0,00</span>
-                                        <span class="preview-promo admin-hidden" id="previewPromo">R$ 0,00</span>
+                                        <span class="preview-promo" id="previewPromo" style="display: none;">R$ 0,00</span>
                                     </div>
                                     <div class="preview-desc" id="previewDesc">Descrição do produto aparecerá aqui</div>
                                 </div>
@@ -770,7 +770,7 @@
                             Remover
                         </button>
                     </div>
-                    <input type="file" id="fotoInput" accept="image/*" class="admin-hidden">
+                    <input type="file" id="fotoInput" accept="image/*" style="display: none;">
                 </div>
                 <form id="formPerfil" class="form-grid">
                     <div class="form-group full">

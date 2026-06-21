@@ -1,8 +1,0 @@
-.home-user-group-hidden,
-.home-cart-footer-hidden {
-  display: none;
-}
-
-.testimonial-avatar-alt {
-  background: linear-gradient(135deg, var(--blue), var(--accent));
-}

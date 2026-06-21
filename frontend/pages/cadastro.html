@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive.css">
-  <link rel="stylesheet" href="../css/pages/cadastro.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -47,7 +46,7 @@
         <a href="cadastro.html" class="btn-register-premium active">Cadastre-se</a>
       </div>
 
-      <div id="userLogged" class="user-group cadastro-user-group-hidden">
+      <div id="userLogged" style="display: none;" class="user-group">
         <div class="user-info-premium">
           <div class="user-avatar-premium" id="userAvatar">U</div>
           <span class="user-name-premium" id="userName">Usuário</span>
@@ -96,7 +95,7 @@
       
       <button type="button" class="btn-google" onclick="loginGoogle()">
         <span>
-          <img src="../assets/images/google-icon.png" alt="Google" width="16" height="16">
+          <link type="image/png" sizes="16x16" rel="icon" href=".../icons8-google logo-papercut-16.png">
         </span> Entrar com Google
       </button>
       
@@ -106,7 +105,7 @@
       
       <p class="auth-link">
         Já tem uma conta? 
-        <a href="login.html">Entre aqui</a>
+        <a href="../pages/login.html">Entre aqui</a>
       </p>
     </div>
   </div>
@@ -260,28 +259,15 @@
     const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
     const authButtons = document.getElementById('authButtons');
     const userLogged = document.getElementById('userLogged');
-    const userAvatar = document.getElementById('userAvatar');
     
     if (usuarioLogado) {
       authButtons.style.display = 'none';
       userLogged.style.display = 'flex';
       document.getElementById('userName').textContent = usuarioLogado.nome.split(' ')[0];
-      
-      if (userAvatar) {
-        if (usuarioLogado.avatar) {
-          userAvatar.style.backgroundImage = `url(${usuarioLogado.avatar})`;
-          userAvatar.style.backgroundSize = 'cover';
-          userAvatar.style.backgroundPosition = 'center';
-          userAvatar.textContent = '';
-        } else {
-          userAvatar.textContent = (usuarioLogado.nome || 'U')[0].toUpperCase();
-          userAvatar.style.backgroundImage = '';
-        }
-      }
+      document.getElementById('userAvatar').textContent = usuarioLogado.nome[0].toUpperCase();
     } else {
       authButtons.style.display = 'flex';
       userLogged.style.display = 'none';
-      if (userAvatar) userAvatar.textContent = 'U';
     }
   }
 
@@ -293,76 +279,45 @@
 
   async function fazerCadastro(e) {
     e.preventDefault();
-    console.log('🔍 INICIANDO CADASTRO...');
     const nome = document.getElementById('cadastroNome').value;
     const email = document.getElementById('cadastroEmail').value;
     const cpf = document.getElementById('cadastroCPF').value;
     const telefone = document.getElementById('cadastroTelefone').value;
     const senha = document.getElementById('cadastroSenha').value;
     const confirmarSenha = document.getElementById('cadastroConfirmarSenha').value;
-    
-    console.log('📝 Dados do formulário:');
-    console.log('  Nome:', nome);
-    console.log('  Email:', email);
-    console.log('  CPF:', cpf);
-    console.log('  Telefone:', telefone);
 
     if (senha !== confirmarSenha) {
-      console.error('❌ Senhas não conferem!');
       mostrarToast('❌ As senhas não coincidem!', 'erro');
       return;
     }
-    
-    console.log('✅ Senhas conferem!');
 
     if (typeof ZCoreAPI !== 'undefined') {
-      console.log('📡 Tentando cadastro via API...');
       await ZCoreAPI.init();
       if (ZCoreAPI._online) {
         try {
           const data = await ZCoreAPI.register({ nome, email, cpf, telefone, senha });
-          console.log('✅ Resposta da API:', data);
           ZCoreAPI.saveSession(data);
           mostrarToast('✅ Conta criada com sucesso!');
           setTimeout(() => { window.location.href = '../index.html'; }, 1500);
           return;
         } catch (err) {
-          console.error('❌ Erro na API:', err);
           mostrarToast('❌ ' + err.message, 'erro');
           return;
         }
-      } else {
-        console.log('⚠️ API offline, continuando sem API...');
       }
     }
-    
-    console.log('👥 Usuários no LocalStorage atualmente:', JSON.parse(localStorage.getItem('usuarios') || '[]'));
+
     const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
     if (usuarios.find(u => u.email === email)) {
-      console.error('❌ Email já existe!');
       mostrarToast('❌ Este e-mail já está cadastrado!', 'erro');
       return;
     }
-    
     const novoUsuario = { id: Date.now(), nome, email, cpf, telefone, senha, pedidos: [] };
-    console.log('📤 Novo usuário a ser salvo:', novoUsuario);
-    
     usuarios.push(novoUsuario);
     localStorage.setItem('usuarios', JSON.stringify(usuarios));
-    console.log('✅ Usuários atualizados no LocalStorage:', usuarios);
-    
     localStorage.setItem('usuarioLogado', JSON.stringify(novoUsuario));
-    console.log('✅ Usuário logado salvo!');
-    
-    console.log('☁️ Tentando salvar no Firebase Firestore...');
-    try {
-      await salvarUsuarioFirestore(novoUsuario);
-    } catch (fbErr) {
-      console.error('❌ Erro no Firestore:', fbErr);
-    }
-    
+    salvarUsuarioFirestore(novoUsuario);
     mostrarToast('✅ Conta criada com sucesso!');
-    console.log('✅ Redirecionando para a home...');
     setTimeout(() => { window.location.href = '../index.html'; }, 1500);
   }
 
@@ -375,3 +330,4 @@
 
 </body>
 </html>
+
