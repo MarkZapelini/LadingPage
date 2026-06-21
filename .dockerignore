@@ -1,0 +1,9 @@
+node_modules
+.git
+.gitignore
+README.md
+DEPLOY.md
+.DS_Store
+*.log
+react-frontend
+react-frontend.OLD

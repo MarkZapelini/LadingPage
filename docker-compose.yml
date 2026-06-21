@@ -1,7 +1,7 @@
 services:
   api:
     build: 
-      context: ./backend
+      context: .
     ports:
       - "3000:3000"
     environment:
@@ -10,4 +10,4 @@ services:
       - ADMIN_USER=admin
       - ADMIN_PASS=admin123
     volumes:
-      - ./backend/data:/app/data
+      - ./backend/data:/app/backend/data
