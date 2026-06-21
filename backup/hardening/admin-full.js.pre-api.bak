@@ -15,7 +15,6 @@ let perfil = {
 let editandoProdutoId = null;
 let produtoParaExcluir = null;
 let produtoFoto = null; // Foto do produto atual
-let adminApiOnline = false;
 
 // Produtos Padrão
 const produtosPadrao = [
@@ -27,151 +26,11 @@ const produtosPadrao = [
     { id: 6, nome: 'LG OLED 55"', desc: 'Smart TV OLED 4K', categoria: '📺 TVs', marca: 'LG', preco: 4499, promo: 3999, estoque: 3, status: 'Ativo', emoji: '📺' }
 ];
 
-const CATEGORIA_MAP = {
-    '📱 Smartphones': { cat: 'smartphones', emoji: '📱' },
-    '💻 Notebooks': { cat: 'notebooks', emoji: '💻' },
-    '🎧 Headphones': { cat: 'audio', emoji: '🎧' },
-    '📺 TVs': { cat: 'tvs', emoji: '📺' },
-    '⌚ Smartwatches': { cat: 'wearables', emoji: '⌚' },
-    '🎮 Games': { cat: 'games', emoji: '🎮' },
-    '🔌 Acessórios': { cat: 'acessorios', emoji: '🔌' }
-};
-
-const CAT_TO_CATEGORIA = Object.fromEntries(
-    Object.entries(CATEGORIA_MAP).map(([label, value]) => [value.cat, { label, emoji: value.emoji }])
-);
-
-function categoriaToApi(label) {
-    return CATEGORIA_MAP[label]?.cat || 'acessorios';
-}
-
-function categoriaToUi(cat) {
-    return CAT_TO_CATEGORIA[String(cat || '').toLowerCase()]?.label || '🔌 Acessórios';
-}
-
-function emojiCategoria(cat) {
-    return CAT_TO_CATEGORIA[String(cat || '').toLowerCase()]?.emoji || '📦';
-}
-
-function normalizarStatusPedido(status) {
-    const raw = String(status || '').toLowerCase().trim();
-    if (!raw) return 'pendente';
-    if (raw === 'pago' || raw === 'em andamento' || raw === 'em_andamento' || raw === 'processando') return 'em_andamento';
-    if (raw === 'concluído' || raw === 'concluido') return 'entregue';
-    return raw;
-}
-
-function statusPedidoParaLabel(status) {
-    switch (normalizarStatusPedido(status)) {
-        case 'pendente': return 'Pendente';
-        case 'em_andamento': return 'Em andamento';
-        case 'enviado': return 'Enviado';
-        case 'entregue': return 'Concluído';
-        case 'cancelado': return 'Cancelado';
-        default: return 'Pendente';
-    }
-}
-
-function filtroPedidoParaStatus(filtro) {
-    switch (String(filtro || '').toLowerCase()) {
-        case 'pendente': return 'pendente';
-        case 'pago':
-        case 'em andamento':
-        case 'em_andamento': return 'em_andamento';
-        case 'concluído':
-        case 'concluido': return 'entregue';
-        case 'cancelado': return 'cancelado';
-        default: return 'todos';
-    }
-}
-
-function normalizarProdutoAdmin(produto) {
-    const cat = produto.cat || categoriaToApi(produto.categoria || '');
-    const categoria = produto.categoria || categoriaToUi(cat);
-    const foto = produto.foto || (Array.isArray(produto.fotos) ? produto.fotos[0] : null) || null;
-
-    return {
-        id: produto.id,
-        nome: produto.nome || '',
-        desc: produto.desc || produto.descricao || '',
-        categoria,
-        cat,
-        marca: produto.marca || '',
-        preco: Number(produto.preco || 0),
-        promo: produto.promo ? Number(produto.promo) : null,
-        estoque: Number(produto.estoque || 0),
-        status: produto.status || 'Ativo',
-        emoji: produto.emoji || emojiCategoria(cat),
-        foto,
-        fotos: produto.fotos || (foto ? [foto] : [])
-    };
-}
-
-function normalizarPedidoAdmin(pedido) {
-    return {
-        ...pedido,
-        data: pedido.data || pedido.date || '',
-        nome: pedido.nome || pedido.cliente || 'Cliente',
-        email: pedido.email || pedido.clienteEmail || '',
-        status: normalizarStatusPedido(pedido.status),
-        total: Number(pedido.total || 0)
-    };
-}
-
-function construirUsuarios(pedidosAtuais, usuariosBase) {
-    const mapa = new Map();
-
-    (usuariosBase || []).forEach(usuario => {
-        const chave = String(usuario.email || '').toLowerCase();
-        if (chave) mapa.set(chave, { ...usuario });
-    });
-
-    (pedidosAtuais || []).forEach(pedido => {
-        const email = String(pedido.email || pedido.clienteEmail || '').toLowerCase();
-        if (!email) return;
-        const atual = mapa.get(email) || {};
-        mapa.set(email, {
-            nome: pedido.nome || pedido.cliente || atual.nome || email,
-            email,
-            telefone: atual.telefone || '',
-            ...atual
-        });
-    });
-
-    return Array.from(mapa.values());
-}
-
-function salvarCacheAdmin() {
-    localStorage.setItem('adminProducts', JSON.stringify(produtos));
-    localStorage.setItem('adminOrders', JSON.stringify(pedidos));
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-}
-
-async function sincronizarDadosBackend() {
-    if (!adminApiOnline || typeof ZCoreAPI === 'undefined') return;
-
-    const resultados = await Promise.allSettled([
-        ZCoreAPI.getProducts(),
-        ZCoreAPI.getOrders()
-    ]);
-
-    if (resultados[0].status === 'fulfilled') {
-        produtos = resultados[0].value.map(normalizarProdutoAdmin);
-    }
-
-    if (resultados[1].status === 'fulfilled') {
-        pedidos = resultados[1].value.map(normalizarPedidoAdmin);
-    }
-
-    usuarios = construirUsuarios(pedidos, usuarios);
-    salvarCacheAdmin();
-}
-
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
     const acessoLiberado = await verificarLogin();
     if (!acessoLiberado) return;
-    await carregarDados();
+    carregarDados();
     inicializarEventos();
     renderizarTudo();
 });
@@ -186,7 +45,6 @@ async function verificarLogin() {
                     window.location.href = 'login-admin.html';
                     return false;
                 }
-                adminApiOnline = true;
                 return true;
             }
         } catch (error) {
@@ -203,15 +61,15 @@ async function verificarLogin() {
 }
 
 // Carregar Dados do LocalStorage
-async function carregarDados() {
+function carregarDados() {
     const savedProds = localStorage.getItem('adminProducts');
     const savedOrders = localStorage.getItem('adminOrders');
     const savedUsers = localStorage.getItem('usuarios');
     const savedProfile = localStorage.getItem('adminProfile');
     const savedPayments = localStorage.getItem('zcore-payments');
 
-    produtos = savedProds ? JSON.parse(savedProds).map(normalizarProdutoAdmin) : [...produtosPadrao];
-    pedidos = savedOrders ? JSON.parse(savedOrders).map(normalizarPedidoAdmin) : [];
+    produtos = savedProds ? JSON.parse(savedProds) : [...produtosPadrao];
+    pedidos = savedOrders ? JSON.parse(savedOrders) : [];
     usuarios = savedUsers ? JSON.parse(savedUsers) : [];
     perfil = savedProfile ? JSON.parse(savedProfile) : perfil;
     
@@ -219,23 +77,13 @@ async function carregarDados() {
         configurarInterfacePagamentos(JSON.parse(savedPayments));
     }
 
-    if (adminApiOnline) {
-        try {
-            await sincronizarDadosBackend();
-        } catch (error) {
-            console.warn('Falha ao sincronizar admin com backend:', error);
-            adminApiOnline = false;
-        }
-    }
-
-    usuarios = construirUsuarios(pedidos, usuarios);
-
     document.documentElement.setAttribute('data-theme', 'dark');
 }
 
 // Salvar Dados
 function salvarDados() {
-    salvarCacheAdmin();
+    localStorage.setItem('adminProducts', JSON.stringify(produtos));
+    localStorage.setItem('adminOrders', JSON.stringify(pedidos));
     salvarConfigPagamentos();
 }
 
@@ -596,10 +444,6 @@ function atualizarPerfilUI() {
 
 function renderizarDashboard() {
     // Stats
-    const receita = pedidos
-        .filter(p => normalizarStatusPedido(p.status) !== 'cancelado')
-        .reduce((sum, p) => sum + (p.total || 0), 0);
-
     document.getElementById('statTotalProdutos').textContent = produtos.length;
     document.getElementById('statPedidos').textContent = pedidos.length;
     document.getElementById('statClientes').textContent = usuarios.length;
@@ -611,6 +455,9 @@ function renderizarDashboard() {
     const ordersBadge = document.querySelector('.nav-item[data-page="pedidos"] .badge-count');
     if (ordersBadge) ordersBadge.textContent = pedidos.length;
 
+    const receita = pedidos
+        .filter(p => (p.status || '').toLowerCase() !== 'cancelado')
+        .reduce((sum, p) => sum + (p.total || 0), 0);
     document.getElementById('statReceita').textContent = formatarMoeda(receita);
 
     // Pedidos Recentes
@@ -622,7 +469,7 @@ function renderizarDashboard() {
         tbodyPedidos.innerHTML = recentPedidos.map(p => {
             const pedidoId = typeof p.id === 'string' && p.id.startsWith('#') ? p.id : `#${p.id}`;
             const cliente = p.nome || p.cliente || 'Cliente';
-            const status = statusPedidoParaLabel(p.status);
+            const status = p.status || 'Pendente';
             return `
                 <tr>
                     <td>${pedidoId}</td>
@@ -664,10 +511,10 @@ function renderizarStatusBars() {
     }
 
     const total = pedidos.length;
-    const pendente = pedidos.filter(p => normalizarStatusPedido(p.status) === 'pendente').length;
-    const andamento = pedidos.filter(p => ['em_andamento', 'enviado'].includes(normalizarStatusPedido(p.status))).length;
-    const concluido = pedidos.filter(p => normalizarStatusPedido(p.status) === 'entregue').length;
-    const cancelado = pedidos.filter(p => normalizarStatusPedido(p.status) === 'cancelado').length;
+    const pendente = pedidos.filter(p => (p.status || '').toLowerCase() === 'pendente').length;
+    const pago = pedidos.filter(p => (p.status || '').toLowerCase() === 'pago').length;
+    const concluido = pedidos.filter(p => ['concluído', 'concluido'].includes((p.status || '').toLowerCase())).length;
+    const cancelado = pedidos.filter(p => (p.status || '').toLowerCase() === 'cancelado').length;
 
     barsEl.innerHTML = `
         <div class="status-bar-row">
@@ -681,11 +528,11 @@ function renderizarStatusBars() {
         </div>
         <div class="status-bar-row">
             <div class="status-bar-head">
-                <strong>Em andamento</strong>
-                <span>${andamento} pedido(s)</span>
+                <strong>Pagos</strong>
+                <span>${pago} pedido(s)</span>
             </div>
             <div class="status-bar-track">
-                <div class="status-bar-fill blue" style="width: ${(andamento / total) * 100}%"></div>
+                <div class="status-bar-fill blue" style="width: ${(pago / total) * 100}%"></div>
             </div>
         </div>
         <div class="status-bar-row">
@@ -792,8 +639,7 @@ function renderizarPedidos(lista = pedidos) {
         const pedidoId = typeof p.id === 'string' && p.id.startsWith('#') ? p.id : `#${p.id}`;
         const data = p.data || p.date || '';
         const cliente = p.nome || p.cliente || 'Cliente';
-        const status = statusPedidoParaLabel(p.status);
-        const statusValue = normalizarStatusPedido(p.status);
+        const status = p.status || 'Pendente';
 
         return `
             <tr>
@@ -803,11 +649,10 @@ function renderizarPedidos(lista = pedidos) {
                 <td class="price">${formatarMoeda(p.total || 0)}</td>
                 <td>
                     <select class="status-select" onchange="alterarStatusPedido('${p.id}', this.value)">
-                        <option value="pendente" ${statusValue === 'pendente' ? 'selected' : ''}>Pendente</option>
-                        <option value="em_andamento" ${statusValue === 'em_andamento' ? 'selected' : ''}>Em andamento</option>
-                        <option value="enviado" ${statusValue === 'enviado' ? 'selected' : ''}>Enviado</option>
-                        <option value="entregue" ${statusValue === 'entregue' ? 'selected' : ''}>Concluído</option>
-                        <option value="cancelado" ${statusValue === 'cancelado' ? 'selected' : ''}>Cancelado</option>
+                        <option value="Pendente" ${status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                        <option value="Pago" ${status === 'Pago' ? 'selected' : ''}>Pago</option>
+                        <option value="Concluído" ${status === 'Concluído' || status === 'Concluido' ? 'selected' : ''}>Concluído</option>
+                        <option value="Cancelado" ${status === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
                     </select>
                 </td>
                 <td>
@@ -828,7 +673,7 @@ function renderizarClientes() {
     }
 
     tbody.innerHTML = usuarios.map(u => {
-        const pedidosUsuario = pedidos.filter(p => (p.email || p.clienteEmail || '') === u.email);
+        const pedidosUsuario = pedidos.filter(p => p.email === u.email);
         const totalGasto = pedidosUsuario.reduce((sum, p) => sum + (p.total || 0), 0);
 
         return `
@@ -858,7 +703,7 @@ function abrirFormProduto(id = null) {
         if (produto) {
             formTitle.textContent = 'Editar Produto';
             document.getElementById('fNome').value = produto.nome || '';
-            document.getElementById('fCategoria').value = produto.categoria || categoriaToUi(produto.cat) || '📱 Smartphones';
+            document.getElementById('fCategoria').value = produto.categoria || '📱 Smartphones';
             document.getElementById('fMarca').value = produto.marca || '';
             document.getElementById('fPreco').value = produto.preco || '';
             document.getElementById('fPromo').value = produto.promo || '';
@@ -956,7 +801,7 @@ function editarProduto(id) {
     abrirFormProduto(id);
 }
 
-async function salvarProduto(e) {
+function salvarProduto(e) {
     e.preventDefault();
 
     const nome = document.getElementById('fNome').value.trim();
@@ -974,44 +819,13 @@ async function salvarProduto(e) {
         return;
     }
 
-    const payload = {
-        nome,
-        cat: categoriaToApi(categoria),
-        marca,
-        preco,
-        promo: promo || 0,
-        estoque,
-        desc,
-        status,
-        emoji: emoji || emojiCategoria(categoriaToApi(categoria)),
-        fotos: produtoFoto ? [produtoFoto] : []
-    };
-
-    if (adminApiOnline && typeof ZCoreAPI !== 'undefined') {
-        try {
-            const salvo = editandoProdutoId
-                ? await ZCoreAPI.updateProduct(editandoProdutoId, payload)
-                : await ZCoreAPI.createProduct(payload);
-            const produtoNormalizado = normalizarProdutoAdmin(salvo);
-
-            if (editandoProdutoId) {
-                const index = produtos.findIndex(p => p.id === editandoProdutoId);
-                if (index !== -1) produtos[index] = produtoNormalizado;
-            } else {
-                produtos.push(produtoNormalizado);
-            }
-            mostrarToast(editandoProdutoId ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
-        } catch (error) {
-            mostrarToast(error.message || 'Falha ao salvar produto no backend.', true);
-            return;
-        }
-    } else if (editandoProdutoId) {
+    if (editandoProdutoId) {
         const index = produtos.findIndex(p => p.id === editandoProdutoId);
-        produtos[index] = { ...produtos[index], nome, categoria, cat: payload.cat, marca, preco, promo, estoque, desc, status, emoji, foto: produtoFoto };
+        produtos[index] = { ...produtos[index], nome, categoria, marca, preco, promo, estoque, desc, status, emoji, foto: produtoFoto };
         mostrarToast('Produto atualizado com sucesso!');
     } else {
-        const novoId = produtos.length > 0 ? Math.max(...produtos.map(p => Number(p.id) || 0)) + 1 : 1;
-        produtos.push({ id: novoId, nome, categoria, cat: payload.cat, marca, preco, promo, estoque, desc, status, emoji, foto: produtoFoto });
+        const novoId = produtos.length > 0 ? Math.max(...produtos.map(p => p.id)) + 1 : 1;
+        produtos.push({ id: novoId, nome, categoria, marca, preco, promo, estoque, desc, status, emoji, foto: produtoFoto });
         mostrarToast('Produto criado com sucesso!');
     }
 
@@ -1039,17 +853,8 @@ function fecharModalDelete() {
     document.getElementById('deleteModal').classList.remove('open');
 }
 
-async function confirmarExclusao() {
+function confirmarExclusao() {
     if (produtoParaExcluir) {
-        if (adminApiOnline && typeof ZCoreAPI !== 'undefined') {
-            try {
-                await ZCoreAPI.deleteProduct(produtoParaExcluir);
-            } catch (error) {
-                mostrarToast(error.message || 'Falha ao excluir produto no backend.', true);
-                fecharModalDelete();
-                return;
-            }
-        }
         produtos = produtos.filter(p => p.id !== produtoParaExcluir);
         salvarDados();
         renderizarTudo();
@@ -1062,32 +867,19 @@ async function confirmarExclusao() {
 // PEDIDOS
 // ========================================
 function filtrarPedidos(filtro) {
-    const filtroNormalizado = filtroPedidoParaStatus(filtro);
-    if (filtroNormalizado === 'todos') {
+    if (filtro === 'todos') {
         renderizarPedidos();
     } else {
-        const filtrados = pedidos.filter(p => normalizarStatusPedido(p.status) === filtroNormalizado);
+        const filtrados = pedidos.filter(p => (p.status || '').toLowerCase() === filtro.toLowerCase());
         renderizarPedidos(filtrados);
     }
 }
 
-async function alterarStatusPedido(id, status) {
+function alterarStatusPedido(id, status) {
     // Encontrar por ID (suporta string e number)
     const index = pedidos.findIndex(p => String(p.id) === String(id));
     if (index !== -1) {
-        if (adminApiOnline && typeof ZCoreAPI !== 'undefined') {
-            try {
-                const atualizado = await ZCoreAPI.updateOrderStatus(id, status);
-                pedidos[index] = normalizarPedidoAdmin(atualizado);
-            } catch (error) {
-                mostrarToast(error.message || 'Falha ao atualizar status do pedido.', true);
-                renderizarPedidos();
-                return;
-            }
-        } else {
-            pedidos[index].status = normalizarStatusPedido(status);
-        }
-
+        pedidos[index].status = status;
         salvarDados();
         renderizarTudo();
         mostrarToast('Status atualizado!');
@@ -1183,9 +975,9 @@ function formatarMoeda(valor) {
 }
 
 function getBadgeClass(status) {
-    const s = normalizarStatusPedido(status);
-    if (s === 'entregue') return 'badge-green';
-    if (s === 'pendente' || s === 'em_andamento' || s === 'enviado') return 'badge-amber';
+    const s = (status || '').toLowerCase();
+    if (s === 'pago' || s === 'concluído' || s === 'concluido') return 'badge-green';
+    if (s === 'pendente' || s === 'em andamento') return 'badge-amber';
     if (s === 'cancelado') return 'badge-red';
     return 'badge-purple';
 }
