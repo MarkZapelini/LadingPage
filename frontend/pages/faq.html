@@ -401,6 +401,7 @@
   }
   
   function fazerLogout() {
+    if (typeof ZCoreAPI !== 'undefined') ZCoreAPI.logout();
     localStorage.removeItem('usuarioLogado');
     verificarLogin();
     mostrarToast('✅ Você saiu da sua conta!');

@@ -96,27 +96,6 @@ db.exec(`
   INSERT OR IGNORE INTO order_counter (id, last_num) VALUES (1, 1000);
 `);
 
-function ensureColumn(table, name, definition) {
-  const cols = db.prepare(`PRAGMA table_info(${table})`).all();
-  if (!cols.some(c => c.name === name)) {
-    db.exec(`ALTER TABLE ${table} ADD COLUMN ${name} ${definition}`);
-  }
-}
-
-db.pragma('busy_timeout = 5000');
-ensureColumn('orders', 'endereco_json', "TEXT DEFAULT ''");
-ensureColumn('orders', 'payment_method', "TEXT DEFAULT ''");
-ensureColumn('orders', 'payment_status', "TEXT DEFAULT 'pendente'");
-ensureColumn('orders', 'payment_reference', "TEXT DEFAULT ''");
-ensureColumn('orders', 'updated_at', "TEXT DEFAULT (datetime('now'))");
-
-db.exec(`
-  CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-  CREATE INDEX IF NOT EXISTS idx_orders_user_created_at ON orders(user_id, created_at DESC);
-  CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
-  CREATE INDEX IF NOT EXISTS idx_reset_tokens_email ON reset_tokens(email);
-`);
-
 const productCols = db.prepare('PRAGMA table_info(products)').all();
 if (!productCols.some(c => c.name === 'fotos')) {
   db.exec('ALTER TABLE products ADD COLUMN fotos TEXT');

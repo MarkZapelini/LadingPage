@@ -86,16 +86,12 @@
     deleteProduct: (id) => request('/api/products/' + id, { method: 'DELETE', admin: true }),
 
     // Orders
-    createOrder: (payload) => {
-      const body = Array.isArray(payload) ? { itens: payload } : payload;
-      return request('/api/orders', { method: 'POST', body: JSON.stringify(body), admin: false });
-    },
+    createOrder: (itens) => request('/api/orders', { method: 'POST', body: JSON.stringify({ itens }), admin: false }),
     createGuestOrder: (body) => request('/api/orders/guest', { method: 'POST', body: JSON.stringify(body), admin: true }),
     getMyOrders: () => request('/api/orders/me'),
     getOrders: (status) => request('/api/orders' + (status ? '?status=' + status : ''), { admin: true }),
     getOrderStats: () => request('/api/orders/stats', { admin: true }),
     updateOrderStatus: (id, status) => request('/api/orders/' + encodeURIComponent(id) + '/status', { method: 'PATCH', body: JSON.stringify({ status }), admin: true }),
-    createPaymentPreference: (body) => request('/api/payments/create-preference', { method: 'POST', body: JSON.stringify(body) }),
 
     // Cart & wishlist
     getCart: () => request('/api/cart'),

@@ -2,7 +2,7 @@ const express = require('express');
 const mercadopago = require('mercadopago');
 const router = express.Router();
 const { db } = require('../db/database');
-const { authUser } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 const VALID_STATUS = ['pendente', 'em_andamento', 'enviado', 'entregue', 'cancelado'];
 
@@ -34,25 +34,9 @@ function getOrderById(id) {
 
 function updateOrderStatus(id, status) {
   const normalized = normalizeStatus(status);
-  const result = db.prepare("UPDATE orders SET status = ?, updated_at = datetime('now') WHERE id = ?").run(normalized, id);
+  const result = db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(normalized, id);
   if (!result.changes) throw new Error('Pedido não encontrado');
   return getOrderById(id);
-}
-
-function updateOrderPayment(id, paymentStatus, paymentReference) {
-  const result = db.prepare(`
-    UPDATE orders
-    SET payment_status = ?, payment_reference = COALESCE(?, payment_reference), updated_at = datetime('now')
-    WHERE id = ?
-  `).run(paymentStatus, paymentReference || null, id);
-  if (!result.changes) throw new Error('Pedido não encontrado');
-  return getOrderById(id);
-}
-
-function getAppUrl(req) {
-  const configured = String(process.env.APP_URL || '').trim().replace(/\/$/, '');
-  if (configured) return configured;
-  return `${req.protocol}://${req.get('host')}`;
 }
 
 // Configurar Mercado Pago
@@ -63,31 +47,19 @@ if (process.env.MERCADO_PAGO_ACCESS_TOKEN) {
 }
 
 // Criar preferência de pagamento Mercado Pago
-router.post('/create-preference', authUser, async (req, res) => {
+router.post('/create-preference', authenticateToken, async (req, res) => {
   try {
     const { items, orderId } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ erro: 'Nenhum item no carrinho' });
     }
-    if (!process.env.MERCADO_PAGO_ACCESS_TOKEN) {
-      return res.status(503).json({ erro: 'Pagamento online não configurado no servidor.' });
-    }
-
-    const order = orderId ? getOrderById(orderId) : null;
-    if (orderId && !order) {
-      return res.status(404).json({ erro: 'Pedido não encontrado.' });
-    }
-    if (order && String(order.userId || '') !== String(req.user.id)) {
-      return res.status(403).json({ erro: 'Pedido não pertence ao usuário autenticado.' });
-    }
-    const appUrl = getAppUrl(req);
 
     // Preparar items para Mercado Pago
     const preferenceItems = items.map(item => ({
       title: item.nome,
-      unit_price: parseFloat(item.preco || item.price || 0),
-      quantity: Number(item.quantidade || item.qty || 1),
+      unit_price: parseFloat(item.preco),
+      quantity: item.quantidade,
       currency_id: 'BRL'
     }));
 
@@ -95,18 +67,14 @@ router.post('/create-preference', authUser, async (req, res) => {
     const preference = await mercadopago.preferences.create({
       items: preferenceItems,
       external_reference: orderId?.toString(),
-      notification_url: `${appUrl}/api/payments/webhook`,
+      notification_url: `${process.env.APP_URL || 'http://localhost:3000'}/api/payments/webhook`,
       back_urls: {
-        success: `${appUrl}/pages/pedidos.html`,
-        failure: `${appUrl}/pages/checkout.html`,
-        pending: `${appUrl}/pages/pedidos.html`
+        success: `${process.env.APP_URL || 'http://localhost:3000'}/pages/pedidos.html`,
+        failure: `${process.env.APP_URL || 'http://localhost:3000'}/pages/checkout.html`,
+        pending: `${process.env.APP_URL || 'http://localhost:3000'}/pages/pedidos.html`
       },
       auto_return: 'approved'
     });
-
-    if (orderId) {
-      updateOrderPayment(orderId, 'aguardando_pagamento', preference.body.id);
-    }
 
     res.json({
       id: preference.body.id,
@@ -122,10 +90,6 @@ router.post('/create-preference', authUser, async (req, res) => {
 // Webhook para receber notificações do Mercado Pago
 router.post('/webhook', async (req, res) => {
   try {
-    if (!process.env.MERCADO_PAGO_ACCESS_TOKEN) {
-      return res.status(503).send('Pagamento não configurado');
-    }
-
     const { type, data } = req.body;
 
     if (type === 'payment') {
@@ -137,28 +101,22 @@ router.post('/webhook', async (req, res) => {
       if (orderId) {
         // Atualizar status do pedido com base no pagamento
         let status = 'pendente';
-        let paymentStatus = 'pendente';
         switch (payment.body.status) {
           case 'approved':
             status = 'pago';
-            paymentStatus = 'aprovado';
             break;
           case 'pending':
             status = 'pendente';
-            paymentStatus = 'aguardando_pagamento';
             break;
           case 'rejected':
             status = 'cancelado';
-            paymentStatus = 'recusado';
             break;
           case 'in_process':
             status = 'em_andamento';
-            paymentStatus = 'aguardando_pagamento';
             break;
         }
         
-        updateOrderStatus(orderId, status);
-        updateOrderPayment(orderId, paymentStatus, String(paymentId));
+        await updateOrderStatus(parseInt(orderId), status);
       }
     }
 

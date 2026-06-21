@@ -115,15 +115,7 @@
   });
 
   // Verificar se já está logado
-  window.onload = async function() {
-    if (typeof ZCoreAPI !== 'undefined') {
-      await ZCoreAPI.init();
-      if (ZCoreAPI._online && ZCoreAPI.isAdminLoggedIn()) {
-        window.location.href = 'admin-full.html';
-        return;
-      }
-    }
-
+  window.onload = function() {
     const adminLogado = JSON.parse(localStorage.getItem('adminLogado'));
     if (adminLogado && adminLogado.logado) {
       window.location.href = 'admin-full.html';

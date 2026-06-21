@@ -6,49 +6,59 @@ function signToken(payload) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 }
 
-function authUser(req, res, next) {
-  const header = req.headers.authorization;
-  if (!header || !header.startsWith('Bearer ')) {
+function readBearerToken(header) {
+  if (!header || !header.startsWith('Bearer ')) return null;
+  return header.slice(7);
+}
+
+function verifyToken(token) {
+  return jwt.verify(token, JWT_SECRET);
+}
+
+function authenticateToken(req, res, next) {
+  const token = readBearerToken(req.headers.authorization);
+  if (!token) {
     return res.status(401).json({ erro: 'Token não informado.' });
   }
+
   try {
-    const decoded = jwt.verify(header.slice(7), JWT_SECRET);
-    if (decoded.role === 'admin') {
-      return res.status(403).json({ erro: 'Use token de usuário.' });
-    }
-    req.user = decoded;
+    const decoded = verifyToken(token);
+    req.auth = decoded;
+    if (decoded.role === 'admin') req.admin = decoded;
+    else req.user = decoded;
     next();
   } catch {
     return res.status(401).json({ erro: 'Token inválido ou expirado.' });
   }
 }
 
+function authUser(req, res, next) {
+  authenticateToken(req, res, () => {
+    if (req.auth.role === 'admin') {
+      return res.status(403).json({ erro: 'Use token de usuário.' });
+    }
+    next();
+  });
+}
+
 function authAdmin(req, res, next) {
-  const header = req.headers.authorization;
-  if (!header || !header.startsWith('Bearer ')) {
-    return res.status(401).json({ erro: 'Token admin não informado.' });
-  }
-  try {
-    const decoded = jwt.verify(header.slice(7), JWT_SECRET);
-    if (decoded.role !== 'admin') {
+  authenticateToken(req, res, () => {
+    if (req.auth.role !== 'admin') {
       return res.status(403).json({ erro: 'Acesso restrito ao admin.' });
     }
-    req.admin = decoded;
     next();
-  } catch {
-    return res.status(401).json({ erro: 'Token admin inválido.' });
-  }
+  });
 }
 
 function optionalUser(req, res, next) {
-  const header = req.headers.authorization;
-  if (header && header.startsWith('Bearer ')) {
+  const token = readBearerToken(req.headers.authorization);
+  if (token) {
     try {
-      const decoded = jwt.verify(header.slice(7), JWT_SECRET);
+      const decoded = verifyToken(token);
       if (decoded.role !== 'admin') req.user = decoded;
     } catch { /* ignore */ }
   }
   next();
 }
 
-module.exports = { signToken, authUser, authAdmin, optionalUser, JWT_SECRET };
+module.exports = { signToken, authenticateToken, authUser, authAdmin, optionalUser, JWT_SECRET };

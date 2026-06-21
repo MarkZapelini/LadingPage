@@ -353,6 +353,7 @@
 
     window.fazerLogout = function(event) {
       if (event) event.preventDefault();
+      if (typeof ZCoreAPI !== 'undefined') ZCoreAPI.logout();
       localStorage.removeItem('usuarioLogado');
       window.location.href = 'index.html';
     };

@@ -27,37 +27,18 @@ const produtosPadrao = [
 ];
 
 // Inicialização
-document.addEventListener('DOMContentLoaded', async () => {
-    const acessoLiberado = await verificarLogin();
-    if (!acessoLiberado) return;
+document.addEventListener('DOMContentLoaded', () => {
+    verificarLogin();
     carregarDados();
     inicializarEventos();
     renderizarTudo();
 });
 
 // Verificar Login
-async function verificarLogin() {
-    if (typeof ZCoreAPI !== 'undefined') {
-        try {
-            await ZCoreAPI.init();
-            if (ZCoreAPI._online) {
-                if (!ZCoreAPI.isAdminLoggedIn()) {
-                    window.location.href = 'login-admin.html';
-                    return false;
-                }
-                return true;
-            }
-        } catch (error) {
-            console.warn('Falha ao validar sessão admin online:', error);
-        }
-    }
-
+function verificarLogin() {
     if (!localStorage.getItem('adminLogado')) {
         window.location.href = 'login-admin.html';
-        return false;
     }
-
-    return true;
 }
 
 // Carregar Dados do LocalStorage
@@ -1006,9 +987,6 @@ function mostrarToast(texto, erro = false) {
 // ========================================
 function fazerLogout() {
     if (confirm('Tem certeza que deseja sair?')) {
-        if (typeof ZCoreAPI !== 'undefined') {
-            ZCoreAPI.logoutAdmin();
-        }
         localStorage.removeItem('adminLogado');
         mostrarToast('Logout realizado com sucesso!');
         setTimeout(() => {

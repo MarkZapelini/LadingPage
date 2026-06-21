@@ -5,7 +5,6 @@ const { authUser, authAdmin } = require('../middleware/auth');
 const router = express.Router();
 
 const VALID_STATUS = ['pendente', 'em_andamento', 'enviado', 'entregue', 'cancelado'];
-const VALID_PAYMENT_STATUS = ['pendente', 'aguardando_pagamento', 'aprovado', 'recusado', 'cancelado'];
 
 function normalizeStatus(s) {
   if (!s) return 'pendente';
@@ -17,100 +16,45 @@ function normalizeStatus(s) {
 
 function rowToOrder(row) {
   const itens = JSON.parse(row.items_json || '[]');
-  let endereco = null;
-  try {
-    endereco = row.endereco_json ? JSON.parse(row.endereco_json) : null;
-  } catch {
-    endereco = null;
-  }
   return {
     id: row.id,
     date: new Date(row.created_at).toLocaleDateString('pt-BR'),
     createdAt: row.created_at,
-    updatedAt: row.updated_at || row.created_at,
     itens,
     items: row.items_label || itens.map(i => i.nome).join(', '),
     total: row.total,
     status: row.status,
     cliente: row.cliente,
     clienteEmail: row.cliente_email,
-    userId: row.user_id,
-    endereco,
-    paymentMethod: row.payment_method || '',
-    paymentStatus: row.payment_status || 'pendente',
-    paymentReference: row.payment_reference || ''
+    userId: row.user_id
   };
 }
 
-function normalizePaymentStatus(status) {
-  const raw = String(status || '').toLowerCase().trim();
-  if (!raw) return 'pendente';
-  if (raw === 'approved' || raw === 'aprovado') return 'aprovado';
-  if (raw === 'pending' || raw === 'aguardando_pagamento') return 'aguardando_pagamento';
-  if (raw === 'rejected' || raw === 'refused' || raw === 'recusado') return 'recusado';
-  if (raw === 'cancelled' || raw === 'canceled') return 'cancelado';
-  return VALID_PAYMENT_STATUS.includes(raw) ? raw : 'pendente';
-}
-
-function normalizeAddress(endereco) {
-  if (!endereco || typeof endereco !== 'object') return null;
-  const normalized = {
-    cep: String(endereco.cep || '').trim(),
-    logradouro: String(endereco.logradouro || '').trim(),
-    numero: String(endereco.numero || '').trim(),
-    complemento: String(endereco.complemento || '').trim(),
-    bairro: String(endereco.bairro || '').trim(),
-    cidade: String(endereco.cidade || '').trim(),
-    uf: String(endereco.uf || endereco.estado || '').trim()
-  };
-
-  return Object.values(normalized).some(Boolean) ? normalized : null;
-}
-
-function createOrder({ userId, cliente, clienteEmail, itens, status, endereco, paymentMethod, paymentStatus, paymentReference }) {
+function createOrder({ userId, cliente, clienteEmail, itens, status }) {
   if (!itens || !itens.length) throw new Error('Carrinho vazio');
-  const address = normalizeAddress(endereco);
 
   const tx = db.transaction(() => {
     for (const item of itens) {
-      if (!item || !item.nome) throw new Error('Item de pedido inválido.');
-      const qtd = Number(item.quantidade || item.qty || 1);
-      if (!Number.isFinite(qtd) || qtd <= 0) throw new Error(`Quantidade inválida: ${item.nome}`);
       const prod = db.prepare('SELECT id, estoque, nome FROM products WHERE nome = ?').get(item.nome);
       if (!prod) throw new Error(`Produto não encontrado: ${item.nome}`);
+      const qtd = item.quantidade || item.qty || 1;
       if (prod.estoque < qtd) throw new Error(`Estoque insuficiente: ${item.nome}`);
     }
 
     const orderId = nextOrderId();
-    const total = itens.reduce((s, i) => s + Number(i.preco || i.price || 0) * Number(i.quantidade || i.qty || 1), 0);
+    const total = itens.reduce((s, i) => s + (i.preco || i.price) * (i.quantidade || i.qty || 1), 0);
     const itemsLabel = itens.map(i => i.nome).join(', ');
     const normalized = itens.map(i => ({
       nome: i.nome,
-      preco: Number(i.preco || i.price || 0),
+      preco: i.preco || i.price,
       emoji: i.emoji || '📦',
-      quantidade: Number(i.quantidade || i.qty || 1)
+      quantidade: i.quantidade || i.qty || 1
     }));
 
     db.prepare(`
-      INSERT INTO orders (
-        id, user_id, cliente, cliente_email, items_json, items_label, total, status,
-        endereco_json, payment_method, payment_status, payment_reference, updated_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
-    `).run(
-      orderId,
-      userId || null,
-      cliente,
-      clienteEmail || '',
-      JSON.stringify(normalized),
-      itemsLabel,
-      total,
-      normalizeStatus(status || 'pendente'),
-      address ? JSON.stringify(address) : '',
-      String(paymentMethod || '').trim(),
-      normalizePaymentStatus(paymentStatus),
-      String(paymentReference || '').trim()
-    );
+      INSERT INTO orders (id, user_id, cliente, cliente_email, items_json, items_label, total, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(orderId, userId || null, cliente, clienteEmail || '', JSON.stringify(normalized), itemsLabel, total, normalizeStatus(status || 'pendente'));
 
     for (const item of normalized) {
       db.prepare('UPDATE products SET estoque = MAX(0, estoque - ?) WHERE nome = ?')
@@ -135,10 +79,7 @@ router.post('/', authUser, (req, res) => {
       cliente: user.nome,
       clienteEmail: user.email,
       itens: req.body.itens,
-      status: 'pendente',
-      endereco: req.body.endereco,
-      paymentMethod: req.body.paymentMethod,
-      paymentStatus: req.body.paymentStatus
+      status: 'pendente'
     });
     res.status(201).json(order);
   } catch (e) {
@@ -150,15 +91,7 @@ router.post('/guest', authAdmin, (req, res) => {
   try {
     const { cliente, clienteEmail, itens } = req.body;
     if (!cliente) return res.status(400).json({ erro: 'Informe o nome do cliente.' });
-    const order = createOrder({
-      cliente,
-      clienteEmail,
-      itens,
-      status: 'pendente',
-      endereco: req.body.endereco,
-      paymentMethod: req.body.paymentMethod,
-      paymentStatus: req.body.paymentStatus
-    });
+    const order = createOrder({ cliente, clienteEmail, itens, status: 'pendente' });
     res.status(201).json(order);
   } catch (e) {
     res.status(400).json({ erro: e.message });
@@ -200,7 +133,7 @@ router.patch('/:id/status', authAdmin, (req, res) => {
     return res.status(400).json({ erro: 'Status inválido.' });
   }
   const normalized = normalizeStatus(status);
-  const result = db.prepare("UPDATE orders SET status = ?, updated_at = datetime('now') WHERE id = ?").run(normalized, req.params.id);
+  const result = db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(normalized, req.params.id);
   if (!result.changes) return res.status(404).json({ erro: 'Pedido não encontrado.' });
   const row = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
   res.json(rowToOrder(row));
