@@ -360,7 +360,7 @@
   }
 
   function carregarResumo() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cart = JSON.parse(localStorage.getItem('zcore_cart') || '[]');
     const summaryItems = document.getElementById('summaryItems');
     const summarySubtotal = document.getElementById('summarySubtotal');
     const summaryDiscount = document.getElementById('summaryDiscount');
@@ -446,7 +446,7 @@
       return;
     }
 
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cart = JSON.parse(localStorage.getItem('zcore_cart') || '[]');
     if (cart.length === 0) {
       mostrarToast('❌ Seu carrinho está vazio!', 'erro');
       return;
@@ -458,7 +458,7 @@
         try {
           const order = await ZCoreAPI.createOrder(cart);
           await ZCoreAPI.clearCart();
-          localStorage.removeItem('cart');
+          localStorage.removeItem('zcore_cart');
           mostrarToast('✅ Pedido confirmado com sucesso! Número: ' + order.id);
           setTimeout(() => { window.location.href = 'pedidos.html'; }, 2000);
           return;
@@ -501,7 +501,7 @@
     }
     mostrarToast('✅ Pedido confirmado com sucesso! Número: ' + pedidoId);
     setTimeout(() => {
-      localStorage.removeItem('cart');
+      localStorage.removeItem('zcore_cart');
       window.location.href = '../index.html';
     }, 2000);
   }
