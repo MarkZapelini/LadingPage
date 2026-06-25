@@ -1,16 +1,13 @@
-// Small helper to seed localStorage with a test user for offline/dev usage
+// Small helper to seed localStorage with test users for offline/dev usage
 (function(){
   try {
-    const host = window.location.hostname;
-    const isLocal = window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1';
-    if (!isLocal) return;
-
     const existing = JSON.parse(localStorage.getItem('usuarios') || '[]');
     const ensure = (u) => {
       if (!existing.find(x => x.email === u.email)) existing.push(u);
     };
 
     ensure({ id: 1001, nome: 'Teste Z-Core', email: 'teste@zcore.com.br', senha: '123456', pedidos: [] });
+    ensure({ id: 1002, nome: 'Admin Local', email: 'admin@zcore.local', senha: 'admin123', role: 'admin', pedidos: [] });
 
     localStorage.setItem('usuarios', JSON.stringify(existing));
 

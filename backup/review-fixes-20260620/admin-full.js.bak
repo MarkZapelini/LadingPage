@@ -17,11 +17,6 @@ let produtoParaExcluir = null;
 let produtoFoto = null; // Foto do produto atual
 let adminApiOnline = false;
 
-function podeUsarFallbackAdminLocal() {
-    const host = window.location.hostname;
-    return window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1';
-}
-
 // Produtos Padrão
 const produtosPadrao = [
     { id: 1, nome: 'MacBook Air M3', desc: 'Notebook Apple com chip M3', categoria: '💻 Notebooks', marca: 'Apple', preco: 11499, promo: null, estoque: 15, status: 'Destaque', emoji: '💻' },
@@ -199,7 +194,7 @@ async function verificarLogin() {
         }
     }
 
-    if (!podeUsarFallbackAdminLocal() || !localStorage.getItem('adminLogado')) {
+    if (!localStorage.getItem('adminLogado')) {
         window.location.href = 'login-admin.html';
         return false;
     }

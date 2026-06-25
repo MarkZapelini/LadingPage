@@ -342,46 +342,18 @@
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 
-  function podeUsarFallbackResetLocal() {
-    const host = window.location.hostname;
-    return window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1';
-  }
-
-  function exibirSucessoRecuperacao() {
-    document.getElementById('step1').style.display = 'none';
-    document.getElementById('step2').style.display = 'block';
-  }
-
-  async function enviarLinkRecuperacao() {
+  function enviarLinkRecuperacao() {
     const email = document.getElementById('recuperarEmail').value.trim();
     if (!email) {
       mostrarToast('❌ Digite um e-mail!', 'erro');
       return;
     }
 
-    if (typeof ZCoreAPI !== 'undefined') {
-      try {
-        await ZCoreAPI.init();
-        if (ZCoreAPI._online) {
-          await ZCoreAPI.forgotPassword(email);
-          exibirSucessoRecuperacao();
-          return;
-        }
-      } catch (error) {
-        mostrarToast('❌ ' + (error.message || 'Erro ao solicitar recuperação.'), 'erro');
-        return;
-      }
-    }
-
-    if (!podeUsarFallbackResetLocal()) {
-      mostrarToast('❌ Recuperação de senha indisponível sem backend.', 'erro');
-      return;
-    }
-
     const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
     const usuario = usuarios.find(u => u.email === email);
+
     if (!usuario) {
-      exibirSucessoRecuperacao();
+      mostrarToast('❌ E-mail não cadastrado!', 'erro');
       return;
     }
 
@@ -411,13 +383,16 @@
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
         .then(function(response) {
           console.log('E-mail enviado com sucesso!', response.status, response.text);
-          exibirSucessoRecuperacao();
+          document.getElementById('step1').style.display = 'none';
+          document.getElementById('step2').style.display = 'block';
         }, function(error) {
           console.log('Erro ao enviar e-mail:', error);
           mostrarToast('❌ Erro ao enviar e-mail!', 'erro');
         });
     } else {
-      exibirSucessoRecuperacao();
+      console.log('Link de recuperação:', linkRecuperacao);
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
     }
   }
 
@@ -436,6 +411,7 @@
     const senha = document.getElementById('loginSenha').value;
     
     console.log('📧 Email informado:', email);
+    console.log('🔑 Senha informada:', senha);
 
     // 1. Tenta login via API primeiro
     if (typeof ZCoreAPI !== 'undefined') {

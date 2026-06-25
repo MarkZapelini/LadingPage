@@ -55,19 +55,15 @@
     }, 3000);
   }
 
-  function podeUsarFallbackAdminLocal() {
-    const host = window.location.hostname;
-    return window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1';
-  }
+  // Credenciais padrão do admin
+  const CREDENCIAIS_PADRAO = {
+    usuario: 'admin',
+    senha: 'admin123'
+  };
 
   async function fazerLoginAdmin() {
     const usuario = document.getElementById('adminUser').value.trim();
     const senha = document.getElementById('adminPass').value;
-
-    if (!usuario || !senha) {
-      mostrarToast('❌ Informe usuário e senha.', 'erro');
-      return;
-    }
 
     if (typeof ZCoreAPI !== 'undefined') {
       await ZCoreAPI.init();
@@ -85,7 +81,7 @@
       }
     }
 
-    if (podeUsarFallbackAdminLocal()) {
+    if (usuario === CREDENCIAIS_PADRAO.usuario && senha === CREDENCIAIS_PADRAO.senha) {
       const adminLogado = {
         logado: true,
         usuario: usuario,
@@ -107,7 +103,7 @@
       mostrarToast('✅ Login realizado com sucesso!');
       setTimeout(() => { window.location.href = 'admin-full.html'; }, 1000);
     } else {
-      mostrarToast('❌ Painel admin indisponível sem backend autenticado.', 'erro');
+      mostrarToast('❌ Usuário ou senha incorretos!', 'erro');
     }
   }
 
@@ -129,7 +125,7 @@
     }
 
     const adminLogado = JSON.parse(localStorage.getItem('adminLogado'));
-    if (podeUsarFallbackAdminLocal() && adminLogado && adminLogado.logado) {
+    if (adminLogado && adminLogado.logado) {
       window.location.href = 'admin-full.html';
     }
   };

@@ -18,41 +18,6 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function getAppUrl(req) {
-  const configured = String(process.env.APP_URL || '').trim().replace(/\/$/, '');
-  if (configured) return configured;
-  return `${req.protocol}://${req.get('host')}`;
-}
-
-async function sendResetPasswordEmail({ email, nome, resetLink }) {
-  const publicKey = String(process.env.EMAILJS_PUBLIC_KEY || '3cCe-LruV3ESz2E_K').trim();
-  const serviceId = String(process.env.EMAILJS_SERVICE_ID || 'service_5r5zkyc').trim();
-  const templateId = String(process.env.EMAILJS_TEMPLATE_ID || '3cCe-LruV3ESz2E_K').trim();
-
-  if (!publicKey || !serviceId || !templateId || typeof fetch !== 'function') {
-    return false;
-  }
-
-  const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      service_id: serviceId,
-      template_id: templateId,
-      user_id: publicKey,
-      template_params: {
-        to_email: email,
-        to_name: nome || 'Cliente',
-        reset_link: resetLink
-      }
-    })
-  });
-
-  return response.ok;
-}
-
 router.post('/register', (req, res) => {
   const { nome, email, cpf, telefone, senha } = req.body;
   const cleanNome = sanitizeText(nome);
@@ -149,24 +114,19 @@ router.post('/admin/login', (req, res) => {
     });
   }
 
-  const adminUser = sanitizeText(process.env.ADMIN_USER);
-  const adminEmail = normalizeEmail(process.env.ADMIN_EMAIL);
-  const adminPass = process.env.ADMIN_PASS;
-
-  if (!adminUser || !adminEmail || !adminPass) {
-    return res.status(401).json({ erro: 'Usuário ou senha incorretos.' });
-  }
-  if (cleanUsuario !== adminUser && cleanUsuario.toLowerCase() !== adminEmail) {
+  const adminUser = process.env.ADMIN_USER || 'admin';
+  const adminPass = process.env.ADMIN_PASS || 'admin123';
+  if (cleanUsuario !== adminUser && cleanUsuario.toLowerCase() !== String(process.env.ADMIN_EMAIL || '').toLowerCase()) {
     return res.status(401).json({ erro: 'Usuário ou senha incorretos.' });
   }
   if (senha !== adminPass) {
     return res.status(401).json({ erro: 'Usuário ou senha incorretos.' });
   }
-  const token = signToken({ usuario: adminUser, email: adminEmail, role: 'admin' });
-  res.json({ token, admin: { usuario: adminUser, email: adminEmail, role: 'admin', logado: true } });
+  const token = signToken({ usuario: adminUser, role: 'admin' });
+  res.json({ token, admin: { usuario: adminUser, email: process.env.ADMIN_EMAIL || '', role: 'admin', logado: true } });
 });
 
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgot-password', (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ erro: 'Informe o e-mail.' });
   const cleanEmail = normalizeEmail(email);
@@ -174,7 +134,7 @@ router.post('/forgot-password', async (req, res) => {
     return res.status(400).json({ erro: 'Informe um e-mail válido.' });
   }
 
-  const row = db.prepare('SELECT id, nome FROM users WHERE email = ?').get(cleanEmail);
+  const row = db.prepare('SELECT id FROM users WHERE email = ?').get(cleanEmail);
   if (!row) {
     return res.json({ ok: true, message: 'Se o e-mail estiver cadastrado, o link de recuperação será gerado.' });
   }
@@ -184,15 +144,10 @@ router.post('/forgot-password', async (req, res) => {
   db.prepare('INSERT OR REPLACE INTO reset_tokens (token, email, expires_at) VALUES (?, ?, ?)')
     .run(token, cleanEmail, expires);
 
-  const resetLink = `${getAppUrl(req)}/pages/reset-password.html?token=${token}&email=${encodeURIComponent(cleanEmail)}`;
-  try {
-    await sendResetPasswordEmail({ email: cleanEmail, nome: row.nome, resetLink });
-  } catch (error) {
-    console.error('Falha ao enviar e-mail de recuperação:', error);
-  }
-
   res.json({
     ok: true,
+    token,
+    resetLink: `/pages/reset-password.html?token=${token}&email=${encodeURIComponent(cleanEmail)}`,
     message: 'Se o e-mail estiver cadastrado, o link de recuperação será gerado.'
   });
 });

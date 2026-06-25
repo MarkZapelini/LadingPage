@@ -564,7 +564,7 @@
       localStorage.setItem('adminOrders', JSON.stringify(adminOrders));
       let adminProducts = JSON.parse(localStorage.getItem('adminProducts') || '[]');
       cart.forEach(ci => {
-        const pIndex = adminProducts.findIndex(x => String(x.id) === String(ci.productId || '') || x.nome === ci.nome);
+        const pIndex = adminProducts.findIndex(x => x.nome === ci.nome);
         if (pIndex !== -1) adminProducts[pIndex].estoque = Math.max(0, (adminProducts[pIndex].estoque || 0) - ci.quantidade);
       });
       localStorage.setItem('adminProducts', JSON.stringify(adminProducts));

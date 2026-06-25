@@ -26,10 +26,7 @@ router.put('/', authUser, (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?)
     `);
     for (const item of items) {
-      const productId = Number(item.productId || item.product_id || 0);
-      const prod = Number.isInteger(productId) && productId > 0
-        ? db.prepare('SELECT id FROM products WHERE id = ?').get(productId)
-        : db.prepare('SELECT id FROM products WHERE nome = ?').get(item.nome);
+      const prod = db.prepare('SELECT id FROM products WHERE nome = ?').get(item.nome);
       insert.run(req.user.id, prod?.id || null, item.nome, item.preco, item.emoji || '📦', item.quantidade || 1);
     }
   });

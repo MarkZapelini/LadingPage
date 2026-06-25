@@ -348,14 +348,13 @@
   function adicionarAoCarrinho() {
     if (!produtoAtual) return;
     
-    const itemExistente = cart.find(item => String(item.productId || '') === String(produtoAtual.id) || item.nome === produtoAtual.nome);
+    const itemExistente = cart.find(item => item.nome === produtoAtual.nome);
     const precoFinal = produtoAtual.promo && produtoAtual.promo < produtoAtual.preco ? produtoAtual.promo : produtoAtual.preco;
     
     if (itemExistente) {
       itemExistente.quantidade += quantidadeSelecionada;
     } else {
       cart.push({
-        productId: produtoAtual.id,
         nome: produtoAtual.nome,
         preco: precoFinal,
         emoji: produtoAtual.emoji || '📦',
@@ -518,13 +517,12 @@
     if (!produto) return;
     
     const precoFinal = produto.promo && produto.promo < produto.preco ? produto.promo : produto.preco;
-    const itemExistente = cart.find(item => String(item.productId || '') === String(produto.id) || item.nome === nome);
+    const itemExistente = cart.find(item => item.nome === nome);
     
     if (itemExistente) {
       itemExistente.quantidade += 1;
     } else {
       cart.push({
-        productId: produto.id,
         nome: nome,
         preco: precoFinal,
         emoji: produto.emoji || '📦',

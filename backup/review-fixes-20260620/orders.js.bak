@@ -67,18 +67,6 @@ function normalizeAddress(endereco) {
   return Object.values(normalized).some(Boolean) ? normalized : null;
 }
 
-function findProductForOrderItem(item) {
-  const productId = Number(item.productId || item.product_id || 0);
-  if (Number.isInteger(productId) && productId > 0) {
-    const byId = db.prepare('SELECT id, estoque, nome FROM products WHERE id = ?').get(productId);
-    if (byId) return byId;
-  }
-
-  const productName = String(item.nome || '').trim();
-  if (!productName) return null;
-  return db.prepare('SELECT id, estoque, nome FROM products WHERE nome = ?').get(productName);
-}
-
 function createOrder({ userId, cliente, clienteEmail, itens, status, endereco, paymentMethod, paymentStatus, paymentReference }) {
   if (!itens || !itens.length) throw new Error('Carrinho vazio');
   const address = normalizeAddress(endereco);
@@ -88,7 +76,7 @@ function createOrder({ userId, cliente, clienteEmail, itens, status, endereco, p
       if (!item || !item.nome) throw new Error('Item de pedido inválido.');
       const qtd = Number(item.quantidade || item.qty || 1);
       if (!Number.isFinite(qtd) || qtd <= 0) throw new Error(`Quantidade inválida: ${item.nome}`);
-      const prod = findProductForOrderItem(item);
+      const prod = db.prepare('SELECT id, estoque, nome FROM products WHERE nome = ?').get(item.nome);
       if (!prod) throw new Error(`Produto não encontrado: ${item.nome}`);
       if (prod.estoque < qtd) throw new Error(`Estoque insuficiente: ${item.nome}`);
     }
@@ -97,7 +85,6 @@ function createOrder({ userId, cliente, clienteEmail, itens, status, endereco, p
     const total = itens.reduce((s, i) => s + Number(i.preco || i.price || 0) * Number(i.quantidade || i.qty || 1), 0);
     const itemsLabel = itens.map(i => i.nome).join(', ');
     const normalized = itens.map(i => ({
-      productId: Number(i.productId || i.product_id || 0) || null,
       nome: i.nome,
       preco: Number(i.preco || i.price || 0),
       emoji: i.emoji || '📦',
@@ -126,13 +113,8 @@ function createOrder({ userId, cliente, clienteEmail, itens, status, endereco, p
     );
 
     for (const item of normalized) {
-      if (item.productId) {
-        db.prepare('UPDATE products SET estoque = MAX(0, estoque - ?) WHERE id = ?')
-          .run(item.quantidade, item.productId);
-      } else {
-        db.prepare('UPDATE products SET estoque = MAX(0, estoque - ?) WHERE nome = ?')
-          .run(item.quantidade, item.nome);
-      }
+      db.prepare('UPDATE products SET estoque = MAX(0, estoque - ?) WHERE nome = ?')
+        .run(item.quantidade, item.nome);
     }
 
     if (userId) {

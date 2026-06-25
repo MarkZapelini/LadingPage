@@ -236,9 +236,9 @@
       try {
         const p = adminProducts.find(x => x.nome === nome);
         if (!p) throw new Error("Produto não encontrado: " + nome);
-        const exists = cart.find(i => String(i.productId || '') === String(p.id) || i.nome === nome);
+        const exists = cart.find(i => i.nome === nome);
         if (exists) exists.quantidade++;
-        else cart.push({ productId: p.id, nome, preco: p.preco, emoji: p.emoji, quantidade: 1 });
+        else cart.push({ nome, preco: p.preco, emoji: p.emoji, quantidade: 1 });
         localStorage.setItem('zcore_cart', JSON.stringify(cart));
         atualizarCarrinho();
         mostrarToast('✓ Adicionado ao carrinho');
