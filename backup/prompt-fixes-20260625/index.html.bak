@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<script>(function(){try{var t=localStorage.getItem('zcore_theme')||localStorage.getItem('zcore-theme');if(t){localStorage.setItem('zcore_theme',t);localStorage.removeItem('zcore-theme');}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+<script>document.documentElement.setAttribute('data-theme', 'dark');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Z-Core | Tecnologia High-End</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js"></script>
 </head>
 <body>
 

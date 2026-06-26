@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <script>(function(){try{var t=localStorage.getItem('zcore_theme')||localStorage.getItem('zcore-theme');if(t){localStorage.setItem('zcore_theme',t);localStorage.removeItem('zcore-theme');}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem('zcore-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Admin — Z-Core</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -139,8 +139,7 @@
     const current = document.documentElement.getAttribute('data-theme');
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('zcore_theme', next);
-    localStorage.removeItem('zcore-theme');
+    localStorage.setItem('zcore-theme', next);
   });
 </script>
 <script src="../js/api.js"></script>

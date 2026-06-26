@@ -16,10 +16,24 @@
       }
     });
 
-    // --- CONFIGURACAO DO FIREBASE ---
-    const firebaseApp = typeof window.initZCoreFirebase === 'function' ? window.initZCoreFirebase() : null;
-    const auth = firebaseApp && typeof firebase !== 'undefined' ? firebase.auth() : null;
-    const db = firebaseApp && typeof firebase !== 'undefined' ? firebase.firestore() : null;
+    // --- CONFIGURAÇÃO DO FIREBASE ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyA7gHgpS2dBrIa2dJamylsg9DUdgOHt3Sk",
+      authDomain: "pg-de-vendas.firebaseapp.com",
+      databaseURL: "https://pg-de-vendas-default-rtdb.firebaseio.com",
+      projectId: "pg-de-vendas",
+      storageBucket: "pg-de-vendas.firebasestorage.app",
+      messagingSenderId: "803403474499",
+      appId: "1:803403474499:web:e729b5b49b75dfa4cd16f6",
+      measurementId: "G-5LPWHGFWK5"
+    };
+  
+    // Inicializa o Firebase
+    if (typeof firebase !== 'undefined') {
+      firebase.initializeApp(firebaseConfig);
+      var auth = firebase.auth();
+      var db = firebase.firestore();
+    }
     
     // === FUNÇÕES DO FIRESTORE ===
     async function salvarUsuarioFirestore(usuario) {

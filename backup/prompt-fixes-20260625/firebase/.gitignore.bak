@@ -13,4 +13,3 @@ backend/data/*.db-journal
 .idea
 dist
 build
-frontend/js/firebase-config.js

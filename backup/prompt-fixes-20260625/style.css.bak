@@ -378,7 +378,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   line-height: 1; color: #fff; margin-bottom: 24px; letter-spacing: -2px;
 }
 .hero-title-line2 { display: flex; align-items: center; gap: 16px; }
-.word-rotate { color: var(--accent); }
+.word-rotate { background: linear-gradient(90deg, var(--accent), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
 .hero-sub { font-size: 18px; color: rgba(255,255,255,0.5); max-width: 500px; margin-bottom: 48px; }
 
@@ -710,17 +710,9 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 }
 .pcard:hover { transform: translateY(-12px); border-color: var(--accent-glow); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
 
-.pcard__img-area {
-  height: 260px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  background: radial-gradient(circle at top, rgba(123, 62, 255, 0.08), rgba(255,255,255,0.02));
-  overflow: hidden;
-}
+.pcard__img-area { height: 260px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); overflow: hidden; }
 .pcard__emoji { font-size: 90px; }
-.pcard__img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
+.pcard__img { width: 100%; height: 100%; object-fit: cover; }
 .pcard__info { padding: 28px; flex: 1; }
 .pcard__brand { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
 .pcard__name { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; margin: 8px 0; }
@@ -736,6 +728,12 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   .hero-container { grid-template-columns: 1fr; text-align: center; gap: 40px; }
   .hero-content { display: flex; flex-direction: column; align-items: center; }
   .hero-stats { justify-content: center; }
+  .prod-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .prod-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ========================================
@@ -2146,3 +2144,4 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
     font-size: 40px;
   }
 }
+

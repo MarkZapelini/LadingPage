@@ -1,6 +1,6 @@
 # Pendencias Para Producao - Z-Core
 
-Atualizado em: 2026-06-25
+Atualizado em: 2026-06-20
 
 Este arquivo resume o que ainda falta ajustar antes de considerar o projeto pronto para uso online com mais seguranca e previsibilidade.
 
@@ -8,8 +8,8 @@ Este arquivo resume o que ainda falta ajustar antes de considerar o projeto pron
 
 ### 1. Ajustar ambiente de producao
 
-- `docker-compose.yml` agora lê `./backend/.env` e não expõe credenciais inline.
-- Garantir `ADMIN_EMAIL` definido no `backend/.env` e no ambiente publicado.
+- Corrigir `docker-compose.yml` para remover `ADMIN_PASS=admin123`.
+- Adicionar `ADMIN_EMAIL` no ambiente Docker.
 - Definir `JWT_SECRET` forte e exclusivo por ambiente.
 - Restringir `CORS_ORIGIN` para o dominio real do site.
 - Confirmar `APP_URL` com a URL publica correta.
@@ -55,17 +55,16 @@ Este arquivo resume o que ainda falta ajustar antes de considerar o projeto pron
 
 ### 7. Revisar arquivos de apoio publicados
 
-- Paginas utilitarias movidas para `frontend/_dev/pages/` e excluidas do deploy por `.vercelignore`.
-- Validar se ainda faz sentido manter estes utilitarios apenas para uso local:
-- `frontend/_dev/pages/criar-conta-teste.html`
-- `frontend/_dev/pages/logar-automaticamente.html`
-- `frontend/_dev/pages/diagnostico.html`
+- Decidir se as paginas de teste abaixo devem continuar acessiveis:
+- `frontend/pages/criar-conta-teste.html`
+- `frontend/pages/logar-automaticamente.html`
+- `frontend/pages/diagnostico.html`
 
 ## Prioridade Baixa
 
 ### 8. Padronizacao final
 
-- Padronizar uso de tema entre `zcore-theme` e `zcore_theme`. Status: concluido.
+- Padronizar uso de tema entre `zcore-theme` e `zcore_theme`.
 - Reduzir logs de debug ainda existentes em login e cadastro.
 - Fazer limpeza final de arquivos legados e utilitarios de teste que nao devem ir para producao.
 

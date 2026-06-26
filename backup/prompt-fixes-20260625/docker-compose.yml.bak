@@ -1,12 +1,13 @@
 services:
   api:
-    build:
+    build: 
       context: .
     ports:
       - "3000:3000"
-    env_file:
-      - ./backend/.env
     environment:
-      PORT: ${PORT:-3000}
+      - PORT=3000
+      - JWT_SECRET=prod-secret-change-me
+      - ADMIN_USER=admin
+      - ADMIN_PASS=admin123
     volumes:
       - ./backend/data:/app/backend/data

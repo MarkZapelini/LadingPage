@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <script>(function(){try{var t=localStorage.getItem('zcore_theme')||localStorage.getItem('zcore-theme');if(t){localStorage.setItem('zcore_theme',t);localStorage.removeItem('zcore-theme');}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem('zcore_theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sobre Nós - Z-Core Eletrônicos</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">

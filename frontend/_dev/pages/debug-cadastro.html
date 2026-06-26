@@ -40,27 +40,19 @@
     
     <div class="step">
         <h3>Links Úteis</h3>
-        <a href="../index.html" class="link">🏠 Ir para a Home</a><br>
-        <a href="cadastro.html" class="link">📝 Ir para o Cadastro</a><br>
-        <a href="login.html" class="link">🔐 Ir para o Login</a>
+        <a href="../../index.html" class="link">🏠 Ir para a Home</a><br>
+        <a href="../../pages/cadastro.html" class="link">📝 Ir para o Cadastro</a><br>
+        <a href="../../pages/login.html" class="link">🔐 Ir para o Login</a>
     </div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="../../js/firebase-config.js"></script>
     <script>
-        // === CONFIGURAÇÃO DO FIREBASE ===
-        const firebaseConfig = {
-            apiKey: "AIzaSyA7gHgpS2dBrIa2dJamylsg9DUdgOHt3Sk",
-            authDomain: "pg-de-vendas.firebaseapp.com",
-            databaseURL: "https://pg-de-vendas-default-rtdb.firebaseio.com",
-            projectId: "pg-de-vendas",
-            storageBucket: "pg-de-vendas.firebasestorage.app",
-            messagingSenderId: "803403474499",
-            appId: "1:803403474499:web:e729b5b49b75dfa4cd16f6",
-            measurementId: "G-5LPWHGFWK5"
-        };
+        // === CONFIGURACAO DO FIREBASE ===
+        const firebaseConfig = window.ZCORE_FIREBASE_CONFIG || null;
 
         let db = null;
         let firebaseApp = null;
@@ -83,7 +75,11 @@
             logar('log-firebase', 'Iniciando conexão com Firebase...');
             
             try {
-                firebaseApp = firebase.initializeApp(firebaseConfig);
+                if (!firebaseConfig || typeof window.initZCoreFirebase !== 'function') {
+                    throw new Error('firebase-config.js nao foi carregado.');
+                }
+
+                firebaseApp = window.initZCoreFirebase();
                 db = firebase.firestore();
                 setStatus('status-firebase', 'ok', '✅ Firebase conectado com sucesso!');
                 logar('log-firebase', '✅ Firebase inicializado com sucesso!');
