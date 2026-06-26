@@ -50,11 +50,6 @@
         <button class="btn-logout-premium" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
       </div>
 
-      <button class="btn-action-premium" onclick="abrirWishlist()" title="Favoritos">
-        <i class="fas fa-heart"></i>
-        <span class="badge-premium" id="wishlistCount">0</span>
-      </button>
-      
       <button class="btn-cart-premium" onclick="abrirCarrinho()">
         <div class="cart-icon-wrapper">
           <i class="fas fa-shopping-cart"></i>
@@ -335,7 +330,8 @@
   }
   
   function atualizarWishlist() {
-    document.getElementById('wishlistCount').textContent = wishlist.length;
+    const wishlistCount = document.getElementById('wishlistCount');
+    if (wishlistCount) wishlistCount.textContent = wishlist.length;
     const wishlistItemsDiv = document.getElementById('wishlistItems');
     const wishlistEmpty = document.getElementById('wishlistEmpty');
     

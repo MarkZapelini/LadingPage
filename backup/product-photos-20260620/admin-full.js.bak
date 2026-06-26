@@ -24,16 +24,13 @@ function podeUsarFallbackAdminLocal() {
 
 // Produtos Padrão
 const produtosPadrao = [
-    { id: 1, nome: 'MacBook Air M3', desc: 'Notebook Apple com chip M3', categoria: '💻 Notebooks', marca: 'Apple', preco: 11499, promo: null, estoque: 15, status: 'Destaque', emoji: '💻', foto: 'assets/images/products/macbook-air-m3.jpg' },
-    { id: 2, nome: 'Galaxy S24 Ultra', desc: 'Smartphone Samsung premium', categoria: '📱 Smartphones', marca: 'Samsung', preco: 6799, promo: 5999, estoque: 20, status: 'Ativo', emoji: '📱', foto: 'assets/images/products/galaxy-s24-ultra.jpg' },
-    { id: 3, nome: 'Sony WH-1000XM5', desc: 'Fones de ouvido com cancelamento de ruído', categoria: '🎧 Headphones', marca: 'Sony', preco: 2499, promo: null, estoque: 8, status: 'Ativo', emoji: '🎧', foto: 'assets/images/products/sony-wh-1000xm5.jpg' },
-    { id: 4, nome: 'PlayStation 5 Slim', desc: 'Console Sony de última geração', categoria: '🎮 Games', marca: 'Sony', preco: 3699, promo: null, estoque: 5, status: 'Destaque', emoji: '🎮', foto: 'assets/images/products/playstation-5-slim.jpg' },
-    { id: 5, nome: 'Apple Watch Series 9', desc: 'Relógio inteligente Apple', categoria: '⌚ Smartwatches', marca: 'Apple', preco: 3299, promo: null, estoque: 12, status: 'Ativo', emoji: '⌚', foto: 'assets/images/products/apple-watch-series-9.jpg' },
-    { id: 6, nome: 'LG OLED 55"', desc: 'Smart TV OLED 4K', categoria: '📺 TVs', marca: 'LG', preco: 4499, promo: 3999, estoque: 3, status: 'Ativo', emoji: '📺', foto: 'assets/images/products/lg-oled-55.jpg' }
-].map((produto) => ({
-    ...produto,
-    fotos: produto.foto ? [produto.foto] : []
-}));
+    { id: 1, nome: 'MacBook Air M3', desc: 'Notebook Apple com chip M3', categoria: '💻 Notebooks', marca: 'Apple', preco: 11499, promo: null, estoque: 15, status: 'Destaque', emoji: '💻' },
+    { id: 2, nome: 'Galaxy S24 Ultra', desc: 'Smartphone Samsung premium', categoria: '📱 Smartphones', marca: 'Samsung', preco: 6799, promo: 5999, estoque: 20, status: 'Ativo', emoji: '📱' },
+    { id: 3, nome: 'Sony WH-1000XM5', desc: 'Fones de ouvido com cancelamento de ruído', categoria: '🎧 Headphones', marca: 'Sony', preco: 2499, promo: null, estoque: 8, status: 'Ativo', emoji: '🎧' },
+    { id: 4, nome: 'PlayStation 5 Slim', desc: 'Console Sony de última geração', categoria: '🎮 Games', marca: 'Sony', preco: 3699, promo: null, estoque: 5, status: 'Destaque', emoji: '🎮' },
+    { id: 5, nome: 'Apple Watch Series 9', desc: 'Relógio inteligente Apple', categoria: '⌚ Smartwatches', marca: 'Apple', preco: 3299, promo: null, estoque: 12, status: 'Ativo', emoji: '⌚' },
+    { id: 6, nome: 'LG OLED 55"', desc: 'Smart TV OLED 4K', categoria: '📺 TVs', marca: 'LG', preco: 4499, promo: 3999, estoque: 3, status: 'Ativo', emoji: '📺' }
+];
 
 const CATEGORIA_MAP = {
     '📱 Smartphones': { cat: 'smartphones', emoji: '📱' },
@@ -59,28 +56,6 @@ function categoriaToUi(cat) {
 
 function emojiCategoria(cat) {
     return CAT_TO_CATEGORIA[String(cat || '').toLowerCase()]?.emoji || '📦';
-}
-
-function resolverFotoProduto(caminho) {
-    if (!caminho || /^(https?:|data:|blob:|file:|\/)/i.test(caminho)) return caminho;
-    return `../${caminho.replace(/^\.?\//, '')}`;
-}
-
-function enriquecerProdutosComPadrao(lista) {
-    return (lista || []).map((produto) => {
-        const padrao = produtosPadrao.find((item) => String(item.id) === String(produto.id) || item.nome === produto.nome);
-        if (!padrao) return produto;
-
-        const foto = produto.foto || padrao.foto || null;
-        const fotos = Array.isArray(produto.fotos) && produto.fotos.length ? produto.fotos : (foto ? [foto] : (padrao.fotos || []));
-
-        return {
-            ...padrao,
-            ...produto,
-            foto,
-            fotos
-        };
-    });
 }
 
 function normalizarStatusPedido(status) {
@@ -240,9 +215,7 @@ async function carregarDados() {
     const savedProfile = localStorage.getItem('adminProfile');
     const savedPayments = localStorage.getItem('zcore-payments');
 
-    produtos = savedProds
-        ? enriquecerProdutosComPadrao(JSON.parse(savedProds)).map(normalizarProdutoAdmin)
-        : [...produtosPadrao].map(normalizarProdutoAdmin);
+    produtos = savedProds ? JSON.parse(savedProds).map(normalizarProdutoAdmin) : [...produtosPadrao];
     pedidos = savedOrders ? JSON.parse(savedOrders).map(normalizarPedidoAdmin) : [];
     usuarios = savedUsers ? JSON.parse(savedUsers) : [];
     perfil = savedProfile ? JSON.parse(savedProfile) : perfil;
@@ -673,7 +646,7 @@ function renderizarDashboard() {
         <tr>
             <td>
                 <div class="produto-info">
-                    <div class="produto-thumb">${p.foto ? `<img src="${resolverFotoProduto(p.foto)}" alt="${p.nome}">` : (p.emoji || '📦')}</div>
+                    <div class="produto-thumb">${p.foto ? `<img src="${p.foto}" alt="${p.nome}">` : (p.emoji || '📦')}</div>
                     <div class="produto-nome">${p.nome}</div>
                 </div>
             </td>
@@ -752,7 +725,7 @@ function renderizarProdutos(lista = produtos) {
         <tr>
             <td>
                 <div class="produto-info">
-                    <div class="produto-thumb">${p.foto ? `<img src="${resolverFotoProduto(p.foto)}" alt="${p.nome}">` : (p.emoji || '📦')}</div>
+                    <div class="produto-thumb">${p.foto ? `<img src="${p.foto}" alt="${p.nome}">` : (p.emoji || '📦')}</div>
                     <div class="produto-nome">${p.nome}</div>
                 </div>
             </td>
@@ -927,7 +900,7 @@ function resetarUpload() {
 function mostrarFotoUpload(base64) {
     document.getElementById('uploadPlaceholder').style.display = 'none';
     document.getElementById('uploadPreview').style.display = 'inline-block';
-    document.getElementById('uploadedImage').src = resolverFotoProduto(base64);
+    document.getElementById('uploadedImage').src = base64;
 }
 
 function atualizarPreview() {
@@ -946,7 +919,7 @@ function atualizarPreview() {
     if (produtoFoto) {
         document.getElementById('previewEmoji').style.display = 'none';
         document.getElementById('previewImage').style.display = 'block';
-        document.getElementById('previewImage').src = resolverFotoProduto(produtoFoto);
+        document.getElementById('previewImage').src = produtoFoto;
     } else {
         document.getElementById('previewImage').style.display = 'none';
         document.getElementById('previewEmoji').style.display = 'inline-block';

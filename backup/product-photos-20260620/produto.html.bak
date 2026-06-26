@@ -50,6 +50,11 @@
         <button class="btn-logout-premium" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i></button>
       </div>
 
+      <button class="btn-action-premium" onclick="abrirWishlist()" title="Favoritos">
+        <i class="fas fa-heart"></i>
+        <span class="badge-premium" id="wishlistCount">0</span>
+      </button>
+      
       <button class="btn-cart-premium" onclick="abrirCarrinho()">
         <div class="cart-icon-wrapper">
           <i class="fas fa-shopping-cart"></i>
@@ -119,6 +124,9 @@
             <i class="fas fa-shopping-bag"></i> Adicionar ao Carrinho
           </button>
           
+          <button class="btn-wishlist-product" onclick="toggleWishlistProduct()" title="Adicionar aos favoritos">
+            <i class="far fa-heart" id="wishlistIcon"></i>
+          </button>
         </div>
         
         <div class="product-info">
@@ -245,47 +253,21 @@
 <script>
   // Produtos padrão
   const produtosPadrao = [
-    { id: 1, nome: 'MacBook Air M3', marca: 'Apple', cat: 'notebooks', preco: 10499, promo: null, estoque: 15, desc: 'Chip M3, 8GB RAM, SSD 256GB, tela 13"', emoji: '💻', status: 'Ativo', avaliacao: 5, qtdAvaliacoes: 324, foto: 'assets/images/products/macbook-air-m3.jpg' },
-    { id: 2, nome: 'Galaxy S24 Ultra', marca: 'Samsung', cat: 'smartphones', preco: 6799, promo: 8499, estoque: 8, desc: '256GB, 12GB RAM, câmera 200MP, 5G', emoji: '📱', status: 'Ativo', avaliacao: 5, qtdAvaliacoes: 512, foto: 'assets/images/products/galaxy-s24-ultra.jpg' },
-    { id: 3, nome: 'Sony WH-1000XM5', marca: 'Sony', cat: 'audio', preco: 1799, promo: 2299, estoque: 25, desc: 'Fone over-ear, cancelamento de ruído, 30h', emoji: '🎧', status: 'Ativo', avaliacao: 4, qtdAvaliacoes: 289, foto: 'assets/images/products/sony-wh-1000xm5.jpg' },
-    { id: 4, nome: 'Apple Watch Series 9', marca: 'Apple', cat: 'wearables', preco: 3299, promo: null, estoque: 12, desc: 'GPS, 45mm, monitoramento de saúde 24h', emoji: '⌚', status: 'Destaque', avaliacao: 5, qtdAvaliacoes: 198, foto: 'assets/images/products/apple-watch-series-9.jpg' },
-    { id: 5, nome: 'LG OLED 55"', marca: 'LG', cat: 'tvs', preco: 5099, promo: 5999, estoque: 5, desc: '4K, 120Hz, Dolby Vision, webOS 23', emoji: '📺', status: 'Ativo', avaliacao: 4, qtdAvaliacoes: 145, foto: 'assets/images/products/lg-oled-55.jpg' },
-    { id: 6, nome: 'PlayStation 5 Slim', marca: 'Sony', cat: 'games', preco: 3999, promo: null, estoque: 20, desc: '1TB SSD, controle DualSense, 4K 120fps', emoji: '🎮', status: 'Ativo', avaliacao: 5, qtdAvaliacoes: 421, foto: 'assets/images/products/playstation-5-slim.jpg' }
-  ].map((produto) => ({
-    ...produto,
-    fotos: produto.foto ? [produto.foto] : []
-  }));
-
-  function resolverFotoProduto(caminho) {
-    if (!caminho || /^(https?:|data:|blob:|file:|\/)/i.test(caminho)) return caminho;
-    return `../${caminho.replace(/^\.?\//, '')}`;
-  }
-
-  function enriquecerProdutosComPadrao(lista) {
-    return (lista || []).map((produto) => {
-      const padrao = produtosPadrao.find((item) => String(item.id) === String(produto.id) || item.nome === produto.nome);
-      if (!padrao) return produto;
-
-      const foto = produto.foto || padrao.foto || null;
-      const fotos = Array.isArray(produto.fotos) && produto.fotos.length ? produto.fotos : (foto ? [foto] : (padrao.fotos || []));
-
-      return {
-        ...padrao,
-        ...produto,
-        foto,
-        fotos
-      };
-    });
-  }
+    { id: 1, nome: 'MacBook Air M3', marca: 'Apple', cat: 'notebooks', preco: 10499, promo: null, estoque: 15, desc: 'Chip M3, 8GB RAM, SSD 256GB, tela 13"', emoji: '💻', status: 'Ativo', avaliacao: 5, qtdAvaliacoes: 324 },
+    { id: 2, nome: 'Galaxy S24 Ultra', marca: 'Samsung', cat: 'smartphones', preco: 6799, promo: 8499, estoque: 8, desc: '256GB, 12GB RAM, câmera 200MP, 5G', emoji: '📱', status: 'Ativo', avaliacao: 5, qtdAvaliacoes: 512 },
+    { id: 3, nome: 'Sony WH-1000XM5', marca: 'Sony', cat: 'audio', preco: 1799, promo: 2299, estoque: 25, desc: 'Fone over-ear, cancelamento de ruído, 30h', emoji: '🎧', status: 'Ativo', avaliacao: 4, qtdAvaliacoes: 289 },
+    { id: 4, nome: 'Apple Watch Series 9', marca: 'Apple', cat: 'wearables', preco: 3299, promo: null, estoque: 12, desc: 'GPS, 45mm, monitoramento de saúde 24h', emoji: '⌚', status: 'Destaque', avaliacao: 5, qtdAvaliacoes: 198 },
+    { id: 5, nome: 'LG OLED 55"', marca: 'LG', cat: 'tvs', preco: 5099, promo: 5999, estoque: 5, desc: '4K, 120Hz, Dolby Vision, webOS 23', emoji: '📺', status: 'Ativo', avaliacao: 4, qtdAvaliacoes: 145 },
+    { id: 6, nome: 'PlayStation 5 Slim', marca: 'Sony', cat: 'games', preco: 3999, promo: null, estoque: 20, desc: '1TB SSD, controle DualSense, 4K 120fps', emoji: '🎮', status: 'Ativo', avaliacao: 5, qtdAvaliacoes: 421 }
+  ];
   
   let produtoAtual = null;
   let quantidadeSelecionada = 1;
-  let adminProducts = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+  let adminProducts = JSON.parse(localStorage.getItem('adminProducts') || []);
   if (adminProducts.length === 0) {
     adminProducts = [...produtosPadrao];
+    localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
   }
-  adminProducts = enriquecerProdutosComPadrao(adminProducts);
-  localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
   
   let cart = JSON.parse(localStorage.getItem('zcore_cart') || '[]');
   let wishlist = JSON.parse(localStorage.getItem('zcore_wishlist') || '[]');
@@ -319,7 +301,7 @@
     
     const productMainImage = document.getElementById('productMainImage');
     if (produtoAtual.foto) {
-      productMainImage.innerHTML = `<img src="${resolverFotoProduto(produtoAtual.foto)}" alt="${produtoAtual.nome}" class="produto-main-image-tag">`;
+      productMainImage.innerHTML = `<img src="${produtoAtual.foto}" alt="${produtoAtual.nome}" class="produto-main-image-tag">`;
     } else {
       document.getElementById('productEmoji').textContent = produtoAtual.emoji || '📦';
     }
@@ -349,6 +331,7 @@
       document.getElementById('badgeNovo').style.display = 'none';
     }
     
+    atualizarWishlistIcon();
     atualizarCarrinho();
   }
   
@@ -402,13 +385,10 @@
   }
   
   function atualizarWishlistIcon() {
-    const wishlistIcon = document.getElementById('wishlistIcon');
-    if (!wishlistIcon) return;
-
     if (produtoAtual && wishlist.includes(produtoAtual.nome)) {
-      wishlistIcon.style.color = '#e74c3c';
+      document.getElementById('wishlistIcon').style.color = '#e74c3c';
     } else {
-      wishlistIcon.style.color = 'inherit';
+      document.getElementById('wishlistIcon').style.color = 'inherit';
     }
   }
   
@@ -500,8 +480,7 @@
   }
   
   function atualizarWishlist() {
-    const wishlistCount = document.getElementById('wishlistCount');
-    if (wishlistCount) wishlistCount.textContent = wishlist.length;
+    document.getElementById('wishlistCount').textContent = wishlist.length;
     const wishlistItemsDiv = document.getElementById('wishlistItems');
     const wishlistEmpty = document.getElementById('wishlistEmpty');
     
