@@ -40,6 +40,11 @@
     </ul>
 
     <div class="nav-actions">
+      <button type="button" class="theme-toggle" aria-label="Ativar modo escuro" title="Modo escuro">
+        <i class="fas fa-sun theme-icon-light"></i>
+        <i class="fas fa-moon theme-icon-dark"></i>
+      </button>
+
       <div id="authButtons" class="auth-group">
         <a href="login.html" class="link-login active">Entrar</a>
         <a href="cadastro.html" class="btn-register-premium">Cadastre-se</a>

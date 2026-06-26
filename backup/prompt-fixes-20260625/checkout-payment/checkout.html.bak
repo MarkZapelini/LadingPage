@@ -137,7 +137,7 @@
             <h3>Método de Pagamento</h3>
           </div>
           <div class="payment-selector-premium">
-            <label class="payment-card active" data-payment="credito">
+            <label class="payment-card active">
               <input type="radio" name="payment" value="credito" checked>
               <div class="pay-icon"><i class="fas fa-credit-card"></i></div>
               <div class="pay-info">
@@ -145,7 +145,7 @@
                 <span class="pay-sub">Em até 12x sem juros</span>
               </div>
             </label>
-            <label class="payment-card" data-payment="pix">
+            <label class="payment-card">
               <input type="radio" name="payment" value="pix">
               <div class="pay-icon"><i class="fab fa-pix"></i></div>
               <div class="pay-info">
@@ -153,7 +153,7 @@
                 <span class="pay-sub">Aprovação instantânea</span>
               </div>
             </label>
-            <label class="payment-card" data-payment="boleto">
+            <label class="payment-card">
               <input type="radio" name="payment" value="boleto">
               <div class="pay-icon"><i class="fas fa-barcode"></i></div>
               <div class="pay-info">
@@ -163,7 +163,7 @@
             </label>
           </div>
           
-          <div class="card-details-premium" id="cardDetailsPremium">
+          <div class="card-details-premium">
             <div class="form-group-premium full">
               <label>Número do Cartão</label>
               <input type="text" placeholder="0000 0000 0000 0000">
@@ -293,7 +293,6 @@
   
   let cupomAplicado = null;
   let subtotalOriginal = 0;
-  const PIX_CHECKOUT_STORAGE_KEY = 'zcore_pix_checkout';
   
   function mostrarToast(mensagem, tipo = 'sucesso') {
     const toast = document.getElementById('toast');
@@ -427,82 +426,6 @@
     return document.querySelector('input[name="payment"]:checked')?.value || 'credito';
   }
 
-  function atualizarMetodoPagamentoUI() {
-    const metodoSelecionado = obterMetodoPagamento();
-    const cardsPagamento = document.querySelectorAll('.payment-card');
-    const cardDetails = document.getElementById('cardDetailsPremium');
-
-    cardsPagamento.forEach((card) => {
-      card.classList.toggle('active', card.dataset.payment === metodoSelecionado);
-    });
-
-    if (cardDetails) {
-      cardDetails.style.display = metodoSelecionado === 'credito' ? 'grid' : 'none';
-    }
-  }
-
-  function inicializarMetodoPagamento() {
-    const cardsPagamento = document.querySelectorAll('.payment-card');
-    const radiosPagamento = document.querySelectorAll('input[name="payment"]');
-
-    cardsPagamento.forEach((card) => {
-      card.addEventListener('click', () => {
-        const radio = card.querySelector('input[name="payment"]');
-        if (!radio) return;
-
-        radio.checked = true;
-        atualizarMetodoPagamentoUI();
-      });
-    });
-
-    radiosPagamento.forEach((radio) => {
-      radio.addEventListener('change', atualizarMetodoPagamentoUI);
-    });
-
-    atualizarMetodoPagamentoUI();
-  }
-
-  function obterConfiguracaoPix() {
-    try {
-      const config = JSON.parse(localStorage.getItem('zcore-payments') || 'null');
-      return config?.pix || null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function montarContextoPix({ pedido, cart, dadosCheckout, paymentPreference }) {
-    const configPix = obterConfiguracaoPix();
-    const total = Number(
-      pedido?.total
-      || cart.reduce((sum, item) => sum + ((Number(item.preco) || 0) * (Number(item.quantidade) || 1)), 0)
-    );
-
-    return {
-      pedidoId: pedido?.id || null,
-      total,
-      cliente: dadosCheckout.nome,
-      email: dadosCheckout.email,
-      itens: (cart || []).map((item) => ({
-        nome: item.nome,
-        quantidade: Number(item.quantidade) || 1,
-        preco: Number(item.preco) || 0
-      })),
-      pix: {
-        chave: configPix?.chave || '',
-        banco: configPix?.banco || 'Pix'
-      },
-      pagamentoOnlineUrl: paymentPreference?.sandbox_init_point || paymentPreference?.init_point || '',
-      criadoEm: new Date().toISOString()
-    };
-  }
-
-  function redirecionarParaPaginaPix(contextoPix) {
-    localStorage.setItem(PIX_CHECKOUT_STORAGE_KEY, JSON.stringify(contextoPix));
-    localStorage.removeItem('zcore_cart');
-    window.location.href = 'pix.html';
-  }
-
   function obterDadosCheckout() {
     return {
       nome: document.getElementById('checkoutNome').value.trim(),
@@ -589,37 +512,22 @@
             paymentStatus: 'pendente'
           });
 
-          let paymentPreference = null;
-
           try {
-            paymentPreference = await ZCoreAPI.createPaymentPreference({
+            const paymentPreference = await ZCoreAPI.createPaymentPreference({
               items: cart,
               orderId: order.id
             });
-          } catch (paymentError) {
-            if (dadosCheckout.paymentMethod !== 'pix') {
-              localStorage.removeItem('zcore_cart');
-              mostrarToast('✅ Pedido criado, mas o pagamento online está indisponível no momento.', 'sucesso');
-              setTimeout(() => {
-                window.location.href = 'pedidos.html';
-              }, 1800);
+
+            if (paymentPreference.sandbox_init_point || paymentPreference.init_point) {
+              window.location.href = paymentPreference.sandbox_init_point || paymentPreference.init_point;
               return;
             }
-          }
-
-          if (dadosCheckout.paymentMethod === 'pix') {
-            const contextoPix = montarContextoPix({
-              pedido: order,
-              cart,
-              dadosCheckout,
-              paymentPreference
-            });
-            redirecionarParaPaginaPix(contextoPix);
-            return;
-          }
-
-          if (paymentPreference?.sandbox_init_point || paymentPreference?.init_point) {
-            window.location.href = paymentPreference.sandbox_init_point || paymentPreference.init_point;
+          } catch (paymentError) {
+            localStorage.removeItem('zcore_cart');
+            mostrarToast('✅ Pedido criado, mas o pagamento online está indisponível no momento.', 'sucesso');
+            setTimeout(() => {
+              window.location.href = 'pedidos.html';
+            }, 1800);
             return;
           }
         }
@@ -658,17 +566,6 @@
         localStorage.setItem('usuarioLogado', JSON.stringify(usuarios[usuarioIndex]));
         salvarPedidoFirestore(pedido, usuarioLogado.id);
       }
-      if (dadosCheckout.paymentMethod === 'pix') {
-        const contextoPix = montarContextoPix({
-          pedido,
-          cart,
-          dadosCheckout,
-          paymentPreference: null
-        });
-        redirecionarParaPaginaPix(contextoPix);
-        return;
-      }
-
       mostrarToast('✅ Pedido confirmado com sucesso! Número: ' + pedidoId);
       setTimeout(() => {
         localStorage.removeItem('zcore_cart');
@@ -683,7 +580,6 @@
     carregarResumo();
     verificarLogin();
     preencherDadosUsuario();
-    inicializarMetodoPagamento();
   };
 </script>
 <script src="../js/api.js"></script>

@@ -293,7 +293,6 @@
   
   let cupomAplicado = null;
   let subtotalOriginal = 0;
-  const PIX_CHECKOUT_STORAGE_KEY = 'zcore_pix_checkout';
   
   function mostrarToast(mensagem, tipo = 'sucesso') {
     const toast = document.getElementById('toast');
@@ -462,47 +461,6 @@
     atualizarMetodoPagamentoUI();
   }
 
-  function obterConfiguracaoPix() {
-    try {
-      const config = JSON.parse(localStorage.getItem('zcore-payments') || 'null');
-      return config?.pix || null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function montarContextoPix({ pedido, cart, dadosCheckout, paymentPreference }) {
-    const configPix = obterConfiguracaoPix();
-    const total = Number(
-      pedido?.total
-      || cart.reduce((sum, item) => sum + ((Number(item.preco) || 0) * (Number(item.quantidade) || 1)), 0)
-    );
-
-    return {
-      pedidoId: pedido?.id || null,
-      total,
-      cliente: dadosCheckout.nome,
-      email: dadosCheckout.email,
-      itens: (cart || []).map((item) => ({
-        nome: item.nome,
-        quantidade: Number(item.quantidade) || 1,
-        preco: Number(item.preco) || 0
-      })),
-      pix: {
-        chave: configPix?.chave || '',
-        banco: configPix?.banco || 'Pix'
-      },
-      pagamentoOnlineUrl: paymentPreference?.sandbox_init_point || paymentPreference?.init_point || '',
-      criadoEm: new Date().toISOString()
-    };
-  }
-
-  function redirecionarParaPaginaPix(contextoPix) {
-    localStorage.setItem(PIX_CHECKOUT_STORAGE_KEY, JSON.stringify(contextoPix));
-    localStorage.removeItem('zcore_cart');
-    window.location.href = 'pix.html';
-  }
-
   function obterDadosCheckout() {
     return {
       nome: document.getElementById('checkoutNome').value.trim(),
@@ -589,37 +547,22 @@
             paymentStatus: 'pendente'
           });
 
-          let paymentPreference = null;
-
           try {
-            paymentPreference = await ZCoreAPI.createPaymentPreference({
+            const paymentPreference = await ZCoreAPI.createPaymentPreference({
               items: cart,
               orderId: order.id
             });
-          } catch (paymentError) {
-            if (dadosCheckout.paymentMethod !== 'pix') {
-              localStorage.removeItem('zcore_cart');
-              mostrarToast('✅ Pedido criado, mas o pagamento online está indisponível no momento.', 'sucesso');
-              setTimeout(() => {
-                window.location.href = 'pedidos.html';
-              }, 1800);
+
+            if (paymentPreference.sandbox_init_point || paymentPreference.init_point) {
+              window.location.href = paymentPreference.sandbox_init_point || paymentPreference.init_point;
               return;
             }
-          }
-
-          if (dadosCheckout.paymentMethod === 'pix') {
-            const contextoPix = montarContextoPix({
-              pedido: order,
-              cart,
-              dadosCheckout,
-              paymentPreference
-            });
-            redirecionarParaPaginaPix(contextoPix);
-            return;
-          }
-
-          if (paymentPreference?.sandbox_init_point || paymentPreference?.init_point) {
-            window.location.href = paymentPreference.sandbox_init_point || paymentPreference.init_point;
+          } catch (paymentError) {
+            localStorage.removeItem('zcore_cart');
+            mostrarToast('✅ Pedido criado, mas o pagamento online está indisponível no momento.', 'sucesso');
+            setTimeout(() => {
+              window.location.href = 'pedidos.html';
+            }, 1800);
             return;
           }
         }
@@ -658,17 +601,6 @@
         localStorage.setItem('usuarioLogado', JSON.stringify(usuarios[usuarioIndex]));
         salvarPedidoFirestore(pedido, usuarioLogado.id);
       }
-      if (dadosCheckout.paymentMethod === 'pix') {
-        const contextoPix = montarContextoPix({
-          pedido,
-          cart,
-          dadosCheckout,
-          paymentPreference: null
-        });
-        redirecionarParaPaginaPix(contextoPix);
-        return;
-      }
-
       mostrarToast('✅ Pedido confirmado com sucesso! Número: ' + pedidoId);
       setTimeout(() => {
         localStorage.removeItem('zcore_cart');

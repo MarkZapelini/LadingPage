@@ -1,0 +1,242 @@
+.pix-hidden {
+  display: none !important;
+}
+
+.pix-page {
+  min-height: 100vh;
+  padding: 48px 20px 80px;
+  background: var(--bg);
+}
+
+.pix-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.pix-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.pix-back-link:hover {
+  color: #fff;
+  transform: translateX(-2px);
+}
+
+.pix-card,
+.pix-empty {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.pix-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(123, 62, 255, 0.12);
+  border: 1px solid rgba(123, 62, 255, 0.25);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.pix-badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  height: 32px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.pix-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.pix-subtitle {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin-bottom: 32px;
+  max-width: 720px;
+}
+
+.pix-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 24px;
+}
+
+.pix-panel {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 24px;
+}
+
+.pix-panel-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.pix-summary {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.pix-summary-row,
+.pix-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pix-summary-row span,
+.pix-item span {
+  color: var(--text-muted);
+}
+
+.pix-summary-row strong,
+.pix-item strong {
+  color: #fff;
+  text-align: right;
+}
+
+.pix-items {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+.pix-method-box,
+.pix-copy-box {
+  margin-bottom: 22px;
+}
+
+.pix-method-label,
+.pix-copy-label {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.pix-method-value {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pix-copy-row {
+  display: flex;
+  gap: 12px;
+}
+
+.pix-copy-input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.pix-copy-btn {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 14px;
+  padding: 0 18px;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pix-copy-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px var(--accent-glow);
+}
+
+.pix-actions {
+  display: grid;
+  gap: 14px;
+}
+
+.pix-open-btn,
+.pix-secondary-btn {
+  justify-content: center;
+}
+
+.pix-note {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.pix-empty {
+  text-align: center;
+}
+
+.pix-empty h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 30px;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.pix-empty p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .pix-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pix-card,
+  .pix-empty {
+    padding: 24px 18px;
+  }
+
+  .pix-title {
+    font-size: 30px;
+  }
+
+  .pix-copy-row {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){try{var t=localStorage.getItem('zcore_theme')||localStorage.getItem('zcore-theme');if(t){localStorage.setItem('zcore_theme',t);localStorage.removeItem('zcore-theme');}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamento Pix — Z-Core</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/pages/pix.css">
+</head>
+<body>
+
+<main class="pix-page">
+  <div class="pix-shell">
+    <a href="checkout.html" class="pix-back-link"><i class="fas fa-arrow-left"></i> Voltar ao checkout</a>
+
+    <section class="pix-card" id="pixCard">
+      <div class="pix-badge">
+        <span class="pix-badge-icon">PIX</span>
+        <span>Pagamento instantâneo</span>
+      </div>
+
+      <h1 class="pix-title">Finalize seu pagamento via Pix</h1>
+      <p class="pix-subtitle">Use a chave abaixo ou abra o ambiente de pagamento para concluir o pedido.</p>
+
+      <div class="pix-grid">
+        <div class="pix-panel">
+          <div class="pix-panel-title">Resumo do pedido</div>
+          <div class="pix-summary">
+            <div class="pix-summary-row">
+              <span>Pedido</span>
+              <strong id="pixPedidoId">-</strong>
+            </div>
+            <div class="pix-summary-row">
+              <span>Cliente</span>
+              <strong id="pixCliente">-</strong>
+            </div>
+            <div class="pix-summary-row">
+              <span>E-mail</span>
+              <strong id="pixEmail">-</strong>
+            </div>
+            <div class="pix-summary-row">
+              <span>Total</span>
+              <strong id="pixTotal">R$ 0,00</strong>
+            </div>
+          </div>
+          <div class="pix-items" id="pixItens"></div>
+        </div>
+
+        <div class="pix-panel">
+          <div class="pix-panel-title">Dados para pagamento</div>
+
+          <div class="pix-method-box">
+            <div class="pix-method-label">Banco / provedor</div>
+            <div class="pix-method-value" id="pixBanco">Pix</div>
+          </div>
+
+          <div class="pix-copy-box" id="pixCopyBox">
+            <label for="pixChave" class="pix-copy-label">Chave Pix</label>
+            <div class="pix-copy-row">
+              <input type="text" id="pixChave" class="pix-copy-input" readonly>
+              <button type="button" class="pix-copy-btn" id="copyPixBtn" onclick="copiarChavePix()">Copiar</button>
+            </div>
+          </div>
+
+          <div class="pix-actions">
+            <a href="#" class="btn-primary-premium pix-open-btn pix-hidden" id="pixGatewayBtn" target="_blank" rel="noopener noreferrer">
+              <i class="fas fa-up-right-from-square"></i> Abrir pagamento Pix
+            </a>
+            <a href="pedidos.html" class="btn-secondary-premium pix-secondary-btn">
+              <i class="fas fa-box"></i> Ver meus pedidos
+            </a>
+            <a href="../index.html" class="btn-secondary-premium pix-secondary-btn">
+              <i class="fas fa-store"></i> Voltar à loja
+            </a>
+          </div>
+
+          <div class="pix-note" id="pixNote">
+            Assim que o pagamento for concluído, o status do pedido será atualizado.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pix-empty pix-hidden" id="pixEmpty">
+      <h2>Nenhum pagamento Pix em andamento</h2>
+      <p>Volte ao checkout, selecione Pix e finalize o pedido para gerar esta página.</p>
+      <a href="checkout.html" class="btn-primary-premium">
+        <i class="fas fa-credit-card"></i> Ir para checkout
+      </a>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const PIX_CHECKOUT_STORAGE_KEY = 'zcore_pix_checkout';
+
+  function mostrarToast(mensagem, tipo = 'sucesso') {
+    const toast = document.getElementById('toast');
+    toast.textContent = mensagem;
+    toast.className = 'toast ' + tipo;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  function formatarMoeda(valor) {
+    return Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  function obterContextoPix() {
+    try {
+      return JSON.parse(localStorage.getItem(PIX_CHECKOUT_STORAGE_KEY) || 'null');
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function copiarChavePix() {
+    const input = document.getElementById('pixChave');
+    if (!input || !input.value) {
+      mostrarToast('❌ Nenhuma chave Pix disponível.', 'erro');
+      return;
+    }
+
+    navigator.clipboard.writeText(input.value)
+      .then(() => mostrarToast('✅ Chave Pix copiada com sucesso!'))
+      .catch(() => mostrarToast('❌ Não foi possível copiar a chave Pix.', 'erro'));
+  }
+
+  function preencherPaginaPix() {
+    const contexto = obterContextoPix();
+    const pixCard = document.getElementById('pixCard');
+    const pixEmpty = document.getElementById('pixEmpty');
+
+    if (!contexto) {
+      pixCard.classList.add('pix-hidden');
+      pixEmpty.classList.remove('pix-hidden');
+      return;
+    }
+
+    document.getElementById('pixPedidoId').textContent = contexto.pedidoId ? '#' + contexto.pedidoId : 'Aguardando';
+    document.getElementById('pixCliente').textContent = contexto.cliente || '-';
+    document.getElementById('pixEmail').textContent = contexto.email || '-';
+    document.getElementById('pixTotal').textContent = formatarMoeda(contexto.total);
+    document.getElementById('pixBanco').textContent = contexto.pix?.banco || 'Pix';
+
+    const itens = Array.isArray(contexto.itens) ? contexto.itens : [];
+    document.getElementById('pixItens').innerHTML = itens.length
+      ? itens.map((item) => `
+        <div class="pix-item">
+          <span>${item.quantidade}x ${item.nome}</span>
+          <strong>${formatarMoeda((item.preco || 0) * (item.quantidade || 1))}</strong>
+        </div>
+      `).join('')
+      : '<div class="pix-item"><span>Itens indisponíveis</span><strong>-</strong></div>';
+
+    const pixKey = contexto.pix?.chave || '';
+    const copyBox = document.getElementById('pixCopyBox');
+    const chaveInput = document.getElementById('pixChave');
+
+    if (pixKey) {
+      chaveInput.value = pixKey;
+      copyBox.classList.remove('pix-hidden');
+    } else {
+      copyBox.classList.add('pix-hidden');
+    }
+
+    const gatewayBtn = document.getElementById('pixGatewayBtn');
+    if (contexto.pagamentoOnlineUrl) {
+      gatewayBtn.href = contexto.pagamentoOnlineUrl;
+      gatewayBtn.classList.remove('pix-hidden');
+    } else {
+      gatewayBtn.classList.add('pix-hidden');
+    }
+
+    const note = document.getElementById('pixNote');
+    if (!pixKey && !contexto.pagamentoOnlineUrl) {
+      note.textContent = 'O Pix ainda não está configurado com chave ou gateway online. Entre em contato com a loja para concluir o pagamento.';
+    }
+  }
+
+  window.onload = preencherPaginaPix;
+</script>
+
+</body>
+</html>
