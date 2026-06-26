@@ -698,6 +698,396 @@ body {
     min-height: 100px;
 }
 
+/* ========================================
+   SETTINGS PANEL
+   ======================================== */
+.settings-layout {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    min-height: 100%;
+    margin-top: 10px;
+}
+
+#page-config-loja .settings-sidebar {
+    width: 260px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    flex-shrink: 0;
+    height: calc(100vh - 80px);
+    position: sticky;
+    top: 20px;
+}
+
+#page-config-loja .settings-sidebar__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+#page-config-loja .settings-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+}
+
+#page-config-loja .settings-nav__group {
+    padding-top: 12px;
+    margin-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+#page-config-loja .settings-nav__group:first-child {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+#page-config-loja .settings-nav__group-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+#page-config-loja .settings-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 14px;
+    background: transparent;
+    border: none;
+    border-radius: 14px;
+    text-align: left;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+}
+
+#page-config-loja .settings-nav__item:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+#page-config-loja .settings-nav__item.active {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+#page-config-loja .settings-nav__item.danger {
+    color: var(--red);
+}
+
+#page-config-loja .settings-content {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+}
+
+#page-config-loja .settings-section {
+    display: none;
+}
+
+#page-config-loja .settings-section.active {
+    display: block;
+}
+
+#page-config-loja .settings-block {
+    margin-bottom: 24px;
+}
+
+#page-config-loja .settings-block__label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+#page-config-loja .settings-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    display: grid;
+    gap: 16px;
+}
+
+#page-config-loja .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+#page-config-loja .settings-row:last-child {
+    border-bottom: none;
+}
+
+#page-config-loja .settings-row__info {
+    min-width: 220px;
+    max-width: 320px;
+}
+
+#page-config-loja .settings-row__name {
+    display: block;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+#page-config-loja .settings-row__desc {
+    display: block;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+#page-config-loja .settings-row__control {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+#page-config-loja .settings-row--column {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#page-config-loja .settings-row--column .settings-row__control {
+    width: 100%;
+}
+
+#page-config-loja .logo-control {
+    align-items: flex-start;
+}
+
+#page-config-loja .logo-preview {
+    width: 62px;
+    height: 62px;
+    border-radius: 16px;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 22px;
+    overflow: hidden;
+}
+
+#page-config-loja .logo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#page-config-loja .logo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#page-config-loja .color-row {
+    align-items: center;
+}
+
+#page-config-loja .color-swatch {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+}
+
+#page-config-loja .field {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+#page-config-loja .field--short {
+    width: 140px;
+    max-width: 180px;
+}
+
+#page-config-loja .field--select {
+    appearance: none;
+}
+
+#page-config-loja .field--textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+#page-config-loja .field-counter {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+#page-config-loja .btn--ghost {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+#page-config-loja .btn--sm {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+#page-config-loja .btn--danger {
+    background: var(--red);
+    color: #FFFFFF;
+}
+
+#page-config-loja .toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+#page-config-loja .toggle input {
+    appearance: none;
+    width: 42px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--border);
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    transition: background 0.2s ease;
+}
+
+#page-config-loja .toggle input:checked {
+    background: var(--accent);
+}
+
+#page-config-loja .toggle input::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s ease;
+}
+
+#page-config-loja .toggle input:checked::before {
+    transform: translateX(18px);
+}
+
+#page-config-loja .toggle__track {
+    display: none;
+}
+
+#page-config-loja .theme-picker {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+#page-config-loja .theme-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: border 0.15s ease, background 0.15s ease;
+}
+
+#page-config-loja .theme-option.active {
+    border-color: var(--accent);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+#page-config-loja .theme-option input {
+    display: none;
+}
+
+#page-config-loja .danger-card {
+    background: var(--red-light);
+    border-color: var(--red);
+}
+
+#page-config-loja .danger-card .settings-row {
+    border-color: transparent;
+}
+
+#page-config-loja .settings-savebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+#page-config-loja .settings-savebar__hint {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+#page-config-loja .settings-savebar__hint.saved {
+    color: var(--green);
+}
+
+@media (max-width: 1000px) {
+    #page-config-loja .settings-layout {
+        flex-direction: column;
+    }
+    #page-config-loja .settings-sidebar {
+        height: auto;
+        position: relative;
+        top: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 700px) {
+    #page-config-loja .settings-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    #page-config-loja .settings-row__info {
+        width: 100%;
+    }
+    #page-config-loja .field--short {
+        width: 100%;
+    }
+}
+
 .form-actions {
     display: flex;
     justify-content: flex-end;

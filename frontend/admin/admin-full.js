@@ -16,6 +16,39 @@ let editandoProdutoId = null;
 let produtoParaExcluir = null;
 let produtoFoto = null; // Foto do produto atual
 let adminApiOnline = false;
+const storeConfigStorageKey = 'zcore-store-settings';
+const storeConfigDefaults = {
+    logo: null,
+    name: 'Z-Core Eletrônicos',
+    slogan: 'Premium tech. Zero ruído.',
+    primaryColor: '#7C3AED',
+    supportEmail: 'suporte@z-core.com.br',
+    whatsapp: '+55 48 9999-0000',
+    whatsappActive: true,
+    cnpj: '00.000.000/0001-00',
+    currency: 'BRL',
+    timezone: 'America/Sao_Paulo',
+    maintenance: false,
+    reviewsActive: true,
+    showStock: true,
+    theme: 'dark',
+    themeSwitch: true,
+    metaTitle: 'Z-Core | Premium Tech',
+    metaDesc: 'Eletrônicos premium com entrega rápida. Smartphones, notebooks e acessórios selecionados.',
+    storeUrl: 'z-core.com.br',
+    redirectWww: true,
+    autoSitemap: true,
+    freeShippingActive: true,
+    freeShippingMin: '150',
+    taxRegime: 'Simples Nacional',
+    taxRate: '12%',
+    emailOrder: 'pedidos@z-core.com.br',
+    emailShipment: 'envios@z-core.com.br',
+    emailMarket: 'marketing@z-core.com.br',
+    gaToggle: false,
+    fbPixelToggle: false,
+    cookiesToggle: true
+};
 
 function podeUsarFallbackAdminLocal() {
     const host = window.location.hostname;
@@ -203,6 +236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!acessoLiberado) return;
     await carregarDados();
     inicializarEventos();
+    inicializarConfigLoja();
     renderizarTudo();
 });
 
@@ -294,6 +328,309 @@ function salvarConfigPagamentos() {
         }
     };
     localStorage.setItem('zcore-payments', JSON.stringify(config));
+}
+
+function obterStoreConfig() {
+    const raw = localStorage.getItem(storeConfigStorageKey);
+    return raw ? { ...storeConfigDefaults, ...JSON.parse(raw) } : { ...storeConfigDefaults };
+}
+
+function salvarStoreConfig(config) {
+    localStorage.setItem(storeConfigStorageKey, JSON.stringify(config));
+}
+
+function atualizarMetaCounter() {
+    const metaDesc = document.getElementById('metaDesc');
+    const metaDescCounter = document.getElementById('metaDescCounter');
+    if (!metaDesc || !metaDescCounter) return;
+    const len = metaDesc.value.length;
+    metaDescCounter.textContent = `${len}/160`;
+    metaDescCounter.style.color = len > 150 ? 'var(--amber)' : '';
+    if (len >= 160) metaDescCounter.style.color = 'var(--red)';
+}
+
+function updateFreeShippingRow() {
+    const freeShippingToggle = document.getElementById('freeShippingToggle');
+    const freeShippingValueRow = document.getElementById('freeShippingValueRow');
+    if (!freeShippingToggle || !freeShippingValueRow) return;
+    const active = freeShippingToggle.checked;
+    freeShippingValueRow.style.opacity = active ? '1' : '0.5';
+    freeShippingValueRow.querySelector('input').disabled = !active;
+}
+
+function carregarConfigLoja() {
+    const config = obterStoreConfig();
+    const logoPreview = document.getElementById('logoPreview');
+    const logoRemove = document.getElementById('logoRemove');
+
+    if (logoPreview) {
+        if (config.logo) {
+            logoPreview.innerHTML = `<img src="${config.logo}" alt="Logo da loja" />`;
+            if (logoRemove) logoRemove.style.display = 'inline-flex';
+        } else {
+            logoPreview.innerHTML = 'Z';
+            if (logoRemove) logoRemove.style.display = 'none';
+        }
+    }
+
+    document.getElementById('storeName').value = config.name;
+    document.getElementById('storeSlogan').value = config.slogan;
+    document.getElementById('colorHex').value = config.primaryColor;
+    document.getElementById('colorPicker').value = config.primaryColor.toLowerCase();
+    document.getElementById('colorSwatch').style.background = config.primaryColor;
+    document.getElementById('supportEmail').value = config.supportEmail;
+    document.getElementById('whatsapp').value = config.whatsapp;
+    document.getElementById('whatsappActive').checked = config.whatsappActive;
+    document.getElementById('cnpj').value = config.cnpj;
+    document.getElementById('currency').value = config.currency;
+    document.getElementById('timezone').value = config.timezone;
+    document.getElementById('maintenanceToggle').checked = config.maintenance;
+    document.getElementById('reviewsActive').checked = config.reviewsActive;
+    document.getElementById('showStock').checked = config.showStock;
+    document.querySelectorAll('.theme-option').forEach(option => {
+        const input = option.querySelector('input');
+        if (input && input.value === config.theme) {
+            option.classList.add('active');
+            input.checked = true;
+        } else if (input) {
+            option.classList.remove('active');
+            input.checked = false;
+        }
+    });
+    document.getElementById('themeSwitch').checked = config.themeSwitch;
+    document.getElementById('metaTitle').value = config.metaTitle;
+    document.getElementById('metaDesc').value = config.metaDesc;
+    document.getElementById('storeUrl').value = config.storeUrl;
+    document.getElementById('redirectWww').checked = config.redirectWww;
+    document.getElementById('autoSitemap').checked = config.autoSitemap;
+    document.getElementById('freeShippingToggle').checked = config.freeShippingActive;
+    document.getElementById('freeShippingMin').value = config.freeShippingMin;
+    document.getElementById('taxRegime').value = config.taxRegime;
+    document.getElementById('taxRate').value = config.taxRate;
+    document.getElementById('emailOrder').value = config.emailOrder;
+    document.getElementById('emailShipment').value = config.emailShipment;
+    document.getElementById('emailMarket').value = config.emailMarket;
+    document.getElementById('gaToggle').checked = config.gaToggle;
+    document.getElementById('fbPixelToggle').checked = config.fbPixelToggle;
+    document.getElementById('cookiesToggle').checked = config.cookiesToggle;
+    atualizarMetaCounter();
+    updateFreeShippingRow();
+}
+
+function inicializarConfigLoja() {
+    const navItems = document.querySelectorAll('#page-config-loja .settings-nav__item');
+    const sections = document.querySelectorAll('#page-config-loja .settings-section');
+    navItems.forEach(item => {
+        item.addEventListener('click', function () {
+            navItems.forEach(n => n.classList.remove('active'));
+            this.classList.add('active');
+            sections.forEach(section => section.classList.remove('active'));
+            const target = document.getElementById(`section-${this.dataset.section}`);
+            if (target) target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+    const saveBtn = document.getElementById('saveBtn');
+    const discardBtn = document.getElementById('discardBtn');
+    const saveHint = document.getElementById('saveHint');
+
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function () {
+            const config = {
+                logo: document.getElementById('logoPreview').querySelector('img')?.src || null,
+                name: document.getElementById('storeName').value.trim(),
+                slogan: document.getElementById('storeSlogan').value.trim(),
+                primaryColor: document.getElementById('colorHex').value.trim() || '#7C3AED',
+                supportEmail: document.getElementById('supportEmail').value.trim(),
+                whatsapp: document.getElementById('whatsapp').value.trim(),
+                whatsappActive: document.getElementById('whatsappActive').checked,
+                cnpj: document.getElementById('cnpj').value.trim(),
+                currency: document.getElementById('currency').value,
+                timezone: document.getElementById('timezone').value,
+                maintenance: document.getElementById('maintenanceToggle').checked,
+                reviewsActive: document.getElementById('reviewsActive').checked,
+                showStock: document.getElementById('showStock').checked,
+                theme: document.querySelector('#page-config-loja .theme-option.active input')?.value || 'dark',
+                themeSwitch: document.getElementById('themeSwitch').checked,
+                metaTitle: document.getElementById('metaTitle').value.trim(),
+                metaDesc: document.getElementById('metaDesc').value.trim(),
+                storeUrl: document.getElementById('storeUrl').value.trim(),
+                redirectWww: document.getElementById('redirectWww').checked,
+                autoSitemap: document.getElementById('autoSitemap').checked,
+                freeShippingActive: document.getElementById('freeShippingToggle').checked,
+                freeShippingMin: document.getElementById('freeShippingMin').value.trim(),
+                taxRegime: document.getElementById('taxRegime').value,
+                taxRate: document.getElementById('taxRate').value.trim(),
+                emailOrder: document.getElementById('emailOrder').value.trim(),
+                emailShipment: document.getElementById('emailShipment').value.trim(),
+                emailMarket: document.getElementById('emailMarket').value.trim(),
+                gaToggle: document.getElementById('gaToggle').checked,
+                fbPixelToggle: document.getElementById('fbPixelToggle').checked,
+                cookiesToggle: document.getElementById('cookiesToggle').checked
+            };
+            salvarStoreConfig(config);
+            saveBtn.textContent = 'Salvando...';
+            saveBtn.disabled = true;
+
+            setTimeout(function () {
+                saveBtn.textContent = 'Salvar alterações';
+                saveBtn.disabled = false;
+                if (saveHint) {
+                    saveHint.textContent = 'Salvo agora mesmo';
+                    saveHint.classList.add('saved');
+                    setTimeout(function () {
+                        saveHint.textContent = '';
+                        saveHint.classList.remove('saved');
+                    }, 4000);
+                }
+                mostrarToast('Configurações salvas com sucesso');
+            }, 600);
+        });
+    }
+
+    if (discardBtn) {
+        discardBtn.addEventListener('click', function () {
+            carregarConfigLoja();
+            mostrarToast('Alterações descartadas', true);
+        });
+    }
+
+    const logoInput = document.getElementById('logoInput');
+    const logoPreview = document.getElementById('logoPreview');
+    const logoRemove = document.getElementById('logoRemove');
+
+    if (logoInput && logoPreview) {
+        logoInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                mostrarToast('Selecione um arquivo de imagem válido', true);
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo da loja" />`;
+                if (logoRemove) logoRemove.style.display = 'inline-flex';
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    if (logoRemove && logoPreview) {
+        logoRemove.addEventListener('click', function () {
+            logoPreview.innerHTML = 'Z';
+            logoRemove.style.display = 'none';
+            if (logoInput) logoInput.value = '';
+        });
+    }
+
+    const colorSwatch = document.getElementById('colorSwatch');
+    const colorHex = document.getElementById('colorHex');
+    const colorPicker = document.getElementById('colorPicker');
+
+    if (colorSwatch && colorHex && colorPicker) {
+        colorSwatch.addEventListener('click', function () {
+            colorPicker.click();
+        });
+        colorPicker.addEventListener('input', function () {
+            const hex = this.value.toUpperCase();
+            colorSwatch.style.background = hex;
+            colorHex.value = hex;
+        });
+        colorHex.addEventListener('input', function () {
+            let val = this.value.trim();
+            if (!val.startsWith('#')) val = `#${val}`;
+            if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                colorSwatch.style.background = val;
+                colorPicker.value = val.toLowerCase();
+            }
+        });
+        colorHex.addEventListener('blur', function () {
+            let val = this.value.trim().toUpperCase();
+            if (!val.startsWith('#')) val = `#${val}`;
+            if (!/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                this.value = colorPicker.value.toUpperCase();
+                mostrarToast('Cor inválida. Use o formato #RRGGBB', true);
+            } else {
+                this.value = val;
+                colorSwatch.style.background = val;
+                colorPicker.value = val.toLowerCase();
+            }
+        });
+    }
+
+    const metaDesc = document.getElementById('metaDesc');
+    if (metaDesc) {
+        metaDesc.addEventListener('input', atualizarMetaCounter);
+    }
+
+    const freeShippingToggle = document.getElementById('freeShippingToggle');
+    if (freeShippingToggle) {
+        freeShippingToggle.addEventListener('change', updateFreeShippingRow);
+    }
+
+    const maintenanceToggle = document.getElementById('maintenanceToggle');
+    if (maintenanceToggle) {
+        maintenanceToggle.addEventListener('change', function () {
+            if (this.checked) {
+                mostrarToast('Modo manutenção ativado — loja oculta para visitantes', true);
+            } else {
+                mostrarToast('Modo manutenção desativado — loja visível novamente');
+            }
+        });
+    }
+
+    const cnpjInput = document.getElementById('cnpj');
+    if (cnpjInput) {
+        cnpjInput.addEventListener('input', function () {
+            let v = this.value.replace(/\D/g, '').substring(0, 14);
+            if (v.length > 12) {
+                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+            } else if (v.length > 8) {
+                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d+)$/, '$1.$2.$3/$4');
+            } else if (v.length > 5) {
+                v = v.replace(/^(\d{2})(\d{3})(\d+)$/, '$1.$2.$3');
+            } else if (v.length > 2) {
+                v = v.replace(/^(\d{2})(\d+)$/, '$1.$2');
+            }
+            this.value = v;
+        });
+    }
+
+    const themeOptions = document.querySelectorAll('#page-config-loja .theme-option');
+    themeOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+            themeOptions.forEach(function (o) { o.classList.remove('active'); });
+            this.classList.add('active');
+            const input = this.querySelector('input');
+            if (input) input.checked = true;
+        });
+    });
+
+    const resetStoreSettings = document.getElementById('resetStoreSettings');
+    if (resetStoreSettings) {
+        resetStoreSettings.addEventListener('click', function () {
+            if (confirm('Resetar configurações da loja para os padrões?')) {
+                salvarStoreConfig({ ...storeConfigDefaults });
+                carregarConfigLoja();
+                mostrarToast('Configurações resetadas', true);
+            }
+        });
+    }
+
+    const disableStoreBtn = document.getElementById('disableStoreBtn');
+    if (disableStoreBtn) {
+        disableStoreBtn.addEventListener('click', function () {
+            if (confirm('Desativar a loja permanentemente?')) {
+                document.getElementById('maintenanceToggle').checked = true;
+                updateFreeShippingRow();
+                mostrarToast('Desativando a loja...', true);
+            }
+        });
+    }
+
+    carregarConfigLoja();
 }
 
 function configurarInterfacePagamentos(config) {

@@ -737,11 +737,646 @@
                     </div>
                 </div>
                 <div class="page" id="page-config-loja">
-                    <div class="placeholder-page">
-                        <i class="ti ti-settings"></i>
-                        <h3>Configurações da Loja</h3>
-                        <p>Em desenvolvimento</p>
-                    </div>
+                    <div class="settings-layout">
+                        <aside class="settings-sidebar" id="settingsSidebar">
+                            <div class="settings-sidebar__header">
+                              <i class="icon icon-settings"></i>
+                              <span>Configurações</span>
+                            </div>
+
+                            <nav class="settings-nav">
+                              <div class="settings-nav__group">
+                                <span class="settings-nav__group-label">Loja</span>
+                                <button class="settings-nav__item active" data-section="geral">
+                                  <i class="icon icon-store"></i> Informações gerais
+                                </button>
+                                <button class="settings-nav__item" data-section="aparencia">
+                                  <i class="icon icon-palette"></i> Aparência
+                                </button>
+                                <button class="settings-nav__item" data-section="seo">
+                                  <i class="icon icon-globe"></i> SEO e domínio
+                                </button>
+                              </div>
+
+                              <div class="settings-nav__group">
+                                <span class="settings-nav__group-label">Operação</span>
+                                <button class="settings-nav__item" data-section="frete">
+                                  <i class="icon icon-truck"></i> Frete e entrega
+                                </button>
+                                <button class="settings-nav__item" data-section="impostos">
+                                  <i class="icon icon-receipt"></i> Impostos
+                                </button>
+                                <button class="settings-nav__item" data-section="notificacoes">
+                                  <i class="icon icon-bell"></i> Notificações
+                                </button>
+                              </div>
+
+                              <div class="settings-nav__group">
+                                <span class="settings-nav__group-label">Avançado</span>
+                                <button class="settings-nav__item" data-section="integracoes">
+                                  <i class="icon icon-code"></i> Scripts e integrações
+                                </button>
+                                <button class="settings-nav__item" data-section="lgpd">
+                                  <i class="icon icon-shield"></i> Privacidade e LGPD
+                                </button>
+                                <button class="settings-nav__item danger" data-section="perigo">
+                                  <i class="icon icon-trash"></i> Zona de perigo
+                                </button>
+                              </div>
+                            </nav>
+                        </aside>
+
+                        <main class="settings-content">
+
+                          <section class="settings-section active" id="section-geral">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">Informações gerais</h1>
+                              <p class="settings-section__desc">Dados básicos que identificam sua loja para os clientes</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Identidade</span>
+
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Logo da loja</span>
+                                    <span class="settings-row__desc">Exibido no topo do site e nos e-mails</span>
+                                  </div>
+                                  <div class="settings-row__control logo-control">
+                                    <div class="logo-preview" id="logoPreview">Z</div>
+                                    <div class="logo-actions">
+                                      <label for="logoInput" class="btn btn--ghost btn--sm">Trocar logo</label>
+                                      <input type="file" id="logoInput" accept="image/*" hidden />
+                                      <button class="btn btn--ghost btn--sm btn--danger" id="logoRemove" style="display:none;">Remover</button>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Nome da loja</span>
+                                    <span class="settings-row__desc">Aparece no cabeçalho e documentos fiscais</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="text" class="field" id="storeName" value="Z-Core Eletrônicos" />
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Slogan</span>
+                                    <span class="settings-row__desc">Frase curta exibida abaixo do logo</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="text" class="field" id="storeSlogan" value="Premium tech. Zero ruído." />
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Cor principal</span>
+                                    <span class="settings-row__desc">Usada em botões, badges e destaques</span>
+                                  </div>
+                                  <div class="settings-row__control color-row">
+                                    <div class="color-swatch" id="colorSwatch" style="background:#7c3aed;"></div>
+                                    <input type="text" class="field field--short" id="colorHex" value="#7C3AED" maxlength="7" />
+                                    <input type="color" id="colorPicker" value="#7c3aed" hidden />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Contato e fiscal</span>
+
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">E-mail de suporte</span>
+                                    <span class="settings-row__desc">Exibido na página de contato</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="email" class="field" id="supportEmail" value="suporte@z-core.com.br" />
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">WhatsApp de atendimento</span>
+                                    <span class="settings-row__desc">Ativa o botão flutuante no site</span>
+                                  </div>
+                                  <div class="settings-row__control" style="gap: 10px; align-items: center;">
+                                    <input type="text" class="field field--short" id="whatsapp" value="+55 48 9999-0000" />
+                                    <label class="toggle" aria-label="Ativar WhatsApp">
+                                      <input type="checkbox" id="whatsappActive" checked />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">CNPJ</span>
+                                    <span class="settings-row__desc">Exibido no rodapé e notas fiscais</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="text" class="field" id="cnpj" value="00.000.000/0001-00" maxlength="18" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Operação</span>
+
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Moeda</span>
+                                    <span class="settings-row__desc">Usada em todos os preços e relatórios</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <select class="field field--select" id="currency">
+                                      <option value="BRL" selected>BRL — Real brasileiro</option>
+                                      <option value="USD">USD — Dólar americano</option>
+                                      <option value="EUR">EUR — Euro</option>
+                                    </select>
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Fuso horário</span>
+                                    <span class="settings-row__desc">Afeta horários de pedidos e relatórios</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <select class="field field--select" id="timezone">
+                                      <option value="America/Sao_Paulo" selected>America/Sao_Paulo (UTC-3)</option>
+                                      <option value="America/Manaus">America/Manaus (UTC-4)</option>
+                                      <option value="America/Belem">America/Belem (UTC-3)</option>
+                                    </select>
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Modo manutenção</span>
+                                    <span class="settings-row__desc">Exibe página de espera para visitantes</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Modo manutenção">
+                                      <input type="checkbox" id="maintenanceToggle" />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Avaliações de produtos</span>
+                                    <span class="settings-row__desc">Clientes podem avaliar produtos comprados</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Avaliações">
+                                      <input type="checkbox" id="reviewsActive" checked />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Exibir estoque no produto</span>
+                                    <span class="settings-row__desc">Mostra "Restam X unidades" na página do produto</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Exibir estoque">
+                                      <input type="checkbox" id="showStock" checked />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-savebar">
+                              <span class="settings-savebar__hint" id="saveHint"></span>
+                              <div class="settings-savebar__actions">
+                                <button class="btn btn--ghost" id="discardBtn">Descartar</button>
+                                <button class="btn btn--primary" id="saveBtn">Salvar alterações</button>
+                              </div>
+                            </div>
+                          </section>
+
+                          <section class="settings-section" id="section-aparencia">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">Aparência</h1>
+                              <p class="settings-section__desc">Identidade visual do storefront</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Imagens</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Favicon</span>
+                                    <span class="settings-row__desc">Ícone exibido na aba do navegador (32×32px)</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label for="faviconInput" class="btn btn--ghost btn--sm">
+                                      <i class="icon icon-upload"></i> Enviar favicon
+                                    </label>
+                                    <input type="file" id="faviconInput" accept="image/*" hidden />
+                                  </div>
+                                </div>
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Imagem de compartilhamento (OG)</span>
+                                    <span class="settings-row__desc">Aparece ao compartilhar o link da loja (1200×630px)</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label for="ogInput" class="btn btn--ghost btn--sm">
+                                      <i class="icon icon-upload"></i> Enviar imagem
+                                    </label>
+                                    <input type="file" id="ogInput" accept="image/*" hidden />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Tema</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Tema padrão</span>
+                                    <span class="settings-row__desc">Aparência inicial para novos visitantes</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <div class="theme-picker">
+                                      <label class="theme-option active">
+                                        <input type="radio" name="settingsTheme" value="dark" hidden checked />
+                                        <i class="icon icon-moon"></i> Escuro
+                                      </label>
+                                      <label class="theme-option">
+                                        <input type="radio" name="settingsTheme" value="light" hidden />
+                                        <i class="icon icon-sun"></i> Claro
+                                      </label>
+                                      <label class="theme-option">
+                                        <input type="radio" name="settingsTheme" value="system" hidden />
+                                        <i class="icon icon-monitor"></i> Sistema
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Permitir troca de tema</span>
+                                    <span class="settings-row__desc">Visitante pode alternar entre claro e escuro</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Permitir troca de tema">
+                                      <input type="checkbox" id="themeSwitch" checked />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-savebar">
+                              <span class="settings-savebar__hint"></span>
+                              <div class="settings-savebar__actions">
+                                <button class="btn btn--ghost">Descartar</button>
+                                <button class="btn btn--primary">Salvar alterações</button>
+                              </div>
+                            </div>
+                          </section>
+
+                          <section class="settings-section" id="section-seo">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">SEO e domínio</h1>
+                              <p class="settings-section__desc">Como sua loja aparece nos mecanismos de busca</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Metadados</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Título da página</span>
+                                    <span class="settings-row__desc">Exibido na aba e nos resultados do Google</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="text" class="field" value="Z-Core | Premium Tech" id="metaTitle" />
+                                  </div>
+                                </div>
+                                <div class="settings-row settings-row--column">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Descrição (meta description)</span>
+                                    <span class="settings-row__desc">Resumo exibido nos resultados de busca (até 160 caracteres)</span>
+                                  </div>
+                                  <textarea class="field field--textarea" id="metaDesc" maxlength="160">Eletrônicos premium com entrega rápida. Smartphones, notebooks e acessórios selecionados.</textarea>
+                                  <span class="field-counter" id="metaDescCounter">0/160</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Domínio</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">URL da loja</span>
+                                    <span class="settings-row__desc">Endereço principal do seu storefront</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="text" class="field" value="z-core.com.br" id="storeUrl" />
+                                  </div>
+                                </div>
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Redirecionar www</span>
+                                    <span class="settings-row__desc">www.z-core.com.br redireciona para z-core.com.br</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Redirecionar www">
+                                      <input type="checkbox" id="redirectWww" checked />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Sitemap automático</span>
+                                    <span class="settings-row__desc">Gera e atualiza o sitemap.xml automaticamente</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Sitemap automático">
+                                      <input type="checkbox" id="autoSitemap" checked />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-savebar">
+                              <span class="settings-savebar__hint"></span>
+                              <div class="settings-savebar__actions">
+                                <button class="btn btn--ghost">Descartar</button>
+                                <button class="btn btn--primary">Salvar alterações</button>
+                              </div>
+                            </div>
+                          </section>
+
+                          <section class="settings-section" id="section-frete">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">Frete e entrega</h1>
+                              <p class="settings-section__desc">Regras de envio e integrações com transportadoras</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Frete grátis</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Ativar frete grátis</span>
+                                    <span class="settings-row__desc">Aplica automaticamente ao atingir o valor mínimo</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Frete grátis">
+                                      <input type="checkbox" id="freeShippingToggle" checked />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div class="settings-row" id="freeShippingValueRow">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Valor mínimo</span>
+                                    <span class="settings-row__desc">Valor de pedido para receber frete grátis</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="text" class="field field--short" id="freeShippingMin" value="150" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-savebar">
+                              <span class="settings-savebar__hint"></span>
+                              <div class="settings-savebar__actions">
+                                <button class="btn btn--ghost">Descartar</button>
+                                <button class="btn btn--primary">Salvar alterações</button>
+                              </div>
+                            </div>
+                          </section>
+
+                          <section class="settings-section" id="section-impostos">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">Impostos</h1>
+                              <p class="settings-section__desc">Configuração tributária e emissão de notas fiscais</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Regime tributário</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Regime</span>
+                                    <span class="settings-row__desc">Seleciona o regime fiscal da sua loja</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <select class="field field--select" id="taxRegime">
+                                      <option value="Simples Nacional">Simples Nacional</option>
+                                      <option value="Lucro Presumido">Lucro Presumido</option>
+                                      <option value="Lucro Real">Lucro Real</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Alíquota padrão</span>
+                                    <span class="settings-row__desc">Usada nos cálculos de imposto automático</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="text" class="field field--short" id="taxRate" value="12%" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-savebar">
+                              <span class="settings-savebar__hint"></span>
+                              <div class="settings-savebar__actions">
+                                <button class="btn btn--ghost">Descartar</button>
+                                <button class="btn btn--primary">Salvar alterações</button>
+                              </div>
+                            </div>
+                          </section>
+
+                          <section class="settings-section" id="section-notificacoes">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">Notificações</h1>
+                              <p class="settings-section__desc">E-mails automáticos enviados aos clientes em cada evento</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">E-mails transacionais</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Pedidos</span>
+                                    <span class="settings-row__desc">E-mail usado para disparo de confirmações</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="email" class="field" id="emailOrder" value="pedidos@z-core.com.br" />
+                                  </div>
+                                </div>
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Envio</span>
+                                    <span class="settings-row__desc">E-mail usado para notificações de envio</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="email" class="field" id="emailShipment" value="envios@z-core.com.br" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Marketing</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">E-mail de marketing</span>
+                                    <span class="settings-row__desc">Usado para banners e promoções</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <input type="email" class="field" id="emailMarket" value="marketing@z-core.com.br" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-savebar">
+                              <span class="settings-savebar__hint"></span>
+                              <div class="settings-savebar__actions">
+                                <button class="btn btn--ghost">Descartar</button>
+                                <button class="btn btn--primary">Salvar alterações</button>
+                              </div>
+                            </div>
+                          </section>
+
+                          <section class="settings-section" id="section-integracoes">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">Scripts e integrações</h1>
+                              <p class="settings-section__desc">Conecte ferramentas de análise, marketing e suporte</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Integrações</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Google Analytics</span>
+                                    <span class="settings-row__desc">Ativa o acompanhamento de visitas</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Google Analytics">
+                                      <input type="checkbox" id="gaToggle" />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Facebook Pixel</span>
+                                    <span class="settings-row__desc">Rastreia eventos de conversão</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Facebook Pixel">
+                                      <input type="checkbox" id="fbPixelToggle" />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-savebar">
+                              <span class="settings-savebar__hint"></span>
+                              <div class="settings-savebar__actions">
+                                <button class="btn btn--ghost">Descartar</button>
+                                <button class="btn btn--primary">Salvar alterações</button>
+                              </div>
+                            </div>
+                          </section>
+
+                          <section class="settings-section" id="section-lgpd">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">Privacidade e LGPD</h1>
+                              <p class="settings-section__desc">Conformidade com a Lei Geral de Proteção de Dados</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Consentimento</span>
+                              <div class="settings-card">
+                                <div class="settings-row">
+                                  <div class="settings-row__info">
+                                    <span class="settings-row__name">Banner de cookies</span>
+                                    <span class="settings-row__desc">Exibe aviso de cookies aos visitantes</span>
+                                  </div>
+                                  <div class="settings-row__control">
+                                    <label class="toggle" aria-label="Banner de cookies">
+                                      <input type="checkbox" id="cookiesToggle" checked />
+                                      <span class="toggle__track"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="settings-savebar">
+                              <span class="settings-savebar__hint"></span>
+                              <div class="settings-savebar__actions">
+                                <button class="btn btn--ghost">Descartar</button>
+                                <button class="btn btn--primary">Salvar alterações</button>
+                              </div>
+                            </div>
+                          </section>
+
+                          <section class="settings-section" id="section-perigo">
+                            <div class="settings-section__header">
+                              <h1 class="settings-section__title">Zona de perigo</h1>
+                              <p class="settings-section__desc">Ações irreversíveis — proceda com cuidado</p>
+                            </div>
+
+                            <div class="settings-block">
+                              <span class="settings-block__label">Cuidado</span>
+                              <div class="settings-card danger-card">
+                                <div class="settings-row">
+                                  <div>
+                                    <span class="settings-row__name">Resetar configurações da loja</span>
+                                    <span class="settings-row__desc">Todas as definições voltarão aos valores padrão.</span>
+                                  </div>
+                                  <button class="btn btn--danger" id="resetStoreSettings">Resetar</button>
+                                </div>
+                                <div class="settings-row">
+                                  <div>
+                                    <span class="settings-row__name">Desativar a loja permanentemente</span>
+                                    <span class="settings-row__desc">Remove o acesso ao storefront para todos os visitantes.</span>
+                                  </div>
+                                  <button class="btn btn--danger" id="disableStoreBtn">Desativar loja</button>
+                                </div>
+                              </div>
+                            </div>
+                          </section>
+
+                        </main>
+                      </div>
                 </div>
             </div>
         </main>
